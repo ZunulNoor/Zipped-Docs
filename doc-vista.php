@@ -40,6 +40,13 @@ $doc_vista_includes = array(
     'admin-categories.php',
     'admin-settings.php',
     'admin-meta-box.php',
+    'import-export/interface-adapter.php',
+    'import-export/class-field-mapper.php',
+    'import-export/class-normalizer.php',
+    'import-export/class-format-detector.php',
+    'import-export/class-import-engine.php',
+    'import-export/class-export-engine.php',
+    'import-export/class-admin-ui.php',
 );
 
 foreach ( $doc_vista_includes as $doc_vista_file ) {
@@ -48,6 +55,8 @@ foreach ( $doc_vista_includes as $doc_vista_file ) {
         require_once $path;
     }
 }
+
+new Doc_Vista_Import_Export_Admin();
 
 /* -----------------------------------------------------------------------
  * Register Custom Post Type + Taxonomy

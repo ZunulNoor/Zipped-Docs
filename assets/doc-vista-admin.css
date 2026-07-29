@@ -411,3 +411,37 @@
         transition: none !important;
     }
 }
+
+/* -----------------------------------------------------------------------
+ * Import / Export
+ * --------------------------------------------------------------------- */
+.doc-vista-spinner {
+    animation: doc-vista-spin 1s linear infinite;
+}
+
+@keyframes doc-vista-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.doc-vista-conflict-option input[type="radio"] {
+    margin: 0;
+    accent-color: #2563EB;
+}
+
+.doc-vista-conflict-option:hover {
+    border-color: #2563EB !important;
+}
+
+#doc-vista-dropzone:hover {
+    border-color: #2563EB;
+    background: #eff6ff;
+}
+
+.doc-vista-export-checkbox {
+    accent-color: #2563EB;
+}
+
+#doc-vista-select-all {
+    accent-color: #2563EB;
+}

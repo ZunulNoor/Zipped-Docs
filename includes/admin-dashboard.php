@@ -73,6 +73,16 @@ function doc_vista_admin_dashboard() {
                     <?php esc_html_e( 'Add New Doc', 'doc-vista' ); ?>
                 </a>
             <?php endif; ?>
+            <?php if ( current_user_can( 'doc_vista_import' ) ) : ?>
+                <a href="#" id="doc-vista-import-btn" class="page-title-action" style="border-color:#2563EB;color:#2563EB;">
+                    <?php esc_html_e( 'Import Documentation', 'doc-vista' ); ?>
+                </a>
+            <?php endif; ?>
+            <?php if ( current_user_can( 'doc_vista_export' ) ) : ?>
+                <a href="#" id="doc-vista-export-btn" class="page-title-action" style="border-color:#16A34A;color:#16A34A;">
+                    <?php esc_html_e( 'Export Documentation', 'doc-vista' ); ?>
+                </a>
+            <?php endif; ?>
         </h1>
 
         <div class="doc-vista-stats-grid">
@@ -132,6 +142,9 @@ function doc_vista_admin_dashboard() {
                 <table class="wp-list-table widefat fixed striped doc-vista-docs-table">
                     <thead>
                         <tr>
+                            <th scope="col" class="column-cb" style="width:32px;">
+                                <input type="checkbox" id="doc-vista-select-all" style="accent-color:#2563EB;">
+                            </th>
                             <th scope="col" class="column-title"><?php esc_html_e( 'Title', 'doc-vista' ); ?></th>
                             <th scope="col"><?php esc_html_e( 'Category', 'doc-vista' ); ?></th>
                             <th scope="col"><?php esc_html_e( 'Status', 'doc-vista' ); ?></th>
@@ -154,6 +167,9 @@ function doc_vista_admin_dashboard() {
                             );
                         ?>
                         <tr>
+                            <td>
+                                <input type="checkbox" class="doc-vista-export-checkbox" value="<?php echo esc_attr( $doc->ID ); ?>" style="accent-color:#2563EB;">
+                            </td>
                             <td class="column-title">
                                 <strong><a href="<?php echo esc_url( $edit_link ); ?>"><?php echo esc_html( $doc->post_title ); ?></a></strong>
                             </td>
@@ -164,6 +180,9 @@ function doc_vista_admin_dashboard() {
                             <td class="doc-vista-actions">
                                 <a href="<?php echo esc_url( $edit_link ); ?>" class="button button-small"><?php esc_html_e( 'Edit', 'doc-vista' ); ?></a>
                                 <a href="<?php echo esc_url( $view_link ); ?>" class="button button-small" target="_blank"><?php esc_html_e( 'View', 'doc-vista' ); ?></a>
+                                <?php if ( current_user_can( 'doc_vista_export' ) ) : ?>
+                                    <a href="#" class="button button-small doc-vista-export-single" data-doc-id="<?php echo esc_attr( $doc->ID ); ?>" style="border-color:#16A34A;color:#16A34A;"><?php esc_html_e( 'Export', 'doc-vista' ); ?></a>
+                                <?php endif; ?>
                                 <?php if ( current_user_can( 'doc_vista_delete' ) ) : ?>
                                     <a href="<?php echo esc_url( $delete_link ); ?>" class="button button-small button-link-delete doc-vista-delete-doc" data-confirm="<?php esc_attr_e( 'Delete this doc permanently?', 'doc-vista' ); ?>"><?php esc_html_e( 'Delete', 'doc-vista' ); ?></a>
                                 <?php endif; ?>

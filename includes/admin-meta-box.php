@@ -48,7 +48,7 @@ function doc_vista_render_meta_box( $post ) {
     <div class="doc-vista-mb-field">
         <label for="doc-vista-mb-category"><?php esc_html_e( 'Category', 'doc-vista' ); ?></label>
         <select id="doc-vista-mb-category" name="doc_vista_category">
-            <option value=""><?php esc_html_e( '\u2014 Select Category \u2014', 'doc-vista' ); ?></option>
+                <option value=""><?php esc_html_e( "\u{2014} Select Category \u{2014}", 'doc-vista' ); ?></option>
             <?php foreach ( $categories as $c ) : ?>
                 <option value="<?php echo esc_attr( $c->term_id ); ?>" <?php selected( in_array( $c->term_id, $current_categories, true ) ); ?>>
                     <?php echo esc_html( $c->name ); ?>
