@@ -2,68 +2,68 @@
 
 defined( 'ABSPATH' ) || exit;
 
-function zuno_docs_get_all_capabilities() {
+function doc_vista_get_all_capabilities() {
     return array(
-        'zuno_docs_read'              => __( 'Read Documentation', 'zuno-docs-engine' ),
-        'zuno_docs_create'            => __( 'Create Documentation', 'zuno-docs-engine' ),
-        'zuno_docs_edit'              => __( 'Edit Documentation', 'zuno-docs-engine' ),
-        'zuno_docs_publish'           => __( 'Publish Documentation', 'zuno-docs-engine' ),
-        'zuno_docs_delete'            => __( 'Delete Documentation', 'zuno-docs-engine' ),
-        'zuno_docs_manage_categories' => __( 'Manage Categories', 'zuno-docs-engine' ),
-        'zuno_docs_manage_settings'   => __( 'Manage Settings', 'zuno-docs-engine' ),
-        'zuno_docs_import'            => __( 'Import Documentation', 'zuno-docs-engine' ),
-        'zuno_docs_export'            => __( 'Export Documentation', 'zuno-docs-engine' ),
-        'zuno_docs_manage_plugin'     => __( 'Manage Plugin', 'zuno-docs-engine' ),
+        'doc_vista_read'              => __( 'Read Documentation', 'doc-vista' ),
+        'doc_vista_create'            => __( 'Create Documentation', 'doc-vista' ),
+        'doc_vista_edit'              => __( 'Edit Documentation', 'doc-vista' ),
+        'doc_vista_publish'           => __( 'Publish Documentation', 'doc-vista' ),
+        'doc_vista_delete'            => __( 'Delete Documentation', 'doc-vista' ),
+        'doc_vista_manage_categories' => __( 'Manage Categories', 'doc-vista' ),
+        'doc_vista_manage_settings'   => __( 'Manage Settings', 'doc-vista' ),
+        'doc_vista_import'            => __( 'Import Documentation', 'doc-vista' ),
+        'doc_vista_export'            => __( 'Export Documentation', 'doc-vista' ),
+        'doc_vista_manage_plugin'     => __( 'Manage Plugin', 'doc-vista' ),
     );
 }
 
-function zuno_docs_get_capability_keys() {
-    return array_keys( zuno_docs_get_all_capabilities() );
+function doc_vista_get_capability_keys() {
+    return array_keys( doc_vista_get_all_capabilities() );
 }
 
-function zuno_docs_get_editor_capabilities() {
+function doc_vista_get_editor_capabilities() {
     return array(
-        'zuno_docs_read',
-        'zuno_docs_create',
-        'zuno_docs_edit',
-        'zuno_docs_publish',
+        'doc_vista_read',
+        'doc_vista_create',
+        'doc_vista_edit',
+        'doc_vista_publish',
     );
 }
 
-function zuno_docs_add_caps_to_role( $role_name, $caps = null ) {
+function doc_vista_add_caps_to_role( $role_name, $caps = null ) {
     $role = get_role( $role_name );
     if ( ! $role ) {
         return;
     }
     if ( null === $caps ) {
-        $caps = zuno_docs_get_capability_keys();
+        $caps = doc_vista_get_capability_keys();
     }
     foreach ( $caps as $cap ) {
         $role->add_cap( $cap );
     }
 }
 
-function zuno_docs_remove_caps_from_role( $role_name, $caps = null ) {
+function doc_vista_remove_caps_from_role( $role_name, $caps = null ) {
     $role = get_role( $role_name );
     if ( ! $role ) {
         return;
     }
     if ( null === $caps ) {
-        $caps = zuno_docs_get_capability_keys();
+        $caps = doc_vista_get_capability_keys();
     }
     foreach ( $caps as $cap ) {
         $role->remove_cap( $cap );
     }
 }
 
-function zuno_docs_create_editor_role() {
-    $role = get_role( 'zuno_docs_editor' );
+function doc_vista_create_editor_role() {
+    $role = get_role( 'doc_vista_editor' );
     if ( $role ) {
-        zuno_docs_remove_caps_from_role( 'zuno_docs_editor', zuno_docs_get_capability_keys() );
+        doc_vista_remove_caps_from_role( 'doc_vista_editor', doc_vista_get_capability_keys() );
     } else {
         $role = add_role(
-            'zuno_docs_editor',
-            __( 'Zuno Docs Editor', 'zuno-docs-engine' ),
+            'doc_vista_editor',
+            __( 'Doc Vista Editor', 'doc-vista' ),
             array(
                 'read'         => true,
                 'upload_files' => true,
@@ -75,26 +75,26 @@ function zuno_docs_create_editor_role() {
         return;
     }
 
-    foreach ( zuno_docs_get_editor_capabilities() as $cap ) {
+    foreach ( doc_vista_get_editor_capabilities() as $cap ) {
         $role->add_cap( $cap );
     }
 }
 
-function zuno_docs_register_capabilities() {
-    zuno_docs_add_caps_to_role( 'administrator' );
-    zuno_docs_create_editor_role();
-    zuno_docs_sync_editor_role_caps();
+function doc_vista_register_capabilities() {
+    doc_vista_add_caps_to_role( 'administrator' );
+    doc_vista_create_editor_role();
+    doc_vista_sync_editor_role_caps();
 }
 
-function zuno_docs_sync_editor_role_caps() {
-    $settings      = Zuno_Docs_Settings::get_instance();
-    $allow_editors = 'yes' === $settings->get( 'zuno_docs_allow_editors', 'no' );
+function doc_vista_sync_editor_role_caps() {
+    $settings      = Doc_Vista_Settings::get_instance();
+    $allow_editors = 'yes' === $settings->get( 'doc_vista_allow_editors', 'no' );
 
     if ( $allow_editors ) {
-        zuno_docs_add_caps_to_role( 'editor', zuno_docs_get_editor_capabilities() );
+        doc_vista_add_caps_to_role( 'editor', doc_vista_get_editor_capabilities() );
     } else {
-        zuno_docs_remove_caps_from_role( 'editor', zuno_docs_get_editor_capabilities() );
+        doc_vista_remove_caps_from_role( 'editor', doc_vista_get_editor_capabilities() );
     }
 }
 
-add_action( 'zuno_docs_settings_saved', 'zuno_docs_sync_editor_role_caps' );
+add_action( 'doc_vista_settings_saved', 'doc_vista_sync_editor_role_caps' );

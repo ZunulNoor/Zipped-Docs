@@ -1,22 +1,22 @@
 /*
- * Zuno Docs Engine — Admin Styles
+ * Doc Vista — Admin Styles
  */
 
 /* -----------------------------------------------------------------------
  * Dashboard
  * --------------------------------------------------------------------- */
-.zuno-docs-dashboard h1 {
+.doc-vista-dashboard h1 {
     margin-bottom: 20px;
 }
 
-.zuno-docs-stats-grid {
+.doc-vista-stats-grid {
     display: flex;
     gap: 16px;
     margin-bottom: 32px;
     flex-wrap: wrap;
 }
 
-.zuno-docs-stat-card {
+.doc-vista-stat-card {
     background: #fff;
     border: 1px solid #dcdcde;
     border-radius: 6px;
@@ -27,7 +27,7 @@
     box-shadow: 0 1px 2px rgba(0,0,0,0.04);
 }
 
-.zuno-docs-stat-number {
+.doc-vista-stat-number {
     display: block;
     font-size: 32px;
     font-weight: 700;
@@ -35,7 +35,7 @@
     color: #1d2327;
 }
 
-.zuno-docs-stat-label {
+.doc-vista-stat-label {
     display: block;
     font-size: 13px;
     color: #646970;
@@ -44,12 +44,12 @@
     letter-spacing: 0.05em;
 }
 
-.zuno-docs-section-title {
+.doc-vista-section-title {
     margin-bottom: 16px;
     font-size: 18px;
 }
 
-.zuno-docs-empty-admin {
+.doc-vista-empty-admin {
     background: #fff;
     border: 1px solid #dcdcde;
     border-radius: 6px;
@@ -57,14 +57,14 @@
     text-align: center;
 }
 
-.zuno-docs-empty-admin p {
+.doc-vista-empty-admin p {
     font-size: 15px;
     color: #646970;
     margin-bottom: 16px;
 }
 
 /* Status badges */
-.zuno-docs-status-badge {
+.doc-vista-status-badge {
     display: inline-block;
     padding: 2px 10px;
     border-radius: 12px;
@@ -72,22 +72,22 @@
     font-weight: 500;
 }
 
-.zuno-docs-status-published {
+.doc-vista-status-published {
     background: #edf7ed;
     color: #2a7a2a;
 }
 
-.zuno-docs-status-draft {
+.doc-vista-status-draft {
     background: #f0f0f1;
     color: #646970;
 }
 
 /* Actions column */
-.zuno-docs-actions {
+.doc-vista-actions {
     white-space: nowrap;
 }
 
-.zuno-docs-actions .button {
+.doc-vista-actions .button {
     margin-right: 4px;
 }
 
@@ -104,14 +104,14 @@
 /* -----------------------------------------------------------------------
  * Add New Doc
  * --------------------------------------------------------------------- */
-.zuno-docs-new-doc .zuno-docs-new-doc-layout {
+.doc-vista-new-doc .doc-vista-new-doc-layout {
     display: flex;
     gap: 32px;
     margin-top: 20px;
     flex-wrap: wrap;
 }
 
-.zuno-docs-new-doc .zuno-docs-quick-form {
+.doc-vista-new-doc .doc-vista-quick-form {
     flex: 2;
     min-width: 400px;
     background: #fff;
@@ -120,7 +120,7 @@
     padding: 24px;
 }
 
-.zuno-docs-new-doc .zuno-docs-full-editor-link {
+.doc-vista-new-doc .doc-vista-full-editor-link {
     flex: 1;
     min-width: 240px;
     background: #f6f7f7;
@@ -131,14 +131,14 @@
     align-self: flex-start;
 }
 
-.zuno-docs-new-doc .zuno-docs-full-editor-link h2 {
+.doc-vista-new-doc .doc-vista-full-editor-link h2 {
     margin-top: 0;
 }
 
 /* -----------------------------------------------------------------------
  * Categories
  * --------------------------------------------------------------------- */
-.zuno-docs-categories .zuno-docs-cats-layout {
+.doc-vista-categories .doc-vista-cats-layout {
     display: flex;
     gap: 32px;
     margin-top: 20px;
@@ -146,7 +146,7 @@
     align-items: flex-start;
 }
 
-.zuno-docs-categories .zuno-docs-cats-form {
+.doc-vista-categories .doc-vista-cats-form {
     flex: 1;
     min-width: 320px;
     background: #fff;
@@ -155,27 +155,27 @@
     padding: 24px;
 }
 
-.zuno-docs-categories .zuno-docs-cats-list {
+.doc-vista-categories .doc-vista-cats-list {
     flex: 2;
     min-width: 400px;
 }
 
-.zuno-docs-categories .zuno-docs-cats-list h2 {
+.doc-vista-categories .doc-vista-cats-list h2 {
     margin-top: 0;
 }
 
 /* -----------------------------------------------------------------------
  * Settings
  * --------------------------------------------------------------------- */
-.zuno-docs-settings .form-table th {
+.doc-vista-settings .form-table th {
     width: 180px;
 }
 
-.zuno-docs-settings .zuno-docs-settings-info {
+.doc-vista-settings .doc-vista-settings-info {
     margin-top: 32px;
 }
 
-.zuno-docs-settings .zuno-docs-settings-info pre {
+.doc-vista-settings .doc-vista-settings-info pre {
     background: #f0f0f1;
     border: 1px solid #dcdcde;
     border-radius: 4px;
@@ -183,14 +183,14 @@
     overflow-x: auto;
 }
 
-.zuno-docs-settings .zuno-docs-settings-info code {
+.doc-vista-settings .doc-vista-settings-info code {
     font-size: 13px;
 }
 
 /* -----------------------------------------------------------------------
  * Filter bar
  * --------------------------------------------------------------------- */
-.zuno-docs-filter-bar {
+.doc-vista-filter-bar {
     background: #fff;
     border: 1px solid #dcdcde;
     border-radius: 6px;
@@ -198,18 +198,18 @@
     margin-bottom: 20px;
 }
 
-.zuno-docs-filter-bar form {
+.doc-vista-filter-bar form {
     display: flex;
     gap: 8px;
     align-items: center;
     flex-wrap: wrap;
 }
 
-.zuno-docs-filter-bar select {
+.doc-vista-filter-bar select {
     min-width: 160px;
 }
 
-.zuno-docs-sr-admin {
+.doc-vista-sr-admin {
     position: absolute;
     width: 1px;
     height: 1px;
@@ -221,7 +221,7 @@
 /* -----------------------------------------------------------------------
  * Settings page — tabbed layout
  * --------------------------------------------------------------------- */
-.zuno-docs-settings-page .zuno-docs-settings-tabs {
+.doc-vista-settings-page .doc-vista-settings-tabs {
     background: #fff;
     border: 1px solid #dcdcde;
     border-radius: 6px;
@@ -229,14 +229,14 @@
     overflow: hidden;
 }
 
-.zuno-docs-tab-nav {
+.doc-vista-tab-nav {
     display: flex;
     gap: 0;
     border-bottom: 1px solid #dcdcde;
     background: #f6f7f7;
 }
 
-.zuno-docs-tab-nav a {
+.doc-vista-tab-nav a {
     display: block;
     padding: 12px 20px;
     text-decoration: none;
@@ -248,36 +248,36 @@
     transition: all 0.15s ease;
 }
 
-.zuno-docs-tab-nav a:hover {
+.doc-vista-tab-nav a:hover {
     color: #1d2327;
     background: #fff;
 }
 
-.zuno-docs-tab-nav a.zuno-docs-tab-active {
+.doc-vista-tab-nav a.doc-vista-tab-active {
     color: #E8500A;
     border-bottom-color: #E8500A;
     background: #fff;
 }
 
-.zuno-docs-tab-panel {
+.doc-vista-tab-panel {
     display: none;
     padding: 24px;
 }
 
-.zuno-docs-tab-panel.zuno-docs-tab-active {
+.doc-vista-tab-panel.doc-vista-tab-active {
     display: block;
 }
 
-.zuno-docs-tab-panel h2 {
+.doc-vista-tab-panel h2 {
     margin-top: 0;
     font-size: 16px;
 }
 
-.zuno-docs-settings-page .form-table th {
+.doc-vista-settings-page .form-table th {
     width: 200px;
 }
 
-.zuno-docs-settings-page input[type="color"] {
+.doc-vista-settings-page input[type="color"] {
     width: 50px;
     height: 30px;
     padding: 1px;
@@ -287,25 +287,25 @@
 /* -----------------------------------------------------------------------
  * Docs table
  * --------------------------------------------------------------------- */
-.zuno-docs-docs-table .column-title {
+.doc-vista-docs-table .column-title {
     width: 28%;
 }
 
-.zuno-docs-docs-table th {
+.doc-vista-docs-table th {
     white-space: nowrap;
 }
 
 /* -----------------------------------------------------------------------
  * Settings — cache info
  * --------------------------------------------------------------------- */
-.zuno-docs-settings-info .button {
+.doc-vista-settings-info .button {
     margin-right: 8px;
 }
 
 /* -----------------------------------------------------------------------
  * Disabled delete button (last category protection)
  * --------------------------------------------------------------------- */
-.zuno-docs-btn-disabled {
+.doc-vista-btn-disabled {
     opacity: 0.5;
     cursor: not-allowed !important;
     pointer-events: none;
@@ -314,7 +314,7 @@
 /* -----------------------------------------------------------------------
  * Modal / Popup system
  * --------------------------------------------------------------------- */
-.zuno-docs-modal-overlay {
+.doc-vista-modal-overlay {
     position: fixed;
     inset: 0;
     z-index: 999999;
@@ -329,16 +329,16 @@
     backdrop-filter: blur(2px);
 }
 
-.zuno-docs-modal-overlay.is-open {
+.doc-vista-modal-overlay.is-open {
     opacity: 1;
     visibility: visible;
 }
 
-.zuno-docs-modal-overlay.is-open .zuno-docs-modal {
+.doc-vista-modal-overlay.is-open .doc-vista-modal {
     transform: scale(1) translateY(0);
 }
 
-.zuno-docs-modal {
+.doc-vista-modal {
     background: #fff;
     border-radius: 16px;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15), 0 8px 20px rgba(0, 0, 0, 0.08);
@@ -354,7 +354,7 @@
 
 /* Responsive popup */
 @media (max-width: 480px) {
-    .zuno-docs-modal {
+    .doc-vista-modal {
         max-width: 100%;
         width: calc(100% - 16px);
         border-radius: 12px;
@@ -364,7 +364,7 @@
 /* -----------------------------------------------------------------------
  * Deactivation modal — radio button custom styles
  * --------------------------------------------------------------------- */
-.zuno-docs-deactivate-option {
+.doc-vista-deactivate-option {
     display: flex;
     align-items: flex-start;
     gap: 10px;
@@ -377,27 +377,27 @@
     transition: border-color 0.15s ease, background 0.15s ease;
 }
 
-.zuno-docs-deactivate-option:hover {
+.doc-vista-deactivate-option:hover {
     background: #f0f0f1;
 }
 
-.zuno-docs-deactivate-option.is-selected {
+.doc-vista-deactivate-option.is-selected {
     border-color: #2563EB;
     background: #eff6ff;
 }
 
-.zuno-docs-deactivate-option input[type="radio"] {
+.doc-vista-deactivate-option input[type="radio"] {
     margin-top: 3px;
     accent-color: #2563EB;
 }
 
-.zuno-docs-deactivate-option strong {
+.doc-vista-deactivate-option strong {
     display: block;
     font-size: 14px;
     color: #1d2327;
 }
 
-.zuno-docs-deactivate-option span {
+.doc-vista-deactivate-option span {
     display: block;
     font-size: 13px;
     color: #646970;
@@ -405,9 +405,9 @@
 
 /* ---------- Reduced motion ---------- */
 @media (prefers-reduced-motion: reduce) {
-    .zuno-docs-modal-overlay,
-    .zuno-docs-modal,
-    .zuno-docs-deactivate-option {
+    .doc-vista-modal-overlay,
+    .doc-vista-modal,
+    .doc-vista-deactivate-option {
         transition: none !important;
     }
 }

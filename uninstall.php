@@ -1,47 +1,31 @@
 <?php
-/**
- * Zuno Docs Engine — Uninstall Handler
- *
- * Cleans up plugin data when the plugin is deleted via WordPress Admin.
- *
- * @package zuno_docs
- */
 
-// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
-
-// If uninstall is not called from WordPress, exit.
 if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
     exit;
 }
 
-// Allow sites to preserve data by defining this constant in wp-config.php.
-if ( defined( 'ZUNO_DOCS_PRESERVE_DATA' ) && ZUNO_DOCS_PRESERVE_DATA ) {
+if ( defined( 'DOC_VISTA_PRESERVE_DATA' ) && DOC_VISTA_PRESERVE_DATA ) {
     return;
 }
 
-// Check the plugin's own preserve_data setting.
-$zuno_settings = get_option( 'zuno_docs_settings', array() );
-if ( ! empty( $zuno_settings['zuno_docs_preserve_data'] ) && 'yes' === $zuno_settings['zuno_docs_preserve_data'] ) {
+$settings = get_option( 'doc_vista_settings', array() );
+if ( ! empty( $settings['doc_vista_preserve_data'] ) && 'yes' === $settings['doc_vista_preserve_data'] ) {
     return;
 }
 
-/* -----------------------------------------------------------------------
- * Clean up custom role and capabilities
- * --------------------------------------------------------------------- */
-$zuno_caps = array(
-    'zuno_docs_read',
-    'zuno_docs_create',
-    'zuno_docs_edit',
-    'zuno_docs_publish',
-    'zuno_docs_delete',
-    'zuno_docs_manage_categories',
-    'zuno_docs_manage_settings',
-    'zuno_docs_import',
-    'zuno_docs_export',
-    'zuno_docs_manage_plugin',
+$caps = array(
+    'doc_vista_read',
+    'doc_vista_create',
+    'doc_vista_edit',
+    'doc_vista_publish',
+    'doc_vista_delete',
+    'doc_vista_manage_categories',
+    'doc_vista_manage_settings',
+    'doc_vista_import',
+    'doc_vista_export',
+    'doc_vista_manage_plugin',
 );
 
-// Remove Zuno Docs capabilities from all roles.
 global $wp_roles;
 if ( ! isset( $wp_roles ) ) {
     $wp_roles = new WP_Roles();
@@ -49,27 +33,20 @@ if ( ! isset( $wp_roles ) ) {
 foreach ( $wp_roles->roles as $role_name => $role_info ) {
     $role = get_role( $role_name );
     if ( $role ) {
-        foreach ( $zuno_caps as $cap ) {
+        foreach ( $caps as $cap ) {
             $role->remove_cap( $cap );
         }
     }
 }
 
-// Remove the custom Zuno Docs Editor role.
-remove_role( 'zuno_docs_editor' );
+remove_role( 'doc_vista_editor' );
 
-/* -----------------------------------------------------------------------
- * Delete options
- * --------------------------------------------------------------------- */
-delete_option( 'zuno_docs_graph' );
-delete_option( 'zuno_docs_settings' );
-delete_option( 'zuno_docs_version' );
+delete_option( 'doc_vista_graph' );
+delete_option( 'doc_vista_settings' );
+delete_option( 'doc_vista_version' );
 
-/* -----------------------------------------------------------------------
- * Delete all zuno_doc posts (any status)
- * --------------------------------------------------------------------- */
 $posts = get_posts( array(
-    'post_type'      => 'zuno_doc',
+    'post_type'      => 'doc_vista_doc',
     'post_status'    => 'any',
     'posts_per_page' => -1,
     'fields'         => 'ids',
@@ -81,10 +58,7 @@ if ( ! empty( $posts ) ) {
     }
 }
 
-/* -----------------------------------------------------------------------
- * Delete taxonomy terms
- * --------------------------------------------------------------------- */
-$taxonomies = array( 'zuno_doc_category', 'zuno_product' );
+$taxonomies = array( 'doc_vista_category', 'doc_vista_product' );
 
 foreach ( $taxonomies as $taxonomy ) {
     $terms = get_terms( array(

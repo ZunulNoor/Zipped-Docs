@@ -1,60 +1,39 @@
 <?php
-/**
- * Zuno Docs Engine — Precomputed Documentation Graph
- *
- * Builds cached data structures on save/delete for zero-latency frontend.
- *
- * Structures:
- *   - doc_tree:    Hierarchical tree of docs organized by product > category
- *   - doc_index:   Flat map of doc_id => { title, excerpt, product, category, url, headings }
- *   - search_index: Inverted index of terms => doc_ids (ranked by title/heading/content)
- *   - category_map: category_id => { name, slug, doc_count, children }
- *
- * @package zuno_docs
- */
 
 defined( 'ABSPATH' ) || exit;
 
-/* -----------------------------------------------------------------------
- * Build hooks (save, delete, term changes)
- * --------------------------------------------------------------------- */
-add_action( 'save_post_zuno_doc', 'zuno_docs_build_graph', 10, 2 );
-add_action( 'delete_post', 'zuno_docs_on_delete_graph' );
-add_action( 'trashed_post', 'zuno_docs_on_trash_untrash_graph' );
-add_action( 'untrashed_post', 'zuno_docs_on_trash_untrash_graph' );
-add_action( 'edited_zuno_doc_category', 'zuno_docs_build_graph' );
-add_action( 'created_zuno_doc_category', 'zuno_docs_build_graph' );
-add_action( 'delete_zuno_doc_category', 'zuno_docs_build_graph' );
-add_action( 'edited_zuno_product', 'zuno_docs_build_graph' );
-add_action( 'created_zuno_product', 'zuno_docs_build_graph' );
-add_action( 'delete_zuno_product', 'zuno_docs_build_graph' );
+add_action( 'save_post_doc_vista_doc', 'doc_vista_build_graph', 10, 2 );
+add_action( 'delete_post', 'doc_vista_on_delete_graph' );
+add_action( 'trashed_post', 'doc_vista_on_trash_untrash_graph' );
+add_action( 'untrashed_post', 'doc_vista_on_trash_untrash_graph' );
+add_action( 'edited_doc_vista_category', 'doc_vista_build_graph' );
+add_action( 'created_doc_vista_category', 'doc_vista_build_graph' );
+add_action( 'delete_doc_vista_category', 'doc_vista_build_graph' );
+add_action( 'edited_doc_vista_product', 'doc_vista_build_graph' );
+add_action( 'created_doc_vista_product', 'doc_vista_build_graph' );
+add_action( 'delete_doc_vista_product', 'doc_vista_build_graph' );
 
-/* -----------------------------------------------------------------------
- * In-memory request cache (Layer 2)
- * The global $zuno_docs_graph_cache is used so that zuno_docs_clear_graph_cache()
- * can invalidate it from outside the function scope.
- * --------------------------------------------------------------------- */
-function zuno_docs_get_graph() {
-    global $zuno_docs_graph_cache;
-    if ( null !== $zuno_docs_graph_cache ) {
-        return $zuno_docs_graph_cache;
+function doc_vista_get_graph() {
+    global $doc_vista_graph_cache;
+    if ( null !== $doc_vista_graph_cache ) {
+        return $doc_vista_graph_cache;
     }
-    $graph = get_option( 'zuno_docs_graph', false );
+    $graph = get_option( 'doc_vista_graph', false );
     if ( ! is_array( $graph ) || empty( $graph ) ) {
-        zuno_docs_build_graph();
-        $graph = get_option( 'zuno_docs_graph', array() );
+        doc_vista_build_graph();
+        $graph = get_option( 'doc_vista_graph', array() );
     }
-    $zuno_docs_graph_cache = $graph;
-    return $zuno_docs_graph_cache;
+    $doc_vista_graph_cache = $graph;
+    return $doc_vista_graph_cache;
 }
 
-function zuno_docs_clear_graph_cache() {
-    global $zuno_docs_graph_cache;
-    $zuno_docs_graph_cache = null;
+function doc_vista_clear_graph_cache() {
+    global $doc_vista_graph_cache;
+    $doc_vista_graph_cache = null;
 }
 
-function zuno_docs_get_product_graph( $category_slug ) {
-    $graph = zuno_docs_get_graph();
+function doc_vista_get_product_graph( $category_slug ) {
+    $graph = doc_vista_get_graph();
     if ( is_array( $graph ) && isset( $graph['doc_tree'][ $category_slug ] ) ) {
         return $graph['doc_tree'][ $category_slug ];
     }
@@ -65,16 +44,11 @@ function zuno_docs_get_product_graph( $category_slug ) {
     );
 }
 
-/* -----------------------------------------------------------------------
- * Main builder — runs on save_post_zuno_doc
- * --------------------------------------------------------------------- */
-function zuno_docs_build_graph() {
-    // Clear in-memory cache so anything reading the graph later in this
-    // request gets fresh data from the option we're about to update.
-    zuno_docs_clear_graph_cache();
+function doc_vista_build_graph() {
+    doc_vista_clear_graph_cache();
 
     $categories = get_terms( array(
-        'taxonomy'   => 'zuno_doc_category',
+        'taxonomy'   => 'doc_vista_category',
         'hide_empty' => false,
     ) );
 
@@ -82,7 +56,6 @@ function zuno_docs_build_graph() {
     $search_index  = array();
     $category_map  = array();
 
-    /* ----- Build category map ----- */
     foreach ( $categories as $cat ) {
         $category_map[ $cat->term_id ] = array(
             'id'       => $cat->term_id,
@@ -100,12 +73,11 @@ function zuno_docs_build_graph() {
     }
     unset( $cat );
 
-    /* ----- Build per-category doc tree and search index (batched) ----- */
     $all_docs = array();
     $page = 1;
     do {
         $batch = get_posts( array(
-            'post_type'      => 'zuno_doc',
+            'post_type'      => 'doc_vista_doc',
             'post_status'    => 'publish',
             'posts_per_page' => 500,
             'paged'          => $page,
@@ -122,13 +94,12 @@ function zuno_docs_build_graph() {
         $page++;
     } while ( count( $batch ) === 500 );
 
-    /* Pre-group docs by category slug */
     $docs_by_category = array();
     foreach ( $categories as $cat ) {
         $docs_by_category[ $cat->slug ] = array();
     }
     foreach ( $all_docs as $doc ) {
-        $doc_cats = wp_get_post_terms( $doc->ID, 'zuno_doc_category', array( 'fields' => 'slugs' ) );
+        $doc_cats = wp_get_post_terms( $doc->ID, 'doc_vista_category', array( 'fields' => 'slugs' ) );
         foreach ( $doc_cats as $slug ) {
             if ( isset( $docs_by_category[ $slug ] ) ) {
                 $docs_by_category[ $slug ][] = $doc;
@@ -141,8 +112,8 @@ function zuno_docs_build_graph() {
         $flat_list   = array();
 
         foreach ( $docs as $doc ) {
-            $order     = (int) get_post_meta( $doc->ID, '_zuno_doc_order', true );
-            $headings  = zuno_docs_extract_headings( $doc->post_content );
+            $order     = (int) get_post_meta( $doc->ID, '_doc_vista_order', true );
+            $headings  = doc_vista_extract_headings( $doc->post_content );
             $excerpt   = wp_trim_words( wp_strip_all_tags( $doc->post_content ), 30 );
 
             $entry = array(
@@ -155,18 +126,17 @@ function zuno_docs_build_graph() {
                 'category_slug' => $cat->slug,
                 'category_name' => $cat->name,
                 'headings'  => $headings,
-                'url'       => add_query_arg( 'zuno_doc', $doc->ID, home_url() ),
+                'url'       => add_query_arg( 'doc_vista', $doc->ID, home_url() ),
             );
 
             $flat_list[ $doc->ID ] = $entry;
 
-            /* ----- Index terms for search (inverted index) ----- */
             $text = mb_strtolower( $doc->post_title . ' ' . $doc->post_title );
             foreach ( $headings as $h ) {
                 $text .= ' ' . mb_strtolower( $h['text'] );
             }
             $text .= ' ' . mb_strtolower( wp_strip_all_tags( $doc->post_content ) );
-            $tokens = zuno_docs_tokenize( $text );
+            $tokens = doc_vista_tokenize( $text );
 
             foreach ( $tokens as $token => $weight_mult ) {
                 if ( ! isset( $search_index[ $token ] ) ) {
@@ -196,7 +166,6 @@ function zuno_docs_build_graph() {
         );
     }
 
-    /* ----- Store everything ----- */
     $graph = array(
         'doc_tree'      => $doc_tree,
         'search_index'  => $search_index,
@@ -204,37 +173,30 @@ function zuno_docs_build_graph() {
         'built'         => time(),
     );
 
-    update_option( 'zuno_docs_graph', $graph );
+    update_option( 'doc_vista_graph', $graph );
 
-    // Purge external page caches so the frontend renders updated content immediately.
-    zuno_docs_purge_page_cache();
+    doc_vista_purge_page_cache();
 }
 
-function zuno_docs_on_delete_graph( $post_id ) {
-    if ( 'zuno_doc' !== get_post_type( $post_id ) ) {
+function doc_vista_on_delete_graph( $post_id ) {
+    if ( 'doc_vista_doc' !== get_post_type( $post_id ) ) {
         return;
     }
-    zuno_docs_build_graph();
+    doc_vista_build_graph();
 }
 
-function zuno_docs_on_trash_untrash_graph( $post_id ) {
-    if ( 'zuno_doc' !== get_post_type( $post_id ) ) {
+function doc_vista_on_trash_untrash_graph( $post_id ) {
+    if ( 'doc_vista_doc' !== get_post_type( $post_id ) ) {
         return;
     }
-    zuno_docs_build_graph();
+    doc_vista_build_graph();
 }
 
-/* -----------------------------------------------------------------------
- * Helper: check if a string contains only ASCII characters
- * --------------------------------------------------------------------- */
-function zuno_docs_is_ascii( $str ) {
+function doc_vista_is_ascii( $str ) {
     return (bool) preg_match( '/^[\x00-\x7f]*$/', $str );
 }
 
-/* -----------------------------------------------------------------------
- * Tokenizer with n-gram fuzzy support
- * --------------------------------------------------------------------- */
-function zuno_docs_tokenize( $text ) {
+function doc_vista_tokenize( $text ) {
     $text = preg_replace( '/[^\p{L}\p{N}\s-]/u', ' ', $text );
     $text = preg_replace( '/\s+/', ' ', $text );
     $text = trim( $text );
@@ -260,11 +222,8 @@ function zuno_docs_tokenize( $text ) {
     return $tokens;
 }
 
-/* -----------------------------------------------------------------------
- * Search the inverted index
- * --------------------------------------------------------------------- */
-function zuno_docs_search( $query, $product_slug = '' ) {
-    $graph = zuno_docs_get_graph();
+function doc_vista_search( $query, $product_slug = '' ) {
+    $graph = doc_vista_get_graph();
     if ( empty( $graph['search_index'] ) ) {
         return array();
     }
@@ -285,7 +244,6 @@ function zuno_docs_search( $query, $product_slug = '' ) {
     foreach ( $tokens as $token ) {
         $token = mb_substr( $token, 0, 50 );
 
-        // Exact match
         if ( isset( $index[ $token ] ) ) {
             foreach ( $index[ $token ] as $entry ) {
                 if ( ! isset( $results[ $entry['id'] ] ) ) {
@@ -295,12 +253,11 @@ function zuno_docs_search( $query, $product_slug = '' ) {
             }
         }
 
-        // Fuzzy / prefix match (only for ASCII — levenshtein is not multibyte-safe)
         foreach ( $index as $key => $entries ) {
             if ( $key === $token ) {
                 continue;
             }
-            if ( ! zuno_docs_is_ascii( $token ) || ! zuno_docs_is_ascii( $key ) ) {
+            if ( ! doc_vista_is_ascii( $token ) || ! doc_vista_is_ascii( $key ) ) {
                 continue;
             }
             if ( false !== mb_strpos( $key, $token ) || false !== mb_strpos( $token, $key ) ) {
@@ -317,13 +274,11 @@ function zuno_docs_search( $query, $product_slug = '' ) {
         }
     }
 
-    // Sort by score descending
     arsort( $results );
 
-    // Resolve doc data
     $final = array();
     foreach ( $results as $doc_id => $score ) {
-        $info = zuno_docs_get_doc_info( $doc_id, $graph );
+        $info = doc_vista_get_doc_info( $doc_id, $graph );
         if ( $info ) {
             $info['score'] = $score;
             $final[] = $info;
@@ -333,7 +288,6 @@ function zuno_docs_search( $query, $product_slug = '' ) {
         }
     }
 
-    // Filter by product if specified
     if ( $product_slug && ! empty( $final ) ) {
         $final = array_filter( $final, function( $d ) use ( $product_slug ) {
             return isset( $d['product_slug'] ) && $d['product_slug'] === $product_slug;
@@ -344,12 +298,9 @@ function zuno_docs_search( $query, $product_slug = '' ) {
     return $final;
 }
 
-/* -----------------------------------------------------------------------
- * Resolve doc info from graph
- * --------------------------------------------------------------------- */
-function zuno_docs_get_doc_info( $doc_id, $graph = null ) {
+function doc_vista_get_doc_info( $doc_id, $graph = null ) {
     if ( null === $graph ) {
-        $graph = zuno_docs_get_graph();
+        $graph = doc_vista_get_graph();
     }
 
     if ( empty( $graph['doc_tree'] ) || ! is_array( $graph['doc_tree'] ) ) {
@@ -368,10 +319,7 @@ function zuno_docs_get_doc_info( $doc_id, $graph = null ) {
     return null;
 }
 
-/* -----------------------------------------------------------------------
- * Extract headings from post content
- * --------------------------------------------------------------------- */
-function zuno_docs_extract_headings( $content ) {
+function doc_vista_extract_headings( $content ) {
     if ( ! $content ) {
         return array();
     }
@@ -396,22 +344,19 @@ function zuno_docs_extract_headings( $content ) {
     return $headings;
 }
 
-/* -----------------------------------------------------------------------
- * Breadcrumb resolver
- * --------------------------------------------------------------------- */
-function zuno_docs_get_breadcrumbs( $doc_id, $graph = null ) {
+function doc_vista_get_breadcrumbs( $doc_id, $graph = null ) {
     if ( null === $graph ) {
-        $graph = zuno_docs_get_graph();
+        $graph = doc_vista_get_graph();
     }
 
-    $info = zuno_docs_get_doc_info( $doc_id, $graph );
+    $info = doc_vista_get_doc_info( $doc_id, $graph );
     if ( ! $info ) {
         return array();
     }
 
     $crumbs = array(
         array(
-            'label' => isset( $info['product_name'] ) ? $info['product_name'] : __( 'Documentation', 'zuno-docs-engine' ),
+            'label' => isset( $info['product_name'] ) ? $info['product_name'] : __( 'Documentation', 'doc-vista' ),
             'slug'  => isset( $info['product_slug'] ) ? $info['product_slug'] : '',
         ),
     );
@@ -432,11 +377,8 @@ function zuno_docs_get_breadcrumbs( $doc_id, $graph = null ) {
     return $crumbs;
 }
 
-/* -----------------------------------------------------------------------
- * Get adjacent docs for prev/next navigation
- * --------------------------------------------------------------------- */
-function zuno_docs_get_adjacent( $doc_id, $category_slug ) {
-    $tree = zuno_docs_get_product_graph( $category_slug );
+function doc_vista_get_adjacent( $doc_id, $category_slug ) {
+    $tree = doc_vista_get_product_graph( $category_slug );
     $list = isset( $tree['flat_list'] ) ? $tree['flat_list'] : array();
 
     if ( empty( $list ) ) {
@@ -456,11 +398,8 @@ function zuno_docs_get_adjacent( $doc_id, $category_slug ) {
     );
 }
 
-/* -----------------------------------------------------------------------
- * Related articles (same category, excluding current)
- * --------------------------------------------------------------------- */
-function zuno_docs_get_related( $doc_id, $category_slug, $max = 3 ) {
-    $tree   = zuno_docs_get_product_graph( $category_slug );
+function doc_vista_get_related( $doc_id, $category_slug, $max = 3 ) {
+    $tree   = doc_vista_get_product_graph( $category_slug );
     $flat   = isset( $tree['flat_list'] ) ? $tree['flat_list'] : array();
     $info   = isset( $flat[ $doc_id ] ) ? $flat[ $doc_id ] : null;
 
@@ -486,10 +425,7 @@ function zuno_docs_get_related( $doc_id, $category_slug, $max = 3 ) {
     return $related;
 }
 
-/* -----------------------------------------------------------------------
- * Force rebuild (admin utility)
- * --------------------------------------------------------------------- */
-function zuno_docs_rebuild_graph() {
-    delete_option( 'zuno_docs_graph' );
-    zuno_docs_build_graph();
+function doc_vista_rebuild_graph() {
+    delete_option( 'doc_vista_graph' );
+    doc_vista_build_graph();
 }

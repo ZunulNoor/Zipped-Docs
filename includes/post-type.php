@@ -1,45 +1,37 @@
 <?php
-/**
- * Zuno Docs Engine — Custom Post Type & Taxonomy Registration
- *
- * @package zuno_docs
- */
 
 defined( 'ABSPATH' ) || exit;
 
-/* -----------------------------------------------------------------------
- * Register Post Type: zuno_doc
- * --------------------------------------------------------------------- */
-function zuno_docs_register_post_type() {
+function doc_vista_register_post_type() {
 
     $labels = array(
-        'name'                  => _x( 'Docs', 'Post Type General Name', 'zuno-docs-engine' ),
-        'singular_name'         => _x( 'Doc', 'Post Type Singular Name', 'zuno-docs-engine' ),
-        'menu_name'             => __( 'Docs', 'zuno-docs-engine' ),
-        'name_admin_bar'        => __( 'Doc', 'zuno-docs-engine' ),
-        'archives'              => __( 'Doc Archives', 'zuno-docs-engine' ),
-        'attributes'            => __( 'Doc Attributes', 'zuno-docs-engine' ),
-        'all_items'             => __( 'All Docs', 'zuno-docs-engine' ),
-        'add_new_item'          => __( 'Add New Doc', 'zuno-docs-engine' ),
-        'add_new'               => __( 'Add New', 'zuno-docs-engine' ),
-        'new_item'              => __( 'New Doc', 'zuno-docs-engine' ),
-        'edit_item'             => __( 'Edit Doc', 'zuno-docs-engine' ),
-        'update_item'           => __( 'Update Doc', 'zuno-docs-engine' ),
-        'view_item'             => __( 'View Doc', 'zuno-docs-engine' ),
-        'view_items'            => __( 'View Docs', 'zuno-docs-engine' ),
-        'search_items'          => __( 'Search Doc', 'zuno-docs-engine' ),
-        'not_found'             => __( 'Not found', 'zuno-docs-engine' ),
-        'not_found_in_trash'    => __( 'Not found in Trash', 'zuno-docs-engine' ),
-        'insert_into_item'      => __( 'Insert into doc', 'zuno-docs-engine' ),
-        'uploaded_to_this_item' => __( 'Uploaded to this doc', 'zuno-docs-engine' ),
-        'items_list'            => __( 'Docs list', 'zuno-docs-engine' ),
-        'item_published'        => __( 'Doc published.', 'zuno-docs-engine' ),
-        'item_updated'          => __( 'Doc updated.', 'zuno-docs-engine' ),
+        'name'                  => _x( 'Docs', 'Post Type General Name', 'doc-vista' ),
+        'singular_name'         => _x( 'Doc', 'Post Type Singular Name', 'doc-vista' ),
+        'menu_name'             => __( 'Docs', 'doc-vista' ),
+        'name_admin_bar'        => __( 'Doc', 'doc-vista' ),
+        'archives'              => __( 'Doc Archives', 'doc-vista' ),
+        'attributes'            => __( 'Doc Attributes', 'doc-vista' ),
+        'all_items'             => __( 'All Docs', 'doc-vista' ),
+        'add_new_item'          => __( 'Add New Doc', 'doc-vista' ),
+        'add_new'               => __( 'Add New', 'doc-vista' ),
+        'new_item'              => __( 'New Doc', 'doc-vista' ),
+        'edit_item'             => __( 'Edit Doc', 'doc-vista' ),
+        'update_item'           => __( 'Update Doc', 'doc-vista' ),
+        'view_item'             => __( 'View Doc', 'doc-vista' ),
+        'view_items'            => __( 'View Docs', 'doc-vista' ),
+        'search_items'          => __( 'Search Doc', 'doc-vista' ),
+        'not_found'             => __( 'Not found', 'doc-vista' ),
+        'not_found_in_trash'    => __( 'Not found in Trash', 'doc-vista' ),
+        'insert_into_item'      => __( 'Insert into doc', 'doc-vista' ),
+        'uploaded_to_this_item' => __( 'Uploaded to this doc', 'doc-vista' ),
+        'items_list'            => __( 'Docs list', 'doc-vista' ),
+        'item_published'        => __( 'Doc published.', 'doc-vista' ),
+        'item_updated'          => __( 'Doc updated.', 'doc-vista' ),
     );
 
     $args = array(
-        'label'               => __( 'Docs', 'zuno-docs-engine' ),
-        'description'         => __( 'Documentation articles', 'zuno-docs-engine' ),
+        'label'               => __( 'Docs', 'doc-vista' ),
+        'description'         => __( 'Documentation articles', 'doc-vista' ),
         'labels'              => $labels,
         'supports'            => array( 'title', 'editor', 'thumbnail', 'excerpt' ),
         'hierarchical'        => false,
@@ -54,57 +46,54 @@ function zuno_docs_register_post_type() {
         'has_archive'         => false,
         'exclude_from_search' => true,
         'publicly_queryable'  => true,
-        'capability_type'     => 'zuno_doc',
+        'capability_type'     => 'doc_vista_doc',
         'capabilities'        => array(
-            'edit_post'              => 'zuno_docs_edit',
-            'read_post'              => 'zuno_docs_read',
-            'delete_post'            => 'zuno_docs_delete',
-            'edit_posts'             => 'zuno_docs_edit',
-            'edit_others_posts'      => 'zuno_docs_edit',
-            'publish_posts'          => 'zuno_docs_publish',
-            'read_private_posts'     => 'zuno_docs_read',
-            'create_posts'           => 'zuno_docs_create',
-            'delete_posts'           => 'zuno_docs_delete',
-            'delete_private_posts'   => 'zuno_docs_delete',
-            'delete_published_posts' => 'zuno_docs_delete',
-            'delete_others_posts'    => 'zuno_docs_delete',
-            'edit_private_posts'     => 'zuno_docs_edit',
-            'edit_published_posts'   => 'zuno_docs_edit',
+            'edit_post'              => 'doc_vista_edit',
+            'read_post'              => 'doc_vista_read',
+            'delete_post'            => 'doc_vista_delete',
+            'edit_posts'             => 'doc_vista_edit',
+            'edit_others_posts'      => 'doc_vista_edit',
+            'publish_posts'          => 'doc_vista_publish',
+            'read_private_posts'     => 'doc_vista_read',
+            'create_posts'           => 'doc_vista_create',
+            'delete_posts'           => 'doc_vista_delete',
+            'delete_private_posts'   => 'doc_vista_delete',
+            'delete_published_posts' => 'doc_vista_delete',
+            'delete_others_posts'    => 'doc_vista_delete',
+            'edit_private_posts'     => 'doc_vista_edit',
+            'edit_published_posts'   => 'doc_vista_edit',
         ),
         'map_meta_cap'        => false,
         'show_in_rest'        => true,
-        'rest_base'           => 'zuno-docs',
+        'rest_base'           => 'doc-vista-docs',
     );
 
-    register_post_type( 'zuno_doc', $args );
+    register_post_type( 'doc_vista_doc', $args );
 }
 
-/* -----------------------------------------------------------------------
- * Register Taxonomy: zuno_doc_category
- * --------------------------------------------------------------------- */
-function zuno_docs_register_taxonomy() {
+function doc_vista_register_taxonomy() {
 
     $labels = array(
-        'name'                       => _x( 'Doc Categories', 'Taxonomy General Name', 'zuno-docs-engine' ),
-        'singular_name'              => _x( 'Doc Category', 'Taxonomy Singular Name', 'zuno-docs-engine' ),
-        'menu_name'                  => __( 'Categories', 'zuno-docs-engine' ),
-        'all_items'                  => __( 'All Categories', 'zuno-docs-engine' ),
-        'parent_item'                => __( 'Parent Category', 'zuno-docs-engine' ),
-        'parent_item_colon'          => __( 'Parent Category:', 'zuno-docs-engine' ),
-        'new_item_name'              => __( 'New Category Name', 'zuno-docs-engine' ),
-        'add_new_item'               => __( 'Add New Category', 'zuno-docs-engine' ),
-        'edit_item'                  => __( 'Edit Category', 'zuno-docs-engine' ),
-        'update_item'                => __( 'Update Category', 'zuno-docs-engine' ),
-        'view_item'                  => __( 'View Category', 'zuno-docs-engine' ),
-        'separate_items_with_commas' => __( 'Separate categories with commas', 'zuno-docs-engine' ),
-        'add_or_remove_items'        => __( 'Add or remove categories', 'zuno-docs-engine' ),
-        'choose_from_most_used'      => __( 'Choose from the most used', 'zuno-docs-engine' ),
-        'popular_items'              => __( 'Popular Categories', 'zuno-docs-engine' ),
-        'search_items'               => __( 'Search Categories', 'zuno-docs-engine' ),
-        'not_found'                  => __( 'Not Found', 'zuno-docs-engine' ),
-        'no_terms'                   => __( 'No categories', 'zuno-docs-engine' ),
-        'items_list'                 => __( 'Categories list', 'zuno-docs-engine' ),
-        'items_list_navigation'      => __( 'Categories list navigation', 'zuno-docs-engine' ),
+        'name'                       => _x( 'Doc Categories', 'Taxonomy General Name', 'doc-vista' ),
+        'singular_name'              => _x( 'Doc Category', 'Taxonomy Singular Name', 'doc-vista' ),
+        'menu_name'                  => __( 'Categories', 'doc-vista' ),
+        'all_items'                  => __( 'All Categories', 'doc-vista' ),
+        'parent_item'                => __( 'Parent Category', 'doc-vista' ),
+        'parent_item_colon'          => __( 'Parent Category:', 'doc-vista' ),
+        'new_item_name'              => __( 'New Category Name', 'doc-vista' ),
+        'add_new_item'               => __( 'Add New Category', 'doc-vista' ),
+        'edit_item'                  => __( 'Edit Category', 'doc-vista' ),
+        'update_item'                => __( 'Update Category', 'doc-vista' ),
+        'view_item'                  => __( 'View Category', 'doc-vista' ),
+        'separate_items_with_commas' => __( 'Separate categories with commas', 'doc-vista' ),
+        'add_or_remove_items'        => __( 'Add or remove categories', 'doc-vista' ),
+        'choose_from_most_used'      => __( 'Choose from the most used', 'doc-vista' ),
+        'popular_items'              => __( 'Popular Categories', 'doc-vista' ),
+        'search_items'               => __( 'Search Categories', 'doc-vista' ),
+        'not_found'                  => __( 'Not Found', 'doc-vista' ),
+        'no_terms'                   => __( 'No categories', 'doc-vista' ),
+        'items_list'                 => __( 'Categories list', 'doc-vista' ),
+        'items_list_navigation'      => __( 'Categories list navigation', 'doc-vista' ),
     );
 
     $args = array(
@@ -116,37 +105,34 @@ function zuno_docs_register_taxonomy() {
         'show_in_nav_menus' => false,
         'show_tagcloud'     => false,
         'show_in_rest'      => true,
-        'rest_base'         => 'zuno-doc-categories',
+        'rest_base'         => 'doc-vista-categories',
         'meta_box_cb'       => false,
     );
 
-    register_taxonomy( 'zuno_doc_category', array( 'zuno_doc' ), $args );
+    register_taxonomy( 'doc_vista_category', array( 'doc_vista_doc' ), $args );
 }
 
-/* -----------------------------------------------------------------------
- * Register Taxonomy: zuno_product (non-hierarchical — for product tagging)
- * --------------------------------------------------------------------- */
-function zuno_docs_register_product_taxonomy() {
+function doc_vista_register_product_taxonomy() {
 
     $labels = array(
-        'name'                       => _x( 'Products', 'Taxonomy General Name', 'zuno-docs-engine' ),
-        'singular_name'              => _x( 'Product', 'Taxonomy Singular Name', 'zuno-docs-engine' ),
-        'menu_name'                  => __( 'Products', 'zuno-docs-engine' ),
-        'all_items'                  => __( 'All Products', 'zuno-docs-engine' ),
-        'new_item_name'              => __( 'New Product', 'zuno-docs-engine' ),
-        'add_new_item'               => __( 'Add New Product', 'zuno-docs-engine' ),
-        'edit_item'                  => __( 'Edit Product', 'zuno-docs-engine' ),
-        'update_item'                => __( 'Update Product', 'zuno-docs-engine' ),
-        'view_item'                  => __( 'View Product', 'zuno-docs-engine' ),
-        'separate_items_with_commas' => __( 'Separate products with commas', 'zuno-docs-engine' ),
-        'add_or_remove_items'        => __( 'Add or remove products', 'zuno-docs-engine' ),
-        'choose_from_most_used'      => __( 'Choose from the most used', 'zuno-docs-engine' ),
-        'popular_items'              => __( 'Popular Products', 'zuno-docs-engine' ),
-        'search_items'               => __( 'Search Products', 'zuno-docs-engine' ),
-        'not_found'                  => __( 'Not Found', 'zuno-docs-engine' ),
-        'no_terms'                   => __( 'No products', 'zuno-docs-engine' ),
-        'items_list'                 => __( 'Products list', 'zuno-docs-engine' ),
-        'items_list_navigation'      => __( 'Products list navigation', 'zuno-docs-engine' ),
+        'name'                       => _x( 'Products', 'Taxonomy General Name', 'doc-vista' ),
+        'singular_name'              => _x( 'Product', 'Taxonomy Singular Name', 'doc-vista' ),
+        'menu_name'                  => __( 'Products', 'doc-vista' ),
+        'all_items'                  => __( 'All Products', 'doc-vista' ),
+        'new_item_name'              => __( 'New Product', 'doc-vista' ),
+        'add_new_item'               => __( 'Add New Product', 'doc-vista' ),
+        'edit_item'                  => __( 'Edit Product', 'doc-vista' ),
+        'update_item'                => __( 'Update Product', 'doc-vista' ),
+        'view_item'                  => __( 'View Product', 'doc-vista' ),
+        'separate_items_with_commas' => __( 'Separate products with commas', 'doc-vista' ),
+        'add_or_remove_items'        => __( 'Add or remove products', 'doc-vista' ),
+        'choose_from_most_used'      => __( 'Choose from the most used', 'doc-vista' ),
+        'popular_items'              => __( 'Popular Products', 'doc-vista' ),
+        'search_items'               => __( 'Search Products', 'doc-vista' ),
+        'not_found'                  => __( 'Not Found', 'doc-vista' ),
+        'no_terms'                   => __( 'No products', 'doc-vista' ),
+        'items_list'                 => __( 'Products list', 'doc-vista' ),
+        'items_list_navigation'      => __( 'Products list navigation', 'doc-vista' ),
     );
 
     $args = array(
@@ -158,39 +144,33 @@ function zuno_docs_register_product_taxonomy() {
         'show_in_nav_menus' => false,
         'show_tagcloud'     => false,
         'show_in_rest'      => true,
-        'rest_base'         => 'zuno-products',
+        'rest_base'         => 'doc-vista-products',
         'meta_box_cb'       => false,
     );
 
-    register_taxonomy( 'zuno_product', array( 'zuno_doc' ), $args );
+    register_taxonomy( 'doc_vista_product', array( 'doc_vista_doc' ), $args );
 }
 
-/* -----------------------------------------------------------------------
- * Seed default terms (called on activation/upgrade)
- * Creates only ONE default category: "General".
- * --------------------------------------------------------------------- */
-function zuno_docs_seed_default_terms() {
+function doc_vista_seed_default_terms() {
 
-    /* ----- Seed default categories: only "General" ----- */
     $existing_cats = get_terms( array(
-        'taxonomy'   => 'zuno_doc_category',
+        'taxonomy'   => 'doc_vista_category',
         'hide_empty' => false,
         'fields'     => 'ids',
     ) );
 
     if ( empty( $existing_cats ) || is_wp_error( $existing_cats ) ) {
-        if ( ! term_exists( 'general', 'zuno_doc_category' ) ) {
+        if ( ! term_exists( 'general', 'doc_vista_category' ) ) {
             wp_insert_term(
                 'General',
-                'zuno_doc_category',
+                'doc_vista_category',
                 array( 'slug' => 'general' )
             );
         }
     }
 
-    /* ----- Seed product terms for backward compat ----- */
     $existing_products = get_terms( array(
-        'taxonomy'   => 'zuno_product',
+        'taxonomy'   => 'doc_vista_product',
         'hide_empty' => false,
         'fields'     => 'ids',
     ) );
@@ -201,45 +181,38 @@ function zuno_docs_seed_default_terms() {
         );
 
         foreach ( $products as $slug => $name ) {
-            if ( ! term_exists( $slug, 'zuno_product' ) ) {
-                wp_insert_term( $name, 'zuno_product', array( 'slug' => $slug ) );
+            if ( ! term_exists( $slug, 'doc_vista_product' ) ) {
+                wp_insert_term( $name, 'doc_vista_product', array( 'slug' => $slug ) );
             }
         }
     }
 }
 
-/* -----------------------------------------------------------------------
- * Prevent deletion of the LAST remaining category.
- * Uses pre_delete_term action (fires BEFORE deletion) to stop the delete.
- * --------------------------------------------------------------------- */
-add_action( 'pre_delete_term', 'zuno_docs_prevent_delete_last_category', 10, 2 );
-function zuno_docs_prevent_delete_last_category( $term, $taxonomy ) {
-    if ( 'zuno_doc_category' !== $taxonomy ) {
+add_action( 'pre_delete_term', 'doc_vista_prevent_delete_last_category', 10, 2 );
+function doc_vista_prevent_delete_last_category( $term, $taxonomy ) {
+    if ( 'doc_vista_category' !== $taxonomy ) {
         return;
     }
-    if ( ! taxonomy_exists( 'zuno_doc_category' ) ) {
+    if ( ! taxonomy_exists( 'doc_vista_category' ) ) {
         return;
     }
     $existing = get_terms( array(
-        'taxonomy'   => 'zuno_doc_category',
+        'taxonomy'   => 'doc_vista_category',
         'hide_empty' => false,
         'fields'     => 'ids',
     ) );
     if ( is_array( $existing ) && count( $existing ) <= 1 ) {
-        wp_die( esc_html__( 'At least one documentation category is required. Create a new category before deleting the last one.', 'zuno-docs-engine' ) );
+        wp_die( esc_html__( 'At least one documentation category is required. Create a new category before deleting the last one.', 'doc-vista' ) );
     }
 }
 
-/* -----------------------------------------------------------------------
- * Hide the Delete action for the last remaining category in admin row actions.
- * --------------------------------------------------------------------- */
-add_filter( 'zuno_doc_category_row_actions', 'zuno_docs_hide_delete_last_category_action', 10, 2 );
-function zuno_docs_hide_delete_last_category_action( $actions, $term ) {
-    if ( ! taxonomy_exists( 'zuno_doc_category' ) ) {
+add_filter( 'doc_vista_category_row_actions', 'doc_vista_hide_delete_last_category_action', 10, 2 );
+function doc_vista_hide_delete_last_category_action( $actions, $term ) {
+    if ( ! taxonomy_exists( 'doc_vista_category' ) ) {
         return $actions;
     }
     $existing = get_terms( array(
-        'taxonomy'   => 'zuno_doc_category',
+        'taxonomy'   => 'doc_vista_category',
         'hide_empty' => false,
         'fields'     => 'ids',
     ) );
@@ -249,26 +222,21 @@ function zuno_docs_hide_delete_last_category_action( $actions, $term ) {
     return $actions;
 }
 
-/* -----------------------------------------------------------------------
- * Ensure at least one category exists — only when ZERO categories exist
- * (fresh install or all categories removed via direct DB manipulation).
- * NEVER recreates a default if other categories exist.
- * --------------------------------------------------------------------- */
-add_action( 'admin_init', 'zuno_docs_ensure_default_category_exists' );
-function zuno_docs_ensure_default_category_exists() {
-    if ( ! taxonomy_exists( 'zuno_doc_category' ) ) {
+add_action( 'admin_init', 'doc_vista_ensure_default_category_exists' );
+function doc_vista_ensure_default_category_exists() {
+    if ( ! taxonomy_exists( 'doc_vista_category' ) ) {
         return;
     }
     $existing = get_terms( array(
-        'taxonomy'   => 'zuno_doc_category',
+        'taxonomy'   => 'doc_vista_category',
         'hide_empty' => false,
         'fields'     => 'ids',
     ) );
     if ( empty( $existing ) || is_wp_error( $existing ) ) {
-        if ( ! term_exists( 'general', 'zuno_doc_category' ) ) {
+        if ( ! term_exists( 'general', 'doc_vista_category' ) ) {
             wp_insert_term(
                 'General',
-                'zuno_doc_category',
+                'doc_vista_category',
                 array( 'slug' => 'general' )
             );
         }

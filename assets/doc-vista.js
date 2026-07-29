@@ -1,7 +1,7 @@
 (function () {
     'use strict';
 
-    var CFG = window.ZUNODocsConfig || {};
+    var CFG = window.DocVistaConfig || {};
     var DEBOUNCE_MS = 150;
     var MIN_QUERY = 2;
     var MAX_SUGGESTIONS = 10;
@@ -48,7 +48,7 @@
 
     function getTopOffset(wrapper) {
         var offset = 10;
-        if (wrapper && wrapper.classList.contains('zuno-docs-has-admin-bar')) {
+        if (wrapper && wrapper.classList.contains('doc-vista-has-admin-bar')) {
             var bar = document.getElementById('wpadminbar');
             if (bar) offset += bar.getBoundingClientRect().height;
         }
@@ -128,11 +128,11 @@
         show: function (results, query) {
             if (!this._el || !this._searchInput) return;
             this._el.innerHTML = '';
-            this._noResultsEl.classList.add('zuno-docs-hidden');
+            this._noResultsEl.classList.add('doc-vista-hidden');
 
             if (!results || !results.length) {
-                this._el.classList.add('zuno-docs-hidden');
-                this._noResultsEl.classList.remove('zuno-docs-hidden');
+                this._el.classList.add('doc-vista-hidden');
+                this._noResultsEl.classList.remove('doc-vista-hidden');
                 return;
             }
 
@@ -140,14 +140,14 @@
             results.forEach(function (r) {
                 if (r._separator) {
                     var sep = document.createElement('div');
-                    sep.className = 'zuno-docs-suggestion-separator';
+                    sep.className = 'doc-vista-suggestion-separator';
                     frag.appendChild(sep);
                     return;
                 }
 
                 var isLocal = r.chapterTitle !== undefined;
                 var item = document.createElement('button');
-                item.className = 'zuno-docs-suggestion-item';
+                item.className = 'doc-vista-suggestion-item';
                 item.setAttribute('role', 'option');
 
                 if (isLocal) {
@@ -155,19 +155,19 @@
                     item.dataset.headingId = r.headingId || '';
                     item.dataset.chapterId = r.chapterId || '';
 
-                    var inner = '<span class="zuno-docs-suggestion-chapter">' + escapeHtml(r.chapterTitle) + '</span>';
+                    var inner = '<span class="doc-vista-suggestion-chapter">' + escapeHtml(r.chapterTitle) + '</span>';
 
                     /* Show full heading chain (H2 -> H3 -> ...) when available */
                     var chain = r.headingChain || [];
                     var subChain = chain.slice(1);
                     if (subChain.length) {
-                        inner += '<span class="zuno-docs-suggestion-heading">' + escapeHtml(subChain.join(' \u2192 ')) + '</span>';
+                        inner += '<span class="doc-vista-suggestion-heading">' + escapeHtml(subChain.join(' \u2192 ')) + '</span>';
                     } else if (r.heading) {
-                        inner += '<span class="zuno-docs-suggestion-heading">' + escapeHtml(r.heading) + '</span>';
+                        inner += '<span class="doc-vista-suggestion-heading">' + escapeHtml(r.heading) + '</span>';
                     }
 
                     if (r.snippet) {
-                        inner += '<span class="zuno-docs-suggestion-snippet">' + r.snippet + '</span>';
+                        inner += '<span class="doc-vista-suggestion-snippet">' + r.snippet + '</span>';
                     }
 
                     item.innerHTML = inner;
@@ -179,11 +179,11 @@
                     var titleHtml = escapeHtml(r.title);
                     if (query) {
                         var re = new RegExp('(' + query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
-                        titleHtml = titleHtml.replace(re, '<mark class="zuno-docs-suggestion-mark">$1</mark>');
+                        titleHtml = titleHtml.replace(re, '<mark class="doc-vista-suggestion-mark">$1</mark>');
                     }
 
-                    item.innerHTML = '<span class="zuno-docs-suggestion-title">' + titleHtml + '</span>' +
-                        (r.excerpt ? '<span class="zuno-docs-suggestion-excerpt">' + escapeHtml(r.excerpt.slice(0, 80)) + '</span>' : '');
+                    item.innerHTML = '<span class="doc-vista-suggestion-title">' + titleHtml + '</span>' +
+                        (r.excerpt ? '<span class="doc-vista-suggestion-excerpt">' + escapeHtml(r.excerpt.slice(0, 80)) + '</span>' : '');
 
                     item.addEventListener('click', this._onSelect.bind(this, r));
                 }
@@ -192,17 +192,17 @@
             }, this);
 
             this._el.appendChild(frag);
-            this._el.classList.remove('zuno-docs-hidden');
+            this._el.classList.remove('doc-vista-hidden');
         },
 
         showLocal: function (results, query) {
             if (!this._el || !this._searchInput) return;
             this._el.innerHTML = '';
-            this._noResultsEl.classList.add('zuno-docs-hidden');
+            this._noResultsEl.classList.add('doc-vista-hidden');
 
             if (!results || !results.length) {
-                this._el.classList.add('zuno-docs-hidden');
-                this._noResultsEl.classList.remove('zuno-docs-hidden');
+                this._el.classList.add('doc-vista-hidden');
+                this._noResultsEl.classList.remove('doc-vista-hidden');
                 return;
             }
 
@@ -211,24 +211,24 @@
 
             results.forEach(function (r) {
                 var item = document.createElement('button');
-                item.className = 'zuno-docs-suggestion-item';
+                item.className = 'doc-vista-suggestion-item';
                 item.setAttribute('role', 'option');
                 item.dataset.local = 'true';
                 item.dataset.headingId = r.headingId || '';
                 item.dataset.chapterId = r.chapterId || '';
 
-                var inner = '<span class="zuno-docs-suggestion-chapter">' + escapeHtml(r.chapterTitle) + '</span>';
+                var inner = '<span class="doc-vista-suggestion-chapter">' + escapeHtml(r.chapterTitle) + '</span>';
 
                 var chain = r.headingChain || [];
                 var subChain = chain.slice(1);
                 if (subChain.length) {
-                    inner += '<span class="zuno-docs-suggestion-heading">' + escapeHtml(subChain.join(' \u2192 ')) + '</span>';
+                    inner += '<span class="doc-vista-suggestion-heading">' + escapeHtml(subChain.join(' \u2192 ')) + '</span>';
                 } else if (r.heading) {
-                    inner += '<span class="zuno-docs-suggestion-heading">' + escapeHtml(r.heading) + '</span>';
+                    inner += '<span class="doc-vista-suggestion-heading">' + escapeHtml(r.heading) + '</span>';
                 }
 
                 if (r.snippet) {
-                    inner += '<span class="zuno-docs-suggestion-snippet">' + r.snippet + '</span>';
+                    inner += '<span class="doc-vista-suggestion-snippet">' + r.snippet + '</span>';
                 }
 
                 item.innerHTML = inner;
@@ -241,12 +241,12 @@
             }, this);
 
             this._el.appendChild(frag);
-            this._el.classList.remove('zuno-docs-hidden');
+            this._el.classList.remove('doc-vista-hidden');
         },
 
         hide: function () {
             if (this._el) {
-                this._el.classList.add('zuno-docs-hidden');
+                this._el.classList.add('doc-vista-hidden');
                 this._el.innerHTML = '';
             }
         },
@@ -284,7 +284,7 @@
             this.hide();
             this._searchInput.value = result.title;
             this._searchInput.blur();
-            var event = new CustomEvent('zuno-docs-navigate', { detail: { docId: result.id } });
+            var event = new CustomEvent('doc-vista-navigate', { detail: { docId: result.id } });
             if (_activeWrapper) {
                 _activeWrapper.dispatchEvent(event);
             } else {
@@ -325,8 +325,8 @@
                     }
 
                     currentWrapper = document.createElement('div');
-                    currentWrapper.className = 'zuno-docs-chapter';
-                    currentWrapper.id = 'zuno-chapter-' + child.id;
+                    currentWrapper.className = 'doc-vista-chapter';
+                    currentWrapper.id = 'doc-vista-chapter-' + child.id;
                     currentWrapper.dataset.chapterId = child.id;
 
                     this._chapters.push({
@@ -346,8 +346,8 @@
             /* Fallback: no H1 found -> treat all content as one chapter */
             if (this._chapters.length === 0 && children.length > 0) {
                 var defaultWrapper = document.createElement('div');
-                defaultWrapper.className = 'zuno-docs-chapter zuno-docs-chapter-active';
-                defaultWrapper.id = 'zuno-chapter-documentation';
+                defaultWrapper.className = 'doc-vista-chapter doc-vista-chapter-active';
+                defaultWrapper.id = 'doc-vista-chapter-documentation';
                 defaultWrapper.dataset.chapterId = 'documentation';
 
                 children.forEach(function (child) {
@@ -447,7 +447,7 @@
             this._chapters.forEach(function (ch) {
                 var isActive = ch.id === chapterId;
                 ch.wrapper.style.display = isActive ? '' : 'none';
-                ch.wrapper.classList.toggle('zuno-docs-chapter-active', isActive);
+                ch.wrapper.classList.toggle('doc-vista-chapter-active', isActive);
             });
 
             if (options.noScroll) {
@@ -556,8 +556,8 @@
 
             tocEl.style.display = '';
 
-            tocEl.classList.remove('zuno-docs-toc-mode-flat', 'zuno-docs-toc-mode-hierarchy');
-            tocEl.classList.add(this._hierarchical ? 'zuno-docs-toc-mode-hierarchy' : 'zuno-docs-toc-mode-flat');
+            tocEl.classList.remove('doc-vista-toc-mode-flat', 'doc-vista-toc-mode-hierarchy');
+            tocEl.classList.add(this._hierarchical ? 'doc-vista-toc-mode-hierarchy' : 'doc-vista-toc-mode-flat');
 
             var self = this;
             var ul = document.createElement('ul');
@@ -570,7 +570,7 @@
 
                 var chLink = document.createElement('a');
                 chLink.href = '#' + ch.id;
-                chLink.className = 'zuno-docs-toc-link zuno-docs-toc-h1';
+                chLink.className = 'doc-vista-toc-link doc-vista-toc-h1';
                 chLink.dataset.tocId = ch.id;
                 chLink.dataset.target = ch.id;
                 chLink.textContent = ch.title;
@@ -650,7 +650,7 @@
 
                 var link = document.createElement('a');
                 link.href = '#' + node.id;
-                link.className = 'zuno-docs-toc-link zuno-docs-toc-h' + node.tagLevel;
+                link.className = 'doc-vista-toc-link doc-vista-toc-h' + node.tagLevel;
                 link.dataset.target = node.id;
                 link.textContent = node.text;
 
@@ -695,7 +695,7 @@
 
                 var link = document.createElement('a');
                 link.href = '#' + node.id;
-                link.className = 'zuno-docs-toc-link zuno-docs-toc-h' + node.tagLevel;
+                link.className = 'doc-vista-toc-link doc-vista-toc-h' + node.tagLevel;
                 link.dataset.target = node.id;
                 link.textContent = node.text;
 
@@ -743,7 +743,7 @@
                 li.classList.remove('is-open');
             });
 
-            var h1Links = qsa('.zuno-docs-toc-h1', this._tocEl);
+            var h1Links = qsa('.doc-vista-toc-h1', this._tocEl);
             h1Links.forEach(function (link) {
                 var isActive = link.dataset.tocId === id;
                 link.classList.toggle('is-active', isActive);
@@ -759,7 +759,7 @@
                 }
             });
 
-            var subLinks = qsa('.zuno-docs-toc-h2, .zuno-docs-toc-h3', this._tocEl);
+            var subLinks = qsa('.doc-vista-toc-h2, .doc-vista-toc-h3', this._tocEl);
             subLinks.forEach(function (link) {
                 link.classList.remove('is-active');
                 link.removeAttribute('aria-current');
@@ -770,17 +770,17 @@
             if (!this._tocEl) return;
             this._activeHeadingId = headingId;
 
-            var subLinks = qsa('.zuno-docs-toc-h2, .zuno-docs-toc-h3', this._tocEl);
+            var subLinks = qsa('.doc-vista-toc-h2, .doc-vista-toc-h3', this._tocEl);
             subLinks.forEach(function (link) {
                 link.classList.remove('is-active');
                 link.removeAttribute('aria-current');
             });
 
-            var h1Links = qsa('.zuno-docs-toc-h1', this._tocEl);
+            var h1Links = qsa('.doc-vista-toc-h1', this._tocEl);
 
             if (headingId) {
-                var activeLink = qs('.zuno-docs-toc-link[data-target="' + headingId + '"]', this._tocEl);
-                if (activeLink && (activeLink.classList.contains('zuno-docs-toc-h2') || activeLink.classList.contains('zuno-docs-toc-h3'))) {
+                var activeLink = qs('.doc-vista-toc-link[data-target="' + headingId + '"]', this._tocEl);
+                if (activeLink && (activeLink.classList.contains('doc-vista-toc-h2') || activeLink.classList.contains('doc-vista-toc-h3'))) {
                     activeLink.classList.add('is-active');
                     activeLink.setAttribute('aria-current', 'true');
 
@@ -824,12 +824,12 @@
                 return;
             }
 
-            var links = qsa('.zuno-docs-toc-link', this._tocEl);
+            var links = qsa('.doc-vista-toc-link', this._tocEl);
             var lis = qsa('li', this._tocEl);
 
             lis.forEach(function (li) {
-                li.classList.remove('zuno-docs-toc-match');
-                li.classList.remove('zuno-docs-toc-hidden');
+                li.classList.remove('doc-vista-toc-match');
+                li.classList.remove('doc-vista-toc-hidden');
             });
 
             var matchCount = 0;
@@ -839,7 +839,7 @@
                 if (text.indexOf(q) !== -1) {
                     var li = link.closest('li');
                     if (li) {
-                        li.classList.add('zuno-docs-toc-match');
+                        li.classList.add('doc-vista-toc-match');
                         matchCount++;
                         var parent = li.parentElement;
                         while (parent && parent !== self._tocEl) {
@@ -853,7 +853,7 @@
             });
 
             if (!matchCount) {
-                lis.forEach(function (li) { li.classList.add('zuno-docs-toc-hidden'); });
+                lis.forEach(function (li) { li.classList.add('doc-vista-toc-hidden'); });
                 if (!hasContentMatch) {
                     this._showNoResults(q);
                 } else {
@@ -862,14 +862,14 @@
                 return;
             }
 
-            lis.forEach(function (li) { li.classList.add('zuno-docs-toc-hidden'); });
+            lis.forEach(function (li) { li.classList.add('doc-vista-toc-hidden'); });
             lis.forEach(function (li) {
-                if (li.classList.contains('zuno-docs-toc-match')) {
-                    li.classList.remove('zuno-docs-toc-hidden');
+                if (li.classList.contains('doc-vista-toc-match')) {
+                    li.classList.remove('doc-vista-toc-hidden');
                     var parent = li.parentElement;
                     while (parent && parent !== this._tocEl) {
                         if (parent.tagName === 'LI') {
-                            parent.classList.remove('zuno-docs-toc-hidden');
+                            parent.classList.remove('doc-vista-toc-hidden');
                         }
                         parent = parent.parentElement;
                     }
@@ -882,8 +882,8 @@
         resetFilter: function () {
             var lis = qsa('li', this._tocEl);
             lis.forEach(function (li) {
-                li.classList.remove('zuno-docs-toc-hidden');
-                li.classList.remove('zuno-docs-toc-match');
+                li.classList.remove('doc-vista-toc-hidden');
+                li.classList.remove('doc-vista-toc-match');
                 /* Restore flat mode expansion after reset */
                 if (!this._hierarchical) {
                     li.classList.add('is-open');
@@ -893,19 +893,19 @@
         },
 
         _showNoResults: function (query) {
-            var el = qs('.zuno-docs-toc-empty', this._tocEl);
+            var el = qs('.doc-vista-toc-empty', this._tocEl);
             if (!el) {
                 el = document.createElement('p');
-                el.className = 'zuno-docs-toc-empty';
+                el.className = 'doc-vista-toc-empty';
                 this._tocEl.appendChild(el);
             }
             el.textContent = (CFG.i18n && CFG.i18n.tocNoResults) ? CFG.i18n.tocNoResults.replace('{query}', query) : 'No matching sections found for "' + query + '"';
-            el.classList.remove('zuno-docs-hidden');
+            el.classList.remove('doc-vista-hidden');
         },
 
         _hideNoResults: function () {
-            var el = qs('.zuno-docs-toc-empty', this._tocEl);
-            if (el) el.classList.add('zuno-docs-hidden');
+            var el = qs('.doc-vista-toc-empty', this._tocEl);
+            if (el) el.classList.add('doc-vista-hidden');
         }
     };
 
@@ -1027,7 +1027,7 @@
         _topOffset: 20,
 
         init: function (wrapEl) {
-            this._el = qs('.zuno-docs-nav-rail', wrapEl);
+            this._el = qs('.doc-vista-nav-rail', wrapEl);
             this._wrapper = wrapEl;
             var display = CFG.display || {};
             if (!this._el || !display.show_navigation_rail) return;
@@ -1067,14 +1067,9 @@
             }
         },
 
-        /**
-         * Compute groups from the flat headings array.
-         * Aims for ~20-30 groups for docs with 31+ headings.
-         */
         _computeGroups: function (headings) {
             var total = headings.length;
             if (total <= 30) {
-                /* No grouping needed — one indicator per heading */
                 return headings.map(function (h) { return [h]; });
             }
 
@@ -1090,12 +1085,12 @@
         _buildIndicators: function () {
             var self = this;
             var wrap = document.createElement('div');
-            wrap.className = 'zuno-docs-nav-indicators';
+            wrap.className = 'doc-vista-nav-indicators';
             wrap.setAttribute('aria-hidden', 'true');
 
             this._groups.forEach(function (group, idx) {
                 var dot = document.createElement('div');
-                dot.className = 'zuno-docs-nav-indicator';
+                dot.className = 'doc-vista-nav-indicator';
                 dot.dataset.groupIndex = idx;
                 wrap.appendChild(dot);
                 self._groupIndicators.push(dot);
@@ -1107,12 +1102,12 @@
         _renderFlatItem: function (heading, container) {
             var self = this;
             var li = document.createElement('li');
-            li.className = 'zuno-docs-nav-item';
+            li.className = 'doc-vista-nav-item';
             li.dataset.tagLevel = heading.tagLevel;
             li.dataset.id = heading.id;
 
             var link = document.createElement('a');
-            link.className = 'zuno-docs-nav-link';
+            link.className = 'doc-vista-nav-link';
             link.href = '#' + heading.id;
             link.textContent = heading.text;
             link.dataset.target = heading.id;
@@ -1143,15 +1138,15 @@
 
         _buildPanel: function (flat) {
             var panel = document.createElement('div');
-            panel.className = 'zuno-docs-nav-panel';
+            panel.className = 'doc-vista-nav-panel';
             panel.setAttribute('role', 'dialog');
             panel.setAttribute('aria-label', 'Section navigation');
 
             var header = document.createElement('div');
-            header.className = 'zuno-docs-nav-panel-header';
+            header.className = 'doc-vista-nav-panel-header';
 
             var icon = document.createElement('span');
-            icon.className = 'zuno-docs-nav-panel-icon';
+            icon.className = 'doc-vista-nav-panel-icon';
             icon.setAttribute('aria-hidden', 'true');
             icon.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>';
 
@@ -1160,7 +1155,7 @@
             panel.appendChild(header);
 
             var list = document.createElement('ul');
-            list.className = 'zuno-docs-nav-list';
+            list.className = 'doc-vista-nav-list';
 
             var self = this;
             flat.forEach(function (heading) {
@@ -1171,14 +1166,11 @@
             this._el.appendChild(panel);
         },
 
-        /**
-         * Update the panel to show only headings belonging to a specific group.
-         */
         _updatePanelForGroup: function (groupIdx) {
-            var panel = qs('.zuno-docs-nav-panel', this._el);
+            var panel = qs('.doc-vista-nav-panel', this._el);
             if (!panel) return;
 
-            var items = panel.querySelectorAll('.zuno-docs-nav-item');
+            var items = panel.querySelectorAll('.doc-vista-nav-item');
             var group = this._groups[groupIdx] || [];
             var groupIds = {};
             group.forEach(function (h) { groupIds[h.id] = true; });
@@ -1191,10 +1183,9 @@
 
         _initHover: function () {
             var self = this;
-            var panel = qs('.zuno-docs-nav-panel', this._el);
+            var panel = qs('.doc-vista-nav-panel', this._el);
             if (!panel) return;
 
-            /* On indicator hover: show only that group's headings in the panel */
             this._groupIndicators.forEach(function (dot, idx) {
                 dot.addEventListener('mouseenter', function () {
                     self._updatePanelForGroup(idx);
@@ -1220,7 +1211,6 @@
 
                 if (self._suppressObserver) return;
 
-                /* Find the first visible heading */
                 var active = null;
                 for (var i = 0; i < self._items.length; i++) {
                     if (visibleIds.has(self._items[i].id)) {
@@ -1244,7 +1234,7 @@
 
         _initContentBoundary: function (wrapEl) {
             var self = this;
-            var contentEl = qs('.zuno-docs-content', wrapEl);
+            var contentEl = qs('.doc-vista-content', wrapEl);
             if (!contentEl) return;
 
             var updateVisibility = function () {
@@ -1257,7 +1247,7 @@
                 var docBelowRailBottom = rect.bottom > railCenter + railHalfHeight;
 
                 self._el.classList.toggle('is-visible', docAboveRailTop && docBelowRailBottom);
-                self._el.classList.remove('zuno-docs-nav-rail--at-bottom');
+                self._el.classList.remove('doc-vista-nav-rail--at-bottom');
             };
 
             this._scrollBoundaryHandler = updateVisibility;
@@ -1271,9 +1261,6 @@
             updateVisibility();
         },
 
-        /**
-         * Find which group index a heading belongs to.
-         */
         _getGroupIndex: function (headingId) {
             for (var i = 0; i < this._groups.length; i++) {
                 var group = this._groups[i];
@@ -1288,29 +1275,25 @@
             if (this._activeId === id && !fromClick) return;
             this._activeId = id;
 
-            /* Find the group for this heading */
             var groupIdx = this._getGroupIndex(id);
             var self = this;
 
-            /* Update group indicators */
             this._groupIndicators.forEach(function (dot, idx) {
                 dot.classList.toggle('is-active', idx === groupIdx);
             });
 
-            /* Update individual items */
             this._items.forEach(function (item) {
                 var isActive = item.id === id;
                 item.link.classList.toggle('is-active', isActive);
                 item.link.setAttribute('aria-current', isActive ? 'true' : 'false');
                 var li = item.li;
                 if (li) {
-                    li.classList.toggle('zuno-docs-nav-active', isActive);
-                    li.classList.remove('zuno-docs-nav-parent-active');
+                    li.classList.toggle('doc-vista-nav-active', isActive);
+                    li.classList.remove('doc-vista-nav-parent-active');
                 }
             });
 
-            /* Scroll active item into view in the panel */
-            var activeLink = qs('.zuno-docs-nav-link.is-active', this._el);
+            var activeLink = qs('.doc-vista-nav-link.is-active', this._el);
             if (activeLink) {
                 activeLink.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
             }
@@ -1457,9 +1440,9 @@
                     }
 
                     var mark = document.createElement('mark');
-                    mark.className = 'zuno-docs-highlight';
+                    mark.className = 'doc-vista-highlight';
                     if (isFirst) {
-                        mark.classList.add('zuno-docs-highlight-first');
+                        mark.classList.add('doc-vista-highlight-first');
                         isFirst = false;
                     }
                     mark.textContent = match;
@@ -1478,7 +1461,7 @@
 
         _clearHighlights: function () {
             if (!this._contentEl) return;
-            var marks = qsa('mark.zuno-docs-highlight, mark.zuno-docs-highlight-first', this._contentEl);
+            var marks = qsa('mark.doc-vista-highlight, mark.doc-vista-highlight-first', this._contentEl);
             marks.forEach(function (mark) {
                 var parent = mark.parentNode;
                 parent.replaceChild(document.createTextNode(mark.textContent), mark);
@@ -1489,8 +1472,8 @@
         _scrollToFirst: function () {
             var activeCh = ChapterEngine.getActiveChapter();
             if (!activeCh || !activeCh.wrapper) return;
-            var first = qs('.zuno-docs-highlight-first', activeCh.wrapper);
-            if (!first) first = qs('.zuno-docs-highlight', activeCh.wrapper);
+            var first = qs('.doc-vista-highlight-first', activeCh.wrapper);
+            if (!first) first = qs('.doc-vista-highlight', activeCh.wrapper);
             if (!first) return;
             var offset = getTopOffset(_activeWrapper);
             var top = first.getBoundingClientRect().top + window.pageYOffset - offset - 10;
@@ -1507,10 +1490,6 @@
     var ContentIndex = {
         _items: [],
 
-        /* ------------------------------------------------------------------
-         * Build — walks every chapter wrapper ONCE, recording every heading
-         * and content element with its full heading ancestry.
-         * ------------------------------------------------------------------ */
         build: function () {
             this._items = [];
             var chapters = ChapterEngine.getAllChapters();
@@ -1607,10 +1586,6 @@
             });
         },
 
-        /* ------------------------------------------------------------------
-         * _expandTerm — generates morphological variants of a query term
-         * so that e.g. "manage" matches "managing", "management", etc.
-         * ------------------------------------------------------------------ */
         _expandTerm: function (term) {
             var ex = [term];
             var t = term;
@@ -1644,10 +1619,6 @@
             return ex.filter(function (v, i, a) { return a.indexOf(v) === i; });
         },
 
-        /* ------------------------------------------------------------------
-         * _matchCount — how many times any expansion of the query appears
-         * in the lowercased item text.
-         * ------------------------------------------------------------------ */
         _matchCount: function (textLower, termSets) {
             var count = 0;
             termSets.forEach(function (expansions) {
@@ -1661,10 +1632,6 @@
             return count;
         },
 
-        /* ------------------------------------------------------------------
-         * Search — case-insensitive, partial-word via term expansion,
-         * multi-term (AND), scored, deduplicated.
-         * ------------------------------------------------------------------ */
         search: function (query) {
             var q = query.trim();
             if (q.length < MIN_QUERY) return [];
@@ -1673,7 +1640,6 @@
             var rawTerms = ql.split(/\s+/).filter(function (t) { return t.length >= 2; });
             if (!rawTerms.length) return [];
 
-            /* Build expansion sets for each raw term */
             var termSets = rawTerms.map(function (t) { return this._expandTerm(t); }, this);
 
             var scored = [];
@@ -1700,17 +1666,11 @@
                 });
                 if (!allMatch || !bestMatch) return;
 
-                /* Deduplicate: chain + text prefix */
                 var chainKey = (item.headingChain || []).join('|');
                 var key = chainKey + '|' + item.text.substring(0, 100);
                 if (seen.has(key)) return;
                 seen.add(key);
 
-                /* ----------------------------------------------------------
-                 * SCORE — heading exact > heading starts > heading contains
-                 *        > content early > content deep.
-                 *        + frequency bonus + position bonus.
-                 * ---------------------------------------------------------- */
                 var score = 0;
                 var isHeading = item.type === 'heading';
 
@@ -1724,15 +1684,12 @@
                     else if (bestMatch.pos < 20) score = 40;
                     else score = 28;
 
-                    /* Conciseness bonus (shorter = more relevant) */
                     score += Math.max(0, 12 - Math.floor(item.text.length / 80));
                 }
 
-                /* Frequency bonus (up to +6) */
                 var freq = this._matchCount(lower, termSets);
                 if (freq > 1) score += Math.min(freq, 6);
 
-                /* Position bonus (earlier in doc = slightly higher) */
                 score += Math.max(0, 1 - item.pos / totalItems) * 4;
 
                 scored.push({
@@ -1775,7 +1732,7 @@
             var matched = text.substring(matchStart, matchEnd);
             var after = text.substring(matchEnd, end);
             return prefix + escapeHtml(before) +
-                '<mark class="zuno-docs-suggestion-mark">' +
+                '<mark class="doc-vista-suggestion-mark">' +
                 escapeHtml(matched) +
                 '</mark>' +
                 escapeHtml(after) + suffix;
@@ -1790,7 +1747,7 @@
      * Reading Progress Bar — per-chapter
      * =================================================================== */
     function initReadingProgress(wrapEl) {
-        var bar = qs('.zuno-docs-progress-bar-fill', wrapEl);
+        var bar = qs('.doc-vista-progress-bar-fill', wrapEl);
         if (!bar) return;
 
         var update = function () {
@@ -1808,7 +1765,7 @@
 
     var ReadingProgress = {
         reset: function () {
-            var bar = _activeWrapper ? qs('.zuno-docs-progress-bar-fill', _activeWrapper) : null;
+            var bar = _activeWrapper ? qs('.doc-vista-progress-bar-fill', _activeWrapper) : null;
             if (bar) {
                 bar.style.width = '0%';
             }
@@ -1821,13 +1778,13 @@
     function renderBreadcrumbs(wrapEl) {
         var display = CFG.display || {};
         if (!display.show_breadcrumbs) {
-            var hideEl = qs('.zuno-docs-breadcrumbs', wrapEl);
+            var hideEl = qs('.doc-vista-breadcrumbs', wrapEl);
             if (hideEl) hideEl.style.display = 'none';
             return;
         }
 
         var crumbs = CFG.breadcrumbs || [];
-        var el = qs('.zuno-docs-breadcrumbs', wrapEl);
+        var el = qs('.doc-vista-breadcrumbs', wrapEl);
         if (!el) return;
 
         if (!crumbs.length) {
@@ -1840,12 +1797,12 @@
             var span = document.createElement('span');
             if (i > 0) {
                 var sep = document.createElement('span');
-                sep.className = 'zuno-docs-breadcrumb-sep';
+                sep.className = 'doc-vista-breadcrumb-sep';
                 sep.setAttribute('aria-hidden', 'true');
                 sep.textContent = '/';
                 el.appendChild(sep);
             }
-            span.className = 'zuno-docs-breadcrumb' + (i === crumbs.length - 1 ? ' is-current' : '');
+            span.className = 'doc-vista-breadcrumb' + (i === crumbs.length - 1 ? ' is-current' : '');
             span.textContent = crumb.label;
             el.appendChild(span);
         });
@@ -1856,7 +1813,7 @@
      * Prev / Next navigation
      * =================================================================== */
     function renderPageNav(wrapEl) {
-        var el = qs('.zuno-docs-page-nav', wrapEl);
+        var el = qs('.doc-vista-page-nav', wrapEl);
         if (!el) return;
 
         var display = CFG.display || {};
@@ -1879,13 +1836,13 @@
 
         if (hasPrev) {
             var prevLink = document.createElement('a');
-            prevLink.href = '?zuno_doc=' + prev.id;
-            prevLink.className = 'zuno-docs-page-nav-link zuno-docs-page-nav-prev';
-            prevLink.innerHTML = '<span class="zuno-docs-nav-direction">' + (CFG.i18n.prev || 'Previous') + '</span>' +
-                '<span class="zuno-docs-nav-title">' + escapeHtml(prev.title) + '</span>';
+            prevLink.href = '?doc_vista=' + prev.id;
+            prevLink.className = 'doc-vista-page-nav-link doc-vista-page-nav-prev';
+            prevLink.innerHTML = '<span class="doc-vista-nav-direction">' + (CFG.i18n.prev || 'Previous') + '</span>' +
+                '<span class="doc-vista-nav-title">' + escapeHtml(prev.title) + '</span>';
             prevLink.addEventListener('click', function (e) {
                 e.preventDefault();
-                var event = new CustomEvent('zuno-docs-navigate', { detail: { docId: prev.id } });
+                var event = new CustomEvent('doc-vista-navigate', { detail: { docId: prev.id } });
                 wrapEl.dispatchEvent(event);
             });
             el.appendChild(prevLink);
@@ -1893,13 +1850,13 @@
 
         if (hasNext) {
             var nextLink = document.createElement('a');
-            nextLink.href = '?zuno_doc=' + next.id;
-            nextLink.className = 'zuno-docs-page-nav-link zuno-docs-page-nav-next';
-            nextLink.innerHTML = '<span class="zuno-docs-nav-direction">' + (CFG.i18n.next || 'Next') + '</span>' +
-                '<span class="zuno-docs-nav-title">' + escapeHtml(next.title) + '</span>';
+            nextLink.href = '?doc_vista=' + next.id;
+            nextLink.className = 'doc-vista-page-nav-link doc-vista-page-nav-next';
+            nextLink.innerHTML = '<span class="doc-vista-nav-direction">' + (CFG.i18n.next || 'Next') + '</span>' +
+                '<span class="doc-vista-nav-title">' + escapeHtml(next.title) + '</span>';
             nextLink.addEventListener('click', function (e) {
                 e.preventDefault();
-                var event = new CustomEvent('zuno-docs-navigate', { detail: { docId: next.id } });
+                var event = new CustomEvent('doc-vista-navigate', { detail: { docId: next.id } });
                 wrapEl.dispatchEvent(event);
             });
             el.appendChild(nextLink);
@@ -1912,7 +1869,7 @@
      * Related articles
      * =================================================================== */
     function renderRelated(wrapEl) {
-        var wrap = qs('.zuno-docs-related-wrap', wrapEl);
+        var wrap = qs('.doc-vista-related-wrap', wrapEl);
         if (!wrap) return;
 
         var display = CFG.display || {};
@@ -1928,18 +1885,18 @@
             return;
         }
 
-        var list = qs('.zuno-docs-related-list', wrap);
+        var list = qs('.doc-vista-related-list', wrap);
         if (!list) return;
 
         list.innerHTML = '';
         related.forEach(function (r) {
             var li = document.createElement('li');
             var a = document.createElement('a');
-            a.href = '?zuno_doc=' + r.id;
+            a.href = '?doc_vista=' + r.id;
             a.textContent = r.title;
             a.addEventListener('click', function (e) {
                 e.preventDefault();
-                var event = new CustomEvent('zuno-docs-navigate', { detail: { docId: r.id } });
+                var event = new CustomEvent('doc-vista-navigate', { detail: { docId: r.id } });
                 wrapEl.dispatchEvent(event);
             });
             li.appendChild(a);
@@ -1953,12 +1910,12 @@
      * Search UI
      * =================================================================== */
     function initSearch(wrapEl) {
-        var input = qs('.zuno-docs-search-input', wrapEl);
-        var clear = qs('.zuno-docs-search-clear', wrapEl);
-        var noResults = qs('.zuno-docs-no-results', wrapEl);
-        var suggestionsEl = qs('.zuno-docs-suggestions', wrapEl);
-        var tocEl = qs('.zuno-docs-toc', wrapEl);
-        var contentEl = qs('.zuno-docs-content', wrapEl);
+        var input = qs('.doc-vista-search-input', wrapEl);
+        var clear = qs('.doc-vista-search-clear', wrapEl);
+        var noResults = qs('.doc-vista-no-results', wrapEl);
+        var suggestionsEl = qs('.doc-vista-suggestions', wrapEl);
+        var tocEl = qs('.doc-vista-toc', wrapEl);
+        var contentEl = qs('.doc-vista-content', wrapEl);
 
         if (!input) return;
 
@@ -1970,8 +1927,8 @@
         function clearAll() {
             input.value = '';
             Suggestions.hide();
-            noResults.classList.add('zuno-docs-hidden');
-            clear.classList.add('zuno-docs-hidden');
+            noResults.classList.add('doc-vista-hidden');
+            clear.classList.add('doc-vista-hidden');
             ContentSearch.clear();
             TocBuilder.resetFilter();
         }
@@ -1981,8 +1938,8 @@
 
             if (q.length < MIN_QUERY) {
                 Suggestions.hide();
-                noResults.classList.add('zuno-docs-hidden');
-                clear.classList.toggle('zuno-docs-hidden', !q);
+                noResults.classList.add('doc-vista-hidden');
+                clear.classList.toggle('doc-vista-hidden', !q);
                 ContentSearch.clear();
                 TocBuilder.resetFilter();
                 return;
@@ -1994,7 +1951,6 @@
             if (searchData.docs && Object.keys(searchData.docs).length > 0) {
                 var results = SearchEngine.search(q);
                 if (hasLocal) {
-                    /* Combine: show local results first, then cross-doc with a header */
                     var combined = localResults.slice();
                     if (results.length) {
                         combined.push({ _separator: true });
@@ -2015,7 +1971,7 @@
             ContentSearch.search(q);
             TocBuilder.filterByQuery(q, hasLocal);
 
-            clear.classList.remove('zuno-docs-hidden');
+            clear.classList.remove('doc-vista-hidden');
         }
 
         var debouncedSearch = debounce(performSearch, DEBOUNCE_MS);
@@ -2035,15 +1991,15 @@
                 clearAll();
                 input.blur();
             } else if (e.key === 'ArrowDown') {
-                var first = qs('.zuno-docs-suggestion-item', suggestionsEl);
+                var first = qs('.doc-vista-suggestion-item', suggestionsEl);
                 if (first) first.focus();
                 e.preventDefault();
             }
         });
 
         suggestionsEl.addEventListener('keydown', function (e) {
-            var items = qsa('.zuno-docs-suggestion-item', suggestionsEl);
-            var current = qs('.zuno-docs-suggestion-item:focus', suggestionsEl);
+            var items = qsa('.doc-vista-suggestion-item', suggestionsEl);
+            var current = qs('.doc-vista-suggestion-item:focus', suggestionsEl);
             var idx = items.indexOf(current);
 
             if (e.key === 'ArrowDown') {
@@ -2070,7 +2026,7 @@
 
         wrapEl.addEventListener('click', function (e) {
             if (e.target === input) return;
-            if (!e.target.closest('.zuno-docs-suggestions')) {
+            if (!e.target.closest('.doc-vista-suggestions')) {
                 setTimeout(function () { Suggestions.hide(); }, 200);
             }
         });
@@ -2105,18 +2061,18 @@
      * Navigation event handling
      * =================================================================== */
     function initNavigation(wrapEl) {
-        wrapEl.addEventListener('zuno-docs-navigate', function (e) {
+        wrapEl.addEventListener('doc-vista-navigate', function (e) {
             var docId = e.detail && e.detail.docId;
             if (!docId) return;
             var url = new URL(window.location.href);
-            url.searchParams.set('zuno_doc', docId);
+            url.searchParams.set('doc_vista', docId);
             window.location.href = url.toString();
         });
 
-        qsa('.zuno-docs-content a[href*="zuno_doc="]', wrapEl).forEach(function (a) {
+        qsa('.doc-vista-content a[href*="doc_vista="]', wrapEl).forEach(function (a) {
             a.addEventListener('click', function (e) {
                 var url = new URL(a.href);
-                var docId = url.searchParams.get('zuno_doc');
+                var docId = url.searchParams.get('doc_vista');
                 if (docId) {
                     e.preventDefault();
                     window.location.href = a.href;
@@ -2132,13 +2088,13 @@
         var bar = document.getElementById('wpadminbar');
         if (!bar) return;
 
-        wrapEl.classList.add('zuno-docs-has-admin-bar');
+        wrapEl.classList.add('doc-vista-has-admin-bar');
 
         var update = function () {
             var h = bar.getBoundingClientRect().height;
-            wrapEl.style.setProperty('--zuno-adminbar-h', h + 'px');
-            wrapEl.style.setProperty('--zuno-offset', h + 'px');
-            wrapEl.style.setProperty('--zuno-docs-sidebar-top', h + 'px');
+            wrapEl.style.setProperty('--doc-vista-adminbar-h', h + 'px');
+            wrapEl.style.setProperty('--doc-vista-offset', h + 'px');
+            wrapEl.style.setProperty('--doc-vista-sidebar-top', h + 'px');
         };
 
         update();
@@ -2181,13 +2137,13 @@
      * Only one H1 expanded at a time. Replaces NavRail on mobile.
      * =================================================================== */
     function initMobileToc(wrapEl) {
-        var mobileToc = qs('.zuno-docs-mobile-toc', wrapEl);
-        var trigger = qs('.zuno-docs-mobile-toc-trigger', wrapEl);
-        var closeBtn = qs('.zuno-docs-mobile-toc-close', wrapEl);
-        var backdrop = qs('.zuno-docs-mobile-toc-backdrop', wrapEl);
-        var panel = qs('.zuno-docs-mobile-toc-panel', wrapEl);
-        var panelBody = qs('.zuno-docs-mobile-toc-panel-body', wrapEl);
-        var sidebar = qs('.zuno-docs-sidebar', wrapEl);
+        var mobileToc = qs('.doc-vista-mobile-toc', wrapEl);
+        var trigger = qs('.doc-vista-mobile-toc-trigger', wrapEl);
+        var closeBtn = qs('.doc-vista-mobile-toc-close', wrapEl);
+        var backdrop = qs('.doc-vista-mobile-toc-backdrop', wrapEl);
+        var panel = qs('.doc-vista-mobile-toc-panel', wrapEl);
+        var panelBody = qs('.doc-vista-mobile-toc-panel-body', wrapEl);
+        var sidebar = qs('.doc-vista-sidebar', wrapEl);
 
         if (!trigger || !mobileToc) return;
 
@@ -2234,16 +2190,13 @@
 
         function getScrollOffset() {
             if (isMobile()) {
-                var triggerBar = qs('.zuno-docs-mobile-toc', wrapEl);
+                var triggerBar = qs('.doc-vista-mobile-toc', wrapEl);
                 var h = triggerBar ? triggerBar.getBoundingClientRect().height : 0;
                 return h + 16;
             }
             return getTopOffset(wrapEl);
         }
 
-        /* ---------------------------------------------------------------
-         * Build hierarchical TOC tree from ChapterEngine data
-         * --------------------------------------------------------------- */
         function renderTree(nodes) {
             if (!nodes || !nodes.length) return null;
             var ul = document.createElement('ul');
@@ -2254,7 +2207,7 @@
 
                 var link = document.createElement('a');
                 link.href = '#' + node.id;
-                link.className = 'zuno-docs-toc-link';
+                link.className = 'doc-vista-toc-link';
                 link.dataset.target = node.id;
                 link.textContent = node.text;
 
@@ -2284,7 +2237,7 @@
         function buildMobileToc() {
             if (!panelBody) return;
 
-            var existing = qs('.zuno-docs-toc', panelBody);
+            var existing = qs('.doc-vista-toc', panelBody);
             if (existing) existing.remove();
 
             var chapters = ChapterEngine.getAllChapters();
@@ -2292,7 +2245,7 @@
             if (!chapters.length) return;
 
             var tocEl = document.createElement('nav');
-            tocEl.className = 'zuno-docs-toc';
+            tocEl.className = 'doc-vista-toc';
             tocEl.setAttribute('aria-label', 'Table of Contents');
 
             var ul = document.createElement('ul');
@@ -2306,7 +2259,7 @@
 
                 var chLink = document.createElement('a');
                 chLink.href = '#' + ch.id;
-                chLink.className = 'zuno-docs-toc-link';
+                chLink.className = 'doc-vista-toc-link';
                 chLink.dataset.target = ch.id;
                 chLink.dataset.tocId = ch.id;
                 chLink.textContent = ch.title;
@@ -2316,9 +2269,8 @@
                     chLi.classList.add('is-open');
                 }
 
-                /* Chevron toggle */
                 var toggle = document.createElement('span');
-                toggle.className = 'zuno-docs-toc-toggle';
+                toggle.className = 'doc-vista-toc-toggle';
                 toggle.setAttribute('role', 'button');
                 toggle.setAttribute('tabindex', '0');
                 toggle.setAttribute('aria-label', 'Toggle section');
@@ -2333,7 +2285,6 @@
 
                 chLi.appendChild(chLink);
 
-                /* Render children for active chapter */
                 if (isActive) {
                     var chapter = ChapterEngine.getChapter(ch.id);
                     var tree = chapter ? ChapterEngine.getChapterTree(ch.id) : [];
@@ -2348,20 +2299,17 @@
             panelBody.appendChild(tocEl);
         }
 
-        /* ---------------------------------------------------------------
-         * Update active heading highlight in mobile TOC
-         * --------------------------------------------------------------- */
         function updateMobileActive(id) {
             if (!isMobile() || !panelBody) return;
-            var tocEl = qs('.zuno-docs-toc', panelBody);
+            var tocEl = qs('.doc-vista-toc', panelBody);
             if (!tocEl) return;
 
-            qsa('.zuno-docs-toc-link.is-active', tocEl).forEach(function (link) {
+            qsa('.doc-vista-toc-link.is-active', tocEl).forEach(function (link) {
                 link.classList.remove('is-active');
             });
 
             var targetId = id || ChapterEngine.getActiveChapterId();
-            var activeLink = qs('.zuno-docs-toc-link[data-target="' + targetId + '"]', tocEl);
+            var activeLink = qs('.doc-vista-toc-link[data-target="' + targetId + '"]', tocEl);
             if (activeLink) {
                 activeLink.classList.add('is-active');
                 activeLink.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
@@ -2370,29 +2318,22 @@
 
         _mobileTocUpdateActive = updateMobileActive;
 
-        /* ---------------------------------------------------------------
-         * Rebuild hierarchy when active chapter changes
-         * --------------------------------------------------------------- */
         ChapterEngine.onChange(function () {
             if (isMobile()) buildMobileToc();
         });
 
-        /* ---------------------------------------------------------------
-         * Search filter on mobile TOC hierarchy
-         * --------------------------------------------------------------- */
         function filterMobileToc(query) {
-            var tocEl = qs('.zuno-docs-toc', panelBody);
+            var tocEl = qs('.doc-vista-toc', panelBody);
             if (!tocEl) return;
 
             var q = query.trim().toLowerCase();
 
-            /* Reset all */
-            var allLinks = qsa('.zuno-docs-toc-link', tocEl);
+            var allLinks = qsa('.doc-vista-toc-link', tocEl);
             allLinks.forEach(function (link) {
                 var li = link.closest('li');
                 if (li) {
-                    li.classList.remove('zuno-docs-toc-match');
-                    li.classList.remove('zuno-docs-toc-hidden');
+                    li.classList.remove('doc-vista-toc-match');
+                    li.classList.remove('doc-vista-toc-hidden');
                 }
             });
 
@@ -2404,7 +2345,7 @@
                 if (text.indexOf(q) !== -1) {
                     var li = link.closest('li');
                     if (li) {
-                        li.classList.add('zuno-docs-toc-match');
+                        li.classList.add('doc-vista-toc-match');
                         matchCount++;
                     }
                 }
@@ -2413,20 +2354,19 @@
             if (!matchCount) {
                 allLinks.forEach(function (link) {
                     var li = link.closest('li');
-                    if (li) li.classList.add('zuno-docs-toc-hidden');
+                    if (li) li.classList.add('doc-vista-toc-hidden');
                 });
                 return;
             }
 
             allLinks.forEach(function (link) {
                 var li = link.closest('li');
-                if (li && !li.classList.contains('zuno-docs-toc-match')) {
-                    li.classList.add('zuno-docs-toc-hidden');
+                if (li && !li.classList.contains('doc-vista-toc-match')) {
+                    li.classList.add('doc-vista-toc-hidden');
                 }
             });
 
-            /* Auto-expand parent chapters for matches */
-            qsa('.zuno-docs-toc-match', tocEl).forEach(function (matchLi) {
+            qsa('.doc-vista-toc-match', tocEl).forEach(function (matchLi) {
                 var parent = matchLi.parentElement;
                 while (parent && parent !== tocEl) {
                     if (parent.tagName === 'LI' && parent.dataset.depth === '1') {
@@ -2437,31 +2377,27 @@
             });
         }
 
-        /* ---------------------------------------------------------------
-         * Open the mobile TOC panel
-         * --------------------------------------------------------------- */
         function openToc() {
             if (!isMobile()) return;
             mobileToc.classList.add('is-open');
             trigger.setAttribute('aria-expanded', 'true');
             if (position !== 'bottom') {
-                document.body.classList.add('zuno-docs-toc-open');
+                document.body.classList.add('doc-vista-toc-open');
             }
 
             if (panelBody && sidebar) {
-                /* Clone search elements once */
-                if (!panelBody.querySelector('.zuno-docs-search-wrap')) {
-                    var searchWrap = qs('.zuno-docs-search-wrap', sidebar);
-                    var suggestions = qs('.zuno-docs-suggestions', sidebar);
-                    var noResults = qs('.zuno-docs-no-results', sidebar);
+                if (!panelBody.querySelector('.doc-vista-search-wrap')) {
+                    var searchWrap = qs('.doc-vista-search-wrap', sidebar);
+                    var suggestions = qs('.doc-vista-suggestions', sidebar);
+                    var noResults = qs('.doc-vista-no-results', sidebar);
 
                     if (searchWrap) {
                         var searchClone = searchWrap.cloneNode(true);
                         panelBody.insertBefore(searchClone, panelBody.firstChild);
-                        var newInput = qs('.zuno-docs-search-input', panelBody);
+                        var newInput = qs('.doc-vista-search-input', panelBody);
                         if (newInput) {
                             newInput.addEventListener('input', function (e) {
-                                var sidebarInput = qs('.zuno-docs-search-input', sidebar);
+                                var sidebarInput = qs('.doc-vista-search-input', sidebar);
                                 if (sidebarInput) {
                                     sidebarInput.value = e.target.value;
                                     sidebarInput.dispatchEvent(new Event('input', { bubbles: true }));
@@ -2469,7 +2405,7 @@
                                 filterMobileToc(e.target.value);
                             });
                             newInput.addEventListener('focus', function () {
-                                var sidebarInput = qs('.zuno-docs-search-input', sidebar);
+                                var sidebarInput = qs('.doc-vista-search-input', sidebar);
                                 if (sidebarInput) sidebarInput.focus();
                             });
                         }
@@ -2486,12 +2422,10 @@
                     }
                 }
 
-                /* Build/rebuild hierarchical TOC */
                 buildMobileToc();
 
-                /* Sync search input value */
-                var sidebarInput = qs('.zuno-docs-search-input', sidebar);
-                var panelInput = qs('.zuno-docs-search-input', panelBody);
+                var sidebarInput = qs('.doc-vista-search-input', sidebar);
+                var panelInput = qs('.doc-vista-search-input', panelBody);
                 if (sidebarInput && panelInput) {
                     panelInput.value = sidebarInput.value;
                     if (sidebarInput.value.trim().length >= 2) {
@@ -2501,13 +2435,10 @@
             }
         }
 
-        /* ---------------------------------------------------------------
-         * Close the mobile TOC panel
-         * --------------------------------------------------------------- */
         function closeToc() {
             mobileToc.classList.remove('is-open');
             trigger.setAttribute('aria-expanded', 'false');
-            document.body.classList.remove('zuno-docs-toc-open');
+            document.body.classList.remove('doc-vista-toc-open');
         }
 
         trigger.addEventListener('click', function (e) {
@@ -2543,7 +2474,7 @@
 
         if (panelBody) {
             panelBody.addEventListener('click', function (e) {
-                var link = e.target.closest('.zuno-docs-toc-link');
+                var link = e.target.closest('.doc-vista-toc-link');
                 if (link && isMobile()) {
                     var id = link.dataset.tocId;
                     if (id) {
@@ -2570,8 +2501,8 @@
         _activeWrapper = wrapEl;
         _runCleanups();
 
-        var contentEl = qs('.zuno-docs-content', wrapEl);
-        var tocEl = qs('.zuno-docs-toc', wrapEl);
+        var contentEl = qs('.doc-vista-content', wrapEl);
+        var tocEl = qs('.doc-vista-toc', wrapEl);
         if (!contentEl || !tocEl) return;
 
         /* 1. Build chapter structure */
@@ -2642,7 +2573,7 @@
      * Entry Point
      * =================================================================== */
     function boot() {
-        var instances = qsa('.zuno-docs');
+        var instances = qsa('.doc-vista');
         instances.forEach(function (wrap) { initInstance(wrap); });
     }
 

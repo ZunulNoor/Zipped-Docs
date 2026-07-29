@@ -1,0 +1,1938 @@
+/* ===================================================================
+ * DOC VISTA — Design System & Styles
+ * =================================================================== */
+
+/* -------------------------------------------------------------------
+ * 1. DESIGN TOKENS (Variables)
+ * ------------------------------------------------------------------- */
+.doc-vista {
+    /* Colors */
+    --doc-vista-primary: #2563EB;
+    --doc-vista-primary-rgb: 37, 99, 235;
+    --doc-vista-text: #111827;
+    --doc-vista-text-secondary: #6B7280;
+    --doc-vista-text-muted: #9CA3AF;
+    --doc-vista-border: #E5E7EB;
+    --doc-vista-border-light: #F3F4F6;
+    --doc-vista-bg: #ffffff;
+    --doc-vista-bg-subtle: #F9FAFB;
+    --doc-vista-bg-hover: #F3F4F6;
+    --doc-vista-text-link: #2563EB;
+
+    /* Typography */
+    --doc-vista-font: inherit;
+    --doc-vista-font-mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+
+    /* Spacing scale */
+    --doc-vista-space-1: 4px;
+    --doc-vista-space-2: 8px;
+    --doc-vista-space-3: 12px;
+    --doc-vista-space-4: 16px;
+    --doc-vista-space-5: 20px;
+    --doc-vista-space-6: 24px;
+    --doc-vista-space-8: 32px;
+    --doc-vista-space-10: 40px;
+    --doc-vista-space-12: 48px;
+    --doc-vista-space-16: 64px;
+
+    /* Border radius */
+    --doc-vista-radius-sm: 4px;
+    --doc-vista-radius-md: 8px;
+    --doc-vista-radius-lg: 12px;
+    --doc-vista-radius-xl: 16px;
+
+    /* Shadows */
+    --doc-vista-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
+    --doc-vista-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --doc-vista-shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.10);
+    --doc-vista-shadow-xl: 0 12px 32px rgba(0, 0, 0, 0.12);
+
+    /* Transitions */
+    --doc-vista-transition: 200ms ease;
+    --doc-vista-transition-slow: 250ms ease;
+
+    /* Layout */
+    --doc-vista-sidebar-top: 0px;
+    --doc-vista-content-max: 820px;
+    --doc-vista-offset: 0px;
+    --doc-vista-adminbar-h: 0px;
+
+    /* Root layout */
+    max-width: 1440px;
+    width: 100%;
+    margin: 0 auto;
+    display: flex;
+    align-items: flex-start;
+    position: relative;
+    min-height: 100vh;
+    background: var(--doc-vista-bg);
+    font-family: var(--doc-vista-font);
+    color: var(--doc-vista-text);
+    font-size: 16px;
+    line-height: 1.7;
+    box-sizing: border-box;
+}
+
+.doc-vista *,
+.doc-vista *::before,
+.doc-vista *::after {
+    box-sizing: inherit;
+}
+
+/* -------------------------------------------------------------------
+ * 2. LAYOUT — Sidebar + Content wrapper
+ * ------------------------------------------------------------------- */
+
+/* ---------- Sidebar ---------- */
+.doc-vista-sidebar {
+    width: var(--doc-vista-sidebar-w, 30%);
+    max-width: 340px;
+    min-width: 280px;
+    flex-shrink: 0;
+    position: sticky;
+    top: var(--doc-vista-space-6, 24px);
+    height: 100vh;
+    overflow: hidden;
+    background: var(--doc-vista-toc-bg, transparent);
+    display: flex;
+    flex-direction: column;
+    z-index: 100;
+}
+
+.doc-vista-sidebar-inner {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+}
+
+.doc-vista-sidebar-toggle {
+    display: none;
+}
+
+/* ---------- Content ---------- */
+.doc-vista-content-wrap {
+    width: 70%;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.doc-vista-content {
+    width: 100%;
+    max-width: var(--doc-vista-content-max, 820px);
+    padding: 0 var(--doc-vista-space-8, 32px) var(--doc-vista-space-16, 64px);
+}
+
+/* -------------------------------------------------------------------
+ * 3. SEARCH
+ * ------------------------------------------------------------------- */
+.doc-vista-search-wrap {
+    position: relative;
+    flex-shrink: 0;
+}
+
+.doc-vista-search-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--doc-vista-text-muted);
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    width: 18px;
+    height: 18px;
+}
+
+.doc-vista-search-icon svg {
+    width: 18px;
+    height: 18px;
+}
+
+.doc-vista-search-input {
+    width: 100% !important;
+    padding: 10px 14px 10px 42px !important;
+    border: 1px solid var(--doc-vista-border);
+    border-radius: var(--doc-vista-radius-lg, 12px) !important;
+    background: #FFFFFF !important;
+    font-family: var(--doc-vista-font) !important;
+    font-size: 14px !important;
+    color: var(--doc-vista-text) !important;
+    outline: none !important;
+    -webkit-appearance: none !important;
+    appearance: none !important;
+    transition: border-color var(--doc-vista-transition), box-shadow var(--doc-vista-transition) !important;
+}
+
+.doc-vista-search-input:focus {
+    border-color: none !important;
+    box-shadow: none !important;
+    border: 1px solid var(--doc-vista-border) !important;
+}
+
+.doc-vista-search-input::placeholder {
+    color: var(--doc-vista-text-muted) !important;
+}
+
+.doc-vista-search-input::-webkit-search-cancel-button {
+    display: none !important;
+}
+
+.doc-vista-search-clear {
+    position: absolute !important;
+    right: 14px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    background: none !important;
+    border: none !important;
+    cursor: pointer !important;
+    color: var(--doc-vista-text-muted) !important;
+    font-size: 14px !important;
+    padding: 2px 6px !important;
+    border-radius: var(--doc-vista-radius-sm, 4px) !important;
+    line-height: 1 !important;
+    box-shadow: none !important;
+    transition: color var(--doc-vista-transition), background var(--doc-vista-transition) !important;
+}
+
+.doc-vista-search-clear:hover {
+    color: var(--doc-vista-text) !important;
+}
+
+/* ---------- Suggestions dropdown ---------- */
+.doc-vista-suggestions {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--doc-vista-bg);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    border-radius: var(--doc-vista-radius-xl, 16px);
+    box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.10),
+        0 2px 8px rgba(0, 0, 0, 0.06);
+    max-height: 350px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    overscroll-behavior: contain;
+    z-index: 200;
+    margin-top: var(--doc-vista-space-2, 8px);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+/* Smooth scrollbar for suggestions */
+.doc-vista-suggestions::-webkit-scrollbar {
+    width: 4px;
+}
+
+.doc-vista-suggestions::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.doc-vista-suggestions::-webkit-scrollbar-thumb {
+    background: var(--doc-vista-border);
+    border-radius: 2px;
+}
+
+.doc-vista-suggestion-item {
+    display: block;
+    width: 100%;
+    padding: 10px var(--doc-vista-space-4, 16px);
+    text-align: left;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: var(--doc-vista-font);
+    border-bottom: 1px solid var(--doc-vista-border-light);
+    transition:
+        background 150ms cubic-bezier(0.4, 0, 0.2, 1);
+    line-height: 1.4;
+}
+
+.doc-vista-suggestion-item:last-child {
+    border-bottom: none;
+    border-radius: 0 0 var(--doc-vista-radius-xl, 16px) var(--doc-vista-radius-xl, 16px);
+}
+
+.doc-vista-suggestion-item:first-child {
+    border-radius: var(--doc-vista-radius-xl, 16px) var(--doc-vista-radius-xl, 16px) 0 0;
+}
+
+.doc-vista-suggestion-item:hover,
+.doc-vista-suggestion-item:focus {
+    background: rgba(var(--doc-vista-primary-rgb), 0.06);
+    outline: none;
+}
+
+.doc-vista-suggestion-item:active {
+    background: rgba(var(--doc-vista-primary-rgb), 0.12);
+}
+
+.doc-vista-suggestion-title {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--doc-vista-text);
+    line-height: 1.4;
+}
+
+.doc-vista-suggestion-excerpt {
+    display: block;
+    font-size: 13px;
+    color: var(--doc-vista-text-muted);
+    margin-top: var(--doc-vista-space-1, 4px);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.doc-vista-suggestion-mark {
+    background: rgba(var(--doc-vista-primary-rgb), 0.12);
+    color: var(--doc-vista-primary);
+    font-weight: 500;
+    padding: 0 2px;
+    border-radius: 3px;
+}
+
+/* -------------------------------------------------------------------
+ * 4. TABLE OF CONTENTS
+ * ------------------------------------------------------------------- */
+.doc-vista-toc {
+    flex: 1;
+    overflow-y: auto;
+    padding: var(--doc-vista-space-4, 16px) 0 var(--doc-vista-space-8, 32px);
+    scrollbar-width: thin;
+    scrollbar-color: var(--doc-vista-border) transparent;
+}
+
+.doc-vista-toc::-webkit-scrollbar {
+    width: 4px;
+}
+
+.doc-vista-toc::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.doc-vista-toc::-webkit-scrollbar-thumb {
+    background: var(--doc-vista-border);
+    border-radius: 2px;
+}
+
+
+.doc-vista-toc ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.doc-vista-toc a,
+.doc-vista-toc button,
+.doc-vista-toc [role="button"] {
+    outline: none;
+}
+
+.doc-vista-toc a:focus-visible,
+.doc-vista-toc button:focus-visible,
+.doc-vista-toc [role="button"]:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(var(--doc-vista-primary-rgb), 0.25);
+    border-radius: var(--doc-vista-radius-md, 8px);
+}
+
+/* ---------- TOC Link (base) ---------- */
+.doc-vista-toc-link {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--doc-vista-space-2, 8px);
+    padding: 10px 4px 10px 12px;
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--doc-vista-toc-text, var(--doc-vista-text-secondary));
+    text-decoration: none !important;
+    border-left: 2px solid transparent;
+    line-height: 1.5;
+    word-break: keep-all;
+    overflow-wrap: break-word;
+    border-radius: 0;
+    transition:
+        color var(--doc-vista-transition),
+        border-color var(--doc-vista-transition),
+        padding var(--doc-vista-transition);
+}
+
+/* ---------- TOC Link hover ---------- */
+.doc-vista-toc-link:hover {
+    background: var(--doc-vista-toc-hover, transparent);
+    color: var(--doc-vista-primary);
+    border-left-color: var(--doc-vista-primary);
+    padding-left: 14px;
+}
+
+/* ---------- TOC Link active ---------- */
+.doc-vista-toc-link.is-active,
+.doc-vista-toc-link.is-active:hover {
+    background: var(--doc-vista-toc-active-bg, rgba(var(--doc-vista-primary-rgb), 0.10));
+    color: var(--doc-vista-toc-active-text, var(--doc-vista-text));
+    border-left: 3px solid var(--doc-vista-toc-active-bar, var(--doc-vista-primary));
+    padding: 10px 14px;
+    font-weight: 500;
+    text-decoration: none !important;
+}
+
+/* ---------- Depth-based indentation ---------- */
+
+/* Base padding per depth (all use same padding-top/bottom = 10px for readability) */
+.doc-vista-toc li[data-depth="1"]>.doc-vista-toc-link {
+    padding-left: 4px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--doc-vista-toc-text, var(--doc-vista-text));
+}
+
+.doc-vista-toc li[data-depth="1"]>.doc-vista-toc-link:hover {
+    background: var(--doc-vista-toc-hover, transparent);
+    color: var(--doc-vista-primary);
+    border-left-color: var(--doc-vista-primary);
+    padding-left: 6px;
+}
+
+.doc-vista-toc li[data-depth="1"]>.doc-vista-toc-link.is-active,
+.doc-vista-toc li[data-depth="1"]>.doc-vista-toc-link.is-active:hover {
+    border-left: 3px solid var(--doc-vista-toc-active-bar, var(--doc-vista-primary));
+    padding: 10px 14px;
+    background: var(--doc-vista-toc-active-bg, rgba(var(--doc-vista-primary-rgb), 0.10));
+    color: var(--doc-vista-toc-active-text, var(--doc-vista-text));
+}
+
+.doc-vista-toc li[data-depth="2"]>.doc-vista-toc-link {
+    padding-left: 24px;
+    font-size: 14px;
+    font-weight: 400;
+}
+
+.doc-vista-toc li[data-depth="2"]>.doc-vista-toc-link:hover {
+    background: var(--doc-vista-toc-hover, transparent);
+    color: var(--doc-vista-primary);
+    border-left-color: var(--doc-vista-primary);
+    padding-left: 26px;
+}
+
+.doc-vista-toc li[data-depth="2"]>.doc-vista-toc-link.is-active,
+.doc-vista-toc li[data-depth="2"]>.doc-vista-toc-link.is-active:hover {
+    padding: 10px 14px;
+    background: var(--doc-vista-toc-active-bg, rgba(var(--doc-vista-primary-rgb), 0.10));
+    color: var(--doc-vista-toc-active-text, var(--doc-vista-text));
+    border-left: 3px solid var(--doc-vista-toc-active-bar, var(--doc-vista-primary));
+}
+
+.doc-vista-toc li[data-depth="3"]>.doc-vista-toc-link {
+    padding-left: 44px;
+    font-size: 13.5px;
+}
+
+.doc-vista-toc li[data-depth="3"]>.doc-vista-toc-link:hover {
+    background: var(--doc-vista-toc-hover, transparent);
+    color: var(--doc-vista-primary);
+    border-left-color: var(--doc-vista-primary);
+    padding-left: 46px;
+}
+
+.doc-vista-toc li[data-depth="3"]>.doc-vista-toc-link.is-active,
+.doc-vista-toc li[data-depth="3"]>.doc-vista-toc-link.is-active:hover {
+    padding: 10px 14px;
+    background: var(--doc-vista-toc-active-bg, rgba(var(--doc-vista-primary-rgb), 0.10));
+    color: var(--doc-vista-toc-active-text, var(--doc-vista-text));
+    border-left: 3px solid var(--doc-vista-toc-active-bar, var(--doc-vista-primary));
+}
+
+.doc-vista-toc li[data-depth="4"]>.doc-vista-toc-link {
+    padding-left: 64px;
+    font-size: 13px;
+}
+
+.doc-vista-toc li[data-depth="4"]>.doc-vista-toc-link:hover {
+    background: var(--doc-vista-toc-hover, transparent);
+    color: var(--doc-vista-primary);
+    border-left-color: var(--doc-vista-primary);
+    padding-left: 66px;
+}
+
+.doc-vista-toc li[data-depth="4"]>.doc-vista-toc-link.is-active,
+.doc-vista-toc li[data-depth="4"]>.doc-vista-toc-link.is-active:hover {
+    padding: 10px 14px;
+    background: var(--doc-vista-toc-active-bg, rgba(var(--doc-vista-primary-rgb), 0.10));
+    color: var(--doc-vista-toc-active-text, var(--doc-vista-text));
+    border-left: 3px solid var(--doc-vista-toc-active-bar, var(--doc-vista-primary));
+}
+
+.doc-vista-toc li[data-depth="5"]>.doc-vista-toc-link {
+    padding-left: 84px;
+    font-size: 13px;
+}
+
+.doc-vista-toc li[data-depth="5"]>.doc-vista-toc-link:hover {
+    background: var(--doc-vista-toc-hover, transparent);
+    color: var(--doc-vista-primary);
+    border-left-color: var(--doc-vista-primary);
+    padding-left: 86px;
+}
+
+.doc-vista-toc li[data-depth="5"]>.doc-vista-toc-link.is-active,
+.doc-vista-toc li[data-depth="5"]>.doc-vista-toc-link.is-active:hover {
+    padding: 10px 14px;
+    background: var(--doc-vista-toc-active-bg, rgba(var(--doc-vista-primary-rgb), 0.10));
+    color: var(--doc-vista-toc-active-text, var(--doc-vista-text));
+    border-left: 3px solid var(--doc-vista-toc-active-bar, var(--doc-vista-primary));
+}
+
+.doc-vista-toc li[data-depth="6"]>.doc-vista-toc-link {
+    padding-left: 104px;
+    font-size: 12px;
+}
+
+.doc-vista-toc li[data-depth="6"]>.doc-vista-toc-link:hover {
+    background: var(--doc-vista-toc-hover, transparent);
+    color: var(--doc-vista-primary);
+    border-left-color: var(--doc-vista-primary);
+    padding-left: 106px;
+}
+
+.doc-vista-toc li[data-depth="6"]>.doc-vista-toc-link.is-active,
+.doc-vista-toc li[data-depth="6"]>.doc-vista-toc-link.is-active:hover {
+    padding: 10px 14px;
+    background: var(--doc-vista-toc-active-bg, rgba(var(--doc-vista-primary-rgb), 0.10));
+    color: var(--doc-vista-toc-active-text, var(--doc-vista-text));
+    border-left: 3px solid var(--doc-vista-toc-active-bar, var(--doc-vista-primary));
+}
+
+/* ---------- Collapsible sections ---------- */
+.doc-vista-toc li>ul {
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height var(--doc-vista-transition-slow, 250ms) ease;
+}
+
+.doc-vista-toc li.is-open>ul {
+    max-height: 9999px;
+}
+
+/* ---------- Flat mode: accordion collapse (only active H1 open) ---------- */
+.doc-vista-toc-mode-flat li>ul {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height var(--doc-vista-transition-slow, 250ms) ease;
+}
+
+.doc-vista-toc-mode-flat li.is-open>ul {
+    max-height: 9999px;
+    overflow: visible;
+} 
+
+/* Flat mode: H3 items use data-depth="2" so they share the same pad-left as H2 */
+.doc-vista-toc-mode-flat li[data-depth="2"]>.doc-vista-toc-link {
+    padding-left: 24px;
+    font-size: 14px;
+}
+
+/* ---------- TOC toggle chevron ---------- */
+.doc-vista-toc-toggle {
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 3px;
+    cursor: pointer;
+    opacity: 0.35;
+    line-height: 1;
+    transition: transform var(--doc-vista-transition), opacity var(--doc-vista-transition);
+    color: var(--doc-vista-text-muted);
+    user-select: none;
+}
+
+.doc-vista-toc-toggle:hover {
+    opacity: 0.7;
+}
+
+li.is-open>.doc-vista-toc-link .doc-vista-toc-toggle {
+    transform: rotate(90deg);
+    opacity: 0.5;
+}
+
+/* ---------- Search results inside TOC ---------- */
+.doc-vista-toc-search-label {
+    color: var(--doc-vista-primary);
+}
+
+.doc-vista-toc-match>.doc-vista-toc-link {
+    background: rgba(var(--doc-vista-primary-rgb), 0.06);
+    border-left-color: var(--doc-vista-primary);
+    font-weight: 500;
+}
+
+.doc-vista-toc-hidden {
+    display: none !important;
+}
+
+.doc-vista-toc-empty {
+    padding: var(--doc-vista-space-4, 16px) var(--doc-vista-space-1, 4px);
+    font-size: 14px;
+    color: var(--doc-vista-text-muted);
+    font-style: italic;
+    text-align: center;
+    margin: 0;
+}
+
+
+.doc-vista-no-results {
+    padding: var(--doc-vista-space-4, 16px) var(--doc-vista-space-1, 4px);
+    font-size: 14px;
+    color: var(--doc-vista-text-muted);
+    font-style: italic;
+    margin: 0;
+}
+
+/* -------------------------------------------------------------------
+ * 5. BREADCRUMBS
+ * ------------------------------------------------------------------- */
+.doc-vista-breadcrumbs {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--doc-vista-space-2, 8px);
+    font-size: 14px;
+    color: var(--doc-vista-text-muted);
+    margin-bottom: var(--doc-vista-space-8, 32px);
+    padding-bottom: var(--doc-vista-space-4, 16px);
+    border-bottom: 1px solid var(--doc-vista-border-light);
+}
+
+.doc-vista-breadcrumb {
+    font-size: 14px;
+    color: var(--doc-vista-text-muted);
+}
+
+.doc-vista-breadcrumb.is-current {
+    color: var(--doc-vista-text);
+    font-weight: 500;
+}
+
+.doc-vista-breadcrumb-sep {
+    color: var(--doc-vista-text-muted);
+    font-size: 12px;
+    margin: 0 var(--doc-vista-space-1, 4px);
+}
+
+/* -------------------------------------------------------------------
+ * 6. CONTENT TYPOGRAPHY
+ * ------------------------------------------------------------------- */
+
+/* ---------- Headings ---------- */
+.doc-vista-content h1,
+.doc-vista-content h2,
+.doc-vista-content h3,
+.doc-vista-content h4,
+.doc-vista-content h5,
+.doc-vista-content h6 {
+    font-family: var(--doc-vista-font);
+    color: var(--doc-vista-text, #000000);
+    line-height: 1.3;
+    margin-bottom: var(--doc-vista-space-4, 16px);
+    scroll-margin-top: var(--doc-vista-space-8, 32px);
+}
+
+.doc-vista-content h1 {
+    font-size: var(--doc-vista-h1-size, 28px);
+    font-weight: 700;
+    line-height: 1.15;
+    margin-top: 0;
+    margin-bottom: var(--doc-vista-space-5, 20px);
+    letter-spacing: -0.025em;
+}
+
+.doc-vista-content h2 {
+    font-size: var(--doc-vista-h2-size, 26px);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+}
+
+.doc-vista-content h3 {
+    font-size: var(--doc-vista-h3-size, 24px);
+    font-weight: 700;
+    margin-top: var(--doc-vista-space-8, 32px);
+    letter-spacing: -0.01em;
+}
+
+.doc-vista-content h4 {
+    font-size: var(--doc-vista-h4-size, 22px);
+    font-weight: 600;
+    margin-top: var(--doc-vista-space-6, 24px);
+}
+
+.doc-vista-content h5 {
+    font-size: var(--doc-vista-h5-size, 20px);
+    font-weight: 600;
+    margin-top: var(--doc-vista-space-6, 24px);
+}
+
+.doc-vista-content h6 {
+    font-size: var(--doc-vista-h6-size, 18px);
+    font-weight: 600;
+    color: var(--doc-vista-text, #000000);
+    margin-top: var(--doc-vista-space-6, 24px);
+}
+
+/* ---------- Paragraphs ---------- */
+.doc-vista-content p {
+    font-size: var(--doc-vista-p-size, 16px);
+    font-weight: 400;
+    line-height: var(--doc-vista-line-height, 1.7);
+    margin: 0 0 var(--doc-vista-space-6, 24px);
+    color: var(--doc-vista-text, #000000);
+}
+
+/* ---------- Links ---------- */
+.doc-vista-content a {
+    color: var(--doc-vista-text-link, var(--doc-vista-primary));
+    text-decoration: none;
+    font-weight: 500;
+    transition: color var(--doc-vista-transition);
+}
+
+.doc-vista-content a:hover {
+    color: var(--doc-vista-primary-hover, var(--doc-vista-primary));
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+/* ---------- Lists ---------- */
+.doc-vista-content ul,
+.doc-vista-content ol {
+    margin: 0 0 var(--doc-vista-space-6, 24px);
+    padding-left: 28px;
+    color: var(--doc-vista-text, #000000);
+    font-size: 18px;
+    line-height: 1.8;
+}
+
+.doc-vista-content ul ul,
+.doc-vista-content ol ol,
+.doc-vista-content ul ol,
+.doc-vista-content ol ul {
+    margin-bottom: 0;
+}
+
+.doc-vista-content li {
+    margin-bottom: var(--doc-vista-space-2, 8px);
+}
+
+.doc-vista-content li:last-child {
+    margin-bottom: 0;
+}
+
+/* ---------- Bold / Strong ---------- */
+.doc-vista-content strong {
+    color: var(--doc-vista-text, #000000);
+    font-weight: 600;
+}
+
+/* ---------- Blockquotes ---------- */
+.doc-vista-content blockquote {
+    margin: var(--doc-vista-space-8, 32px) 0;
+    padding: var(--doc-vista-space-1, 4px) var(--doc-vista-space-5, 20px);
+    border-left: 3px solid var(--doc-vista-border);
+    color: var(--doc-vista-text, #000000);
+    font-size: 18px;
+    line-height: 1.8;
+}
+
+.doc-vista-content blockquote p {
+    margin-bottom: 0;
+}
+
+/* -------------------------------------------------------------------
+ * 7. CODE BLOCKS
+ * ------------------------------------------------------------------- */
+
+/* ---------- Inline code ---------- */
+.doc-vista-content code {
+    font-family: var(--doc-vista-font-mono);
+    font-size: 0.85em;
+    background: var(--doc-vista-bg-subtle);
+    color: #DC2626;
+    padding: 0.2em 0.4em;
+    border-radius: var(--doc-vista-radius-sm, 4px);
+    border: 1px solid var(--doc-vista-border-light);
+}
+
+/* ---------- Code blocks (pre) ---------- */
+.doc-vista-content pre {
+    background: #1E293B;
+    color: #E2E8F0;
+    border-radius: var(--doc-vista-radius-lg, 12px);
+    padding: var(--doc-vista-space-6, 24px) var(--doc-vista-space-7, 28px);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin: var(--doc-vista-space-8, 32px) 0;
+    font-size: 15px;
+    line-height: 1.7;
+}
+
+.doc-vista-content pre code {
+    background: none;
+    color: inherit;
+    padding: 0;
+    border: none;
+    font-size: inherit;
+}
+
+/* -------------------------------------------------------------------
+ * 8. TABLES
+ * ------------------------------------------------------------------- */
+.doc-vista-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: var(--doc-vista-space-8, 32px) 0;
+    font-size: 15px;
+}
+
+.doc-vista-content table th {
+    background: var(--doc-vista-bg-subtle);
+    font-weight: 600;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--doc-vista-text-muted);
+    padding: var(--doc-vista-space-3, 12px) var(--doc-vista-space-4, 16px);
+    text-align: left;
+    border-bottom: 2px solid var(--doc-vista-border);
+}
+
+.doc-vista-content table td {
+    padding: var(--doc-vista-space-3, 12px) var(--doc-vista-space-4, 16px);
+    border-bottom: 1px solid var(--doc-vista-border-light);
+    color: var(--doc-vista-text, #000000);
+    vertical-align: top;
+}
+
+.doc-vista-content table tbody tr:hover td {
+    background: var(--doc-vista-bg-subtle);
+}
+
+/* ---------- Responsive table wrapper ---------- */
+.doc-vista-content .doc-vista-table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin: var(--doc-vista-space-8, 32px) 0;
+}
+
+.doc-vista-content .doc-vista-table-wrap table {
+    margin: 0;
+}
+
+/* -------------------------------------------------------------------
+ * 9. EMBEDDED MEDIA
+ * ------------------------------------------------------------------- */
+
+/* ---------- Images ---------- */
+.doc-vista-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: var(--doc-vista-radius-lg, 12px);
+    border: 1px solid var(--doc-vista-border-light);
+    margin: var(--doc-vista-space-8, 32px) 0;
+}
+
+/* ---------- Iframes ---------- */
+.doc-vista-content iframe {
+    max-width: 100%;
+    border-radius: var(--doc-vista-radius-lg, 12px);
+    margin: var(--doc-vista-space-8, 32px) 0;
+}
+
+/* ---------- Video embeds ---------- */
+.doc-vista-content .wp-block-embed__wrapper,
+.doc-vista-content .doc-vista-video-wrap {
+    position: relative;
+    padding-bottom: 56.25%;
+    height: 0;
+    overflow: hidden;
+    border-radius: var(--doc-vista-radius-lg, 12px);
+}
+
+.doc-vista-content .wp-block-embed__wrapper iframe,
+.doc-vista-content .doc-vista-video-wrap iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: var(--doc-vista-radius-lg, 12px);
+    margin: 0;
+}
+
+/* -------------------------------------------------------------------
+ * 10. SEARCH HIGHLIGHTS
+ * ------------------------------------------------------------------- */
+.doc-vista-highlight {
+    background: var(--doc-vista-highlight-bg, #FEF3C7);
+    color: var(--doc-vista-highlight-text, #111827);
+    padding: 1px 2px;
+    border-radius: var(--doc-vista-radius-sm, 4px);
+}
+
+.doc-vista-highlight-first {
+    animation: doc-vista-pulse 0.8s ease-in-out 2;
+}
+
+@keyframes doc-vista-pulse {
+    0% {
+        background: var(--doc-vista-highlight-bg, #FEF3C7);
+    }
+
+    50% {
+        background: var(--doc-vista-highlight-bg, #FEF3C7);
+        box-shadow: 0 0 0 3px rgba(254, 243, 199, 0.5);
+    }
+
+    100% {
+        background: var(--doc-vista-highlight-bg, #FEF3C7);
+    }
+}
+
+.doc-vista-section-hidden {
+    display: none !important;
+}
+
+/* -------------------------------------------------------------------
+ * 11. PAGE NAVIGATION (Prev / Next)
+ * ------------------------------------------------------------------- */
+.doc-vista-page-nav {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--doc-vista-space-4, 16px);
+    margin-top: var(--doc-vista-space-16, 64px);
+    padding: var(--doc-vista-space-8, 32px) var(--doc-vista-space-16, 64px) 0;
+    border-top: 1px solid var(--doc-vista-border);
+    max-width: var(--doc-vista-content-max, 820px);
+    width: 100%;
+}
+
+.doc-vista-page-nav-link {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--doc-vista-space-1, 4px);
+    padding: var(--doc-vista-space-4, 16px) var(--doc-vista-space-5, 20px);
+    border: 1px solid var(--doc-vista-border);
+    border-radius: var(--doc-vista-radius-md, 8px);
+    text-decoration: none;
+    transition: border-color var(--doc-vista-transition), background var(--doc-vista-transition);
+    max-width: 48%;
+}
+
+.doc-vista-page-nav-link:hover {
+    border-color: var(--doc-vista-primary);
+    background: rgba(var(--doc-vista-primary-rgb), 0.02);
+}
+
+.doc-vista-page-nav-next {
+    text-align: right;
+    margin-left: auto;
+}
+
+.doc-vista-nav-direction {
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--doc-vista-text-muted);
+}
+
+.doc-vista-nav-title {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--doc-vista-text);
+}
+
+/* -------------------------------------------------------------------
+ * 12. RELATED ARTICLES
+ * ------------------------------------------------------------------- */
+.doc-vista-related-wrap {
+    margin-top: var(--doc-vista-space-12, 48px);
+    padding-top: var(--doc-vista-space-8, 32px);
+    border-top: 1px solid var(--doc-vista-border);
+}
+
+.doc-vista-related-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--doc-vista-text);
+    margin: 0 0 var(--doc-vista-space-4, 16px);
+}
+
+.doc-vista-related-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.doc-vista-related-list li {
+    margin-bottom: var(--doc-vista-space-2, 8px);
+}
+
+.doc-vista-related-list a {
+    font-size: 15px;
+    color: var(--doc-vista-text-link, var(--doc-vista-primary));
+    text-decoration: none;
+    font-weight: 500;
+    transition: color var(--doc-vista-transition);
+}
+
+.doc-vista-related-list a:hover {
+    color: var(--doc-vista-primary-hover, var(--doc-vista-primary));
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+/* -------------------------------------------------------------------
+ * 13. READING PROGRESS BAR
+ * ------------------------------------------------------------------- */
+.doc-vista-progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: transparent;
+    z-index: 999999;
+}
+
+.doc-vista-progress-bar-fill {
+    height: 100%;
+    width: 0%;
+    background: var(--doc-vista-primary);
+    border-radius: 0 2px 2px 0;
+    transition: width 100ms ease-out;
+    will-change: width;
+}
+
+/* -------------------------------------------------------------------
+ * 14. ADMIN BAR OFFSET (namespaced)
+ * ------------------------------------------------------------------- */
+.doc-vista.doc-vista-has-admin-bar .doc-vista-sidebar {
+    top: calc(var(--doc-vista-offset, 0px) + var(--doc-vista-space-6, 24px));
+    height: calc(100vh - var(--doc-vista-offset, 0px));
+}
+
+.doc-vista.doc-vista-has-admin-bar .doc-vista-progress-bar {
+    top: var(--doc-vista-offset, 32px);
+}
+
+@media (max-width: 782px) {
+    .doc-vista.doc-vista-has-admin-bar .doc-vista-sidebar {
+        top: calc(var(--doc-vista-offset, 0px) + var(--doc-vista-space-6, 24px));
+        height: calc(100vh - var(--doc-vista-offset, 0px));
+    }
+}
+
+/* -------------------------------------------------------------------
+ * 15. EMPTY STATE & ADMIN HINTS
+ * ------------------------------------------------------------------- */
+.doc-vista-empty-state {
+    padding: var(--doc-vista-space-16, 64px) 0;
+    text-align: center;
+    color: var(--doc-vista-text-muted);
+}
+
+.doc-vista-admin-hint {
+    margin-top: var(--doc-vista-space-4, 16px);
+    font-size: 14px;
+    background: #FFFBEB;
+    border: 1px solid #FDE68A;
+    border-radius: var(--doc-vista-radius-md, 8px);
+    padding: var(--doc-vista-space-3, 12px) var(--doc-vista-space-4, 16px);
+    color: #92400E;
+    text-align: left;
+    display: inline-block;
+}
+
+/* -------------------------------------------------------------------
+ * 16. UTILITIES
+ * ------------------------------------------------------------------- */
+.doc-vista-sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+.doc-vista-hidden {
+    display: none !important;
+}
+
+/* ---------- Mobile TOC (desktop hidden) ---------- */
+.doc-vista-mobile-toc {
+    display: none;
+}
+
+.doc-vista-mobile-toc-trigger {
+    display: none;
+}
+
+/* ---------- Data-attribute toggles ---------- */
+.doc-vista[data-show-sidebar="0"] .doc-vista-sidebar {
+    display: none;
+}
+
+.doc-vista[data-show-sidebar="0"] .doc-vista-content-wrap {
+    width: 100%;
+}
+
+.doc-vista[data-show-toc="0"] .doc-vista-toc {
+    display: none;
+}
+
+.doc-vista[data-show-search="0"] .doc-vista-search-wrap,
+.doc-vista[data-show-search="0"] .doc-vista-suggestions,
+.doc-vista[data-show-search="0"] .doc-vista-no-results {
+    display: none;
+}
+
+/* -------------------------------------------------------------------
+ * 17. PRINT STYLES
+ * ------------------------------------------------------------------- */
+@media print {
+    .doc-vista-sidebar {
+        display: none;
+    }
+
+    .doc-vista-content-wrap {
+        width: 100%;
+    }
+
+    .doc-vista-content {
+        max-width: 100%;
+        padding: 0;
+    }
+
+    .doc-vista-page-nav,
+    .doc-vista-related-wrap,
+    .doc-vista-mobile-toc,
+    .doc-vista-progress-bar {
+        display: none !important;
+    }
+}
+
+/* ===================================================================
+ * 18. RESPONSIVE — TABLET (<= 1024px)
+ * =================================================================== */
+@media (max-width: 1024px) {
+    .doc-vista-sidebar {
+        max-width: 280px;
+        min-width: 240px;
+    }
+
+    .doc-vista-content {
+        padding: var(--doc-vista-space-8, 32px) var(--doc-vista-space-6, 24px) var(--doc-vista-space-12, 48px);
+    }
+
+    .doc-vista-page-nav {
+        padding: var(--doc-vista-space-6, 24px) var(--doc-vista-space-6, 24px) 0;
+    }
+}
+
+/* ===================================================================
+ * 19. RESPONSIVE — MOBILE (<= 767px)
+ * =================================================================== */
+@media (max-width: 767px) {
+    .doc-vista {
+        max-width: 100%;
+        flex-direction: column !important;
+    }
+
+    /* Hide desktop sidebar on mobile */
+    .doc-vista-sidebar {
+        display: none;
+    }
+
+    .doc-vista-content-wrap {
+        width: 100% !important;
+    }
+
+    .doc-vista-content {
+        padding: var(--doc-vista-space-3, 12px) var(--doc-vista-space-4, 16px) var(--doc-vista-space-8, 32px);
+        max-width: 100%;
+    }
+
+    .doc-vista-page-nav {
+        padding: var(--doc-vista-space-6, 24px) var(--doc-vista-space-4, 16px) 0;
+        max-width: 100%;
+    }
+
+    /* ---------- Mobile heading sizes ---------- */
+    .doc-vista-content h1 {
+        font-size: 28px;
+        margin-bottom: var(--doc-vista-space-6, 24px);
+    }
+
+    .doc-vista-content h2 {
+        font-size: 26px;
+    }
+
+    .doc-vista-content h3 {
+        font-size: 24px;
+    }
+
+    .doc-vista-content h4 {
+        font-size: 22px;
+    }
+
+    .doc-vista-content h5 {
+        font-size: 20px;
+    }
+
+    .doc-vista-content h6 {
+        font-size: 18px;
+    }
+
+    .doc-vista-content p {
+        font-size: 14px;
+    }
+
+    .doc-vista-content ul,
+    .doc-vista-content ol {
+        font-size: 16px;
+    }
+
+    .doc-vista-content blockquote {
+        font-size: 16px;
+    }
+
+    /* ---------- Mobile TOC (normal document flow) ---------- */
+    .doc-vista-mobile-toc {
+        display: block;
+        position: sticky;
+        top: var(--doc-vista-offset, 0px);
+        z-index: 9999;
+        width: 100%;
+        padding: var(--doc-vista-space-3, 12px) 0;
+    }
+
+    .doc-vista-mobile-toc-trigger {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        padding: 14px var(--doc-vista-space-5, 20px);
+        background: var(--doc-vista-bg);
+        border: 1px solid rgba(0, 0, 0, 0.06);
+        border-radius: var(--doc-vista-radius-xl, 16px);
+        cursor: pointer;
+        font-family: var(--doc-vista-font);
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--doc-vista-text);
+        box-shadow: var(--doc-vista-shadow-lg, 0 8px 24px rgba(0, 0, 0, 0.10));
+        transition: box-shadow var(--doc-vista-transition-slow, 250ms), border-color var(--doc-vista-transition-slow, 250ms);
+        -webkit-appearance: none;
+        appearance: none;
+        line-height: 1.3;
+        text-align: left;
+    }
+
+    .doc-vista-mobile-toc-trigger:hover {
+        box-shadow: var(--doc-vista-shadow-xl, 0 12px 32px rgba(0, 0, 0, 0.12));
+        border-color: rgba(0, 0, 0, 0.10);
+    }
+
+    .doc-vista-mobile-toc-label {
+        flex: 1;
+    }
+
+    .doc-vista-mobile-toc-chevron {
+        flex-shrink: 0;
+        width: 16px;
+        height: 16px;
+        color: var(--doc-vista-text-muted);
+        transition: transform var(--doc-vista-transition-slow, 250ms);
+        margin-left: var(--doc-vista-space-3, 12px);
+    }
+
+    .doc-vista-mobile-toc.is-open .doc-vista-mobile-toc-chevron {
+        transform: rotate(180deg);
+    }
+
+    /* ---------- Mobile TOC Backdrop ---------- */
+    .doc-vista-mobile-toc-backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.30);
+        z-index: 998;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity var(--doc-vista-transition-slow, 250ms), visibility var(--doc-vista-transition-slow, 250ms);
+        -webkit-backdrop-filter: blur(2px);
+        backdrop-filter: blur(2px);
+    }
+
+    .doc-vista-mobile-toc.is-open .doc-vista-mobile-toc-backdrop {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    /* ---------- Mobile TOC Panel ---------- */
+    .doc-vista-mobile-toc-panel {
+        display: flex;
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 999;
+        background: var(--doc-vista-bg);
+        flex-direction: column;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(12px);
+        transition: opacity var(--doc-vista-transition-slow, 250ms), transform var(--doc-vista-transition-slow, 250ms), visibility var(--doc-vista-transition-slow, 250ms);
+        will-change: transform, opacity;
+    }
+
+    .doc-vista-mobile-toc.is-open .doc-vista-mobile-toc-panel {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
+
+    /* ---------- Panel Header ---------- */
+    .doc-vista-mobile-toc-panel-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-shrink: 0;
+        padding: var(--doc-vista-space-4, 16px) var(--doc-vista-space-5, 20px);
+        border-bottom: 1px solid var(--doc-vista-border-light);
+        background: var(--doc-vista-bg);
+    }
+
+    .doc-vista-mobile-toc-panel-title {
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--doc-vista-text);
+        margin: 0;
+        font-family: var(--doc-vista-font);
+    }
+
+    .doc-vista-mobile-toc-close {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        padding: 0;
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: var(--doc-vista-text-muted);
+        border-radius: var(--doc-vista-radius-md, 8px);
+        transition: background var(--doc-vista-transition), color var(--doc-vista-transition);
+        -webkit-appearance: none;
+        appearance: none;
+    }
+
+    .doc-vista-mobile-toc-close:hover {
+        background: var(--doc-vista-bg-hover);
+        color: var(--doc-vista-text);
+    }
+
+    .doc-vista-mobile-toc-close svg {
+        width: 20px;
+        height: 20px;
+    }
+
+    /* ---------- Panel Body (scrollable) ---------- */
+    .doc-vista-mobile-toc-panel-body {
+        flex: 1;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        padding: var(--doc-vista-space-4, 16px) var(--doc-vista-space-5, 20px) var(--doc-vista-space-8, 32px);
+    }
+
+    .doc-vista-mobile-toc-panel-body .doc-vista-search-input {
+        font-size: 16px;
+        padding-top: var(--doc-vista-space-3, 12px);
+        padding-bottom: var(--doc-vista-space-3, 12px);
+    }
+
+    .doc-vista-mobile-toc-panel-body .doc-vista-toc {
+        padding-top: var(--doc-vista-space-2, 8px);
+    }
+
+
+
+    /* ---------- Body scroll lock ---------- */
+    body.doc-vista-toc-open {
+        overflow: hidden !important;
+    }
+
+    /* ===================================================================
+     * 19a. MOBILE TOC TRIGGER — BOTTOM
+     * Only the collapsed trigger moves; the panel is identical for all positions.
+     * =================================================================== */
+    .doc-vista-mobile-toc[data-mobile-toc-position="bottom"] {
+        position: fixed;
+        top: auto;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 9999;
+        padding: var(--doc-vista-space-3, 12px) var(--doc-vista-space-4, 16px);
+    }
+
+    .doc-vista-mobile-toc[data-mobile-toc-position="bottom"] .doc-vista-mobile-toc-trigger {
+        margin: 0 auto;
+        max-width: 320px;
+    }
+
+    .doc-vista-mobile-toc[data-mobile-toc-position="bottom"].is-open .doc-vista-mobile-toc-trigger {
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    /* ===================================================================
+     * 19b. MOBILE TOC TRIGGER — LEFT
+     * Vertical tab on the left edge; panel is identical.
+     * =================================================================== */
+    .doc-vista-mobile-toc[data-mobile-toc-position="left"] {
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        display: flex;
+        align-items: center;
+        z-index: 9999;
+        width: auto;
+        padding: 0;
+    }
+
+    .doc-vista-mobile-toc[data-mobile-toc-position="left"] .doc-vista-mobile-toc-trigger {
+        writing-mode: vertical-lr;
+        text-orientation: mixed;
+        width: auto;
+        min-width: 36px;
+        padding: 14px 8px;
+        border-radius: 0 var(--doc-vista-radius-lg, 12px) var(--doc-vista-radius-lg, 12px) 0;
+        border: 1px solid rgba(0, 0, 0, 0.06);
+        border-left: none;
+        font-size: 13px;
+        letter-spacing: 0.04em;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        margin: 0;
+        box-shadow: 2px 0 12px rgba(0, 0, 0, 0.08);
+        cursor: pointer;
+        -webkit-appearance: none;
+        appearance: none;
+        line-height: 1.4;
+        text-align: center;
+        min-height: 120px;
+    }
+
+    .doc-vista-mobile-toc[data-mobile-toc-position="left"] .doc-vista-mobile-toc-trigger .doc-vista-mobile-toc-chevron {
+        margin: 0;
+        transform: rotate(90deg);
+    }
+
+    .doc-vista-mobile-toc[data-mobile-toc-position="left"].is-open .doc-vista-mobile-toc-trigger .doc-vista-mobile-toc-chevron {
+        transform: rotate(-90deg);
+    }
+
+    .doc-vista-mobile-toc[data-mobile-toc-position="left"].is-open .doc-vista-mobile-toc-trigger {
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    /* ===================================================================
+     * 19c. MOBILE TOC TRIGGER — RIGHT
+     * Vertical tab on the right edge; panel is identical.
+     * =================================================================== */
+    .doc-vista-mobile-toc[data-mobile-toc-position="right"] {
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        display: flex;
+        align-items: center;
+        z-index: 9999;
+        width: auto;
+        padding: 0;
+    }
+
+    .doc-vista-mobile-toc[data-mobile-toc-position="right"] .doc-vista-mobile-toc-trigger {
+        writing-mode: vertical-lr;
+        text-orientation: mixed;
+        width: auto;
+        min-width: 36px;
+        padding: 14px 8px;
+        border-radius: var(--doc-vista-radius-lg, 12px) 0 0 var(--doc-vista-radius-lg, 12px);
+        border: 1px solid rgba(0, 0, 0, 0.06);
+        border-right: none;
+        font-size: 13px;
+        letter-spacing: 0.04em;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        margin: 0;
+        box-shadow: -2px 0 12px rgba(0, 0, 0, 0.08);
+        cursor: pointer;
+        -webkit-appearance: none;
+        appearance: none;
+        line-height: 1.4;
+        text-align: center;
+        min-height: 120px;
+    }
+
+    .doc-vista-mobile-toc[data-mobile-toc-position="right"] .doc-vista-mobile-toc-trigger .doc-vista-mobile-toc-chevron {
+        margin: 0;
+        transform: rotate(90deg);
+    }
+
+    .doc-vista-mobile-toc[data-mobile-toc-position="right"].is-open .doc-vista-mobile-toc-trigger .doc-vista-mobile-toc-chevron {
+        transform: rotate(-90deg);
+    }
+
+    .doc-vista-mobile-toc[data-mobile-toc-position="right"].is-open .doc-vista-mobile-toc-trigger {
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    /* ===================================================================
+     * 19d. MOBILE TOC TRIGGER — BOUNDARY (bottom stop)
+     * Switch from fixed to absolute anchored at the bottom of .doc-vista
+     * so the trigger naturally ends with the documentation instead of
+     * floating over the footer.
+     * =================================================================== */
+    .doc-vista-mobile-toc[data-mobile-toc-position="bottom"].is-at-boundary {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        top: auto;
+    }
+
+    .doc-vista-mobile-toc[data-mobile-toc-position="left"].is-at-boundary {
+        opacity: 0;
+        transform: translateX(100%);
+        pointer-events: none;
+    }
+
+    .doc-vista-mobile-toc[data-mobile-toc-position="right"].is-at-boundary {
+        opacity: 0;
+        transform: translateX(100%);
+        pointer-events: none;
+    }
+}
+
+/* ===================================================================
+ * 20. RESPONSIVE — SMALL MOBILE (<= 480px)
+ * =================================================================== */
+@media (max-width: 480px) {
+    .doc-vista-mobile-toc-trigger {
+        padding: var(--doc-vista-space-3, 12px) var(--doc-vista-space-4, 16px);
+        border-radius: var(--doc-vista-radius-lg, 12px);
+        font-size: 14px;
+    }
+
+    .doc-vista-mobile-toc-panel-body {
+        padding: var(--doc-vista-space-3, 12px) var(--doc-vista-space-4, 16px) var(--doc-vista-space-6, 24px);
+    }
+
+    .doc-vista-content {
+        padding: var(--doc-vista-space-2, 8px) var(--doc-vista-space-3, 12px) var(--doc-vista-space-6, 12px);
+    }
+}
+
+/* ===================================================================
+ * 21. NAVIGATION RAIL — ChatGPT-style floating rail with expandable panel
+ * =================================================================== */
+
+/* ---------- Rail container ---------- */
+.doc-vista-nav-rail {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%) translateX(10px);
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 0;
+    gap: 8px;
+    pointer-events: auto;
+    will-change: transform;
+    opacity: 0;
+    visibility: hidden;
+    transition:
+        opacity 200ms ease,
+        transform 300ms ease,
+        visibility 0ms 200ms;
+}
+
+.doc-vista-nav-rail.is-visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(-50%) translateX(0);
+    transition:
+        opacity 200ms ease,
+        transform 300ms ease,
+        visibility 0ms 0ms;
+}
+
+/* Admin-bar centering: shift down by half the bar height */
+.doc-vista.doc-vista-has-admin-bar .doc-vista-nav-rail {
+    top: calc(50% + var(--doc-vista-offset, 0px) / 2);
+}
+
+/* ---------- Horizontal positioning ---------- */
+.doc-vista-nav-rail--right {
+    right: 36px;
+}
+
+.doc-vista-nav-rail--left {
+    left: 36px;
+}
+
+/* ===================================================================
+ * IDLE STATE — thin horizontal indicator dots
+ * =================================================================== */
+.doc-vista-nav-indicators {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    pointer-events: none;
+}
+
+.doc-vista-nav-indicator {
+    width: 20px;
+    height: 3px;
+    border-radius: 2px;
+    background: var(--doc-vista-border);
+    transition:
+        width 300ms cubic-bezier(0.4, 0, 0.2, 1),
+        background 300ms cubic-bezier(0.4, 0, 0.2, 1),
+        opacity 300ms ease;
+    will-change: width, background;
+    flex-shrink: 0;
+    opacity: 0.5;
+}
+
+.doc-vista-nav-indicator.is-active {
+    width: 28px;
+    background: var(--doc-vista-primary);
+    opacity: 1;
+}
+
+/* ===================================================================
+ * HOVER / EXPANDED STATE — floating panel
+ * =================================================================== */
+.doc-vista-nav-panel {
+    position: absolute;
+    top: 50%;
+    width: 280px;
+    max-height: 65vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    overscroll-behavior: contain;
+    padding: 12px 10px;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.97);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.10),
+        0 2px 8px rgba(0, 0, 0, 0.06);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translateY(-50%) scale(0.94);
+    transition:
+        opacity 200ms cubic-bezier(0.4, 0, 0.2, 1),
+        visibility 0ms 200ms,
+        transform 220ms cubic-bezier(0.34, 1.56, 0.64, 1);
+    will-change: transform, opacity;
+    z-index: 1;
+}
+
+.doc-vista-nav-rail--right .doc-vista-nav-panel {
+    right: calc(100% + 14px);
+    transform-origin: right center;
+}
+
+.doc-vista-nav-rail--left .doc-vista-nav-panel {
+    left: calc(100% + 14px);
+    transform-origin: left center;
+}
+
+/* Show panel on hover over the rail itself */
+.doc-vista-nav-rail:hover .doc-vista-nav-panel,
+.doc-vista-nav-rail:hover .doc-vista-nav-panel:hover {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateY(-50%) translateX(5%) scale(1);
+    transition:
+        opacity 200ms cubic-bezier(0.4, 0, 0.2, 1),
+        visibility 0ms 0ms,
+        transform 220ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ---------- Panel header ---------- */
+.doc-vista-nav-panel-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--doc-vista-text-muted);
+    padding: 4px 6px 10px;
+    margin-bottom: 2px;
+    border-bottom: 1px solid var(--doc-vista-border);
+    user-select: none;
+}
+
+.doc-vista-nav-panel-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.6;
+    flex-shrink: 0;
+}
+
+/* ---------- Panel list ---------- */
+.doc-vista-nav-list {
+    list-style: none;
+    margin: 0;
+    padding: 4px 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.doc-vista-nav-item {
+    margin: 0;
+    padding: 0;
+}
+
+/* ---------- Nav link — base ---------- */
+.doc-vista-nav-link {
+    display: block;
+    padding: 7px 12px;
+    border-radius: 8px;
+    font-family: inherit;
+    line-height: 1.45;
+    color: var(--doc-vista-text);
+    text-decoration: none !important;
+    cursor: pointer;
+    outline: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition:
+        background 180ms cubic-bezier(0.4, 0, 0.2, 1),
+        color 180ms cubic-bezier(0.4, 0, 0.2, 1),
+        font-weight 180ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Flat list — hierarchy expressed through typography, not indentation */
+.doc-vista-nav-item[data-tag-level="2"]>.doc-vista-nav-link {
+    font-weight: 600;
+    font-size: 14px;
+    padding: 7px 12px;
+}
+
+.doc-vista-nav-item[data-tag-level="3"]>.doc-vista-nav-link {
+    font-weight: 500;
+    font-size: 13.5px;
+    padding: 7px 12px;
+}
+
+.doc-vista-nav-item[data-tag-level="4"]>.doc-vista-nav-link {
+    font-weight: 500;
+    font-size: 13px;
+    padding: 7px 12px;
+}
+
+.doc-vista-nav-item[data-tag-level="5"]>.doc-vista-nav-link {
+    font-weight: 400;
+    font-size: 12px;
+    padding: 6px 12px;
+}
+
+.doc-vista-nav-item[data-tag-level="6"]>.doc-vista-nav-link {
+    font-weight: 400;
+    font-size: 12px;
+    padding: 6px 12px;
+}
+
+.doc-vista-nav-link:hover,
+.doc-vista-nav-link:focus-visible {
+    background: rgba(0, 0, 0, 0.04);
+    color: var(--doc-vista-text);
+    outline: none;
+}
+
+/* Active pill — theme color background, white text */
+.doc-vista-nav-link.is-active {
+    background: var(--doc-vista-primary);
+    color: #ffffff;
+    font-weight: 500;
+}
+
+.doc-vista-nav-link.is-active:hover {
+    background: var(--doc-vista-primary);
+    color: #ffffff;
+}
+
+/* ---------- Active state for items ---------- */
+.doc-vista-nav-item.doc-vista-nav-active>.doc-vista-nav-link.is-active {
+    background: var(--doc-vista-primary);
+    color: #ffffff;
+    font-weight: 500;
+}
+
+/* ===================================================================
+ * Reduced motion
+ * =================================================================== */
+@media (prefers-reduced-motion: reduce) {
+
+    .doc-vista-nav-rail,
+    .doc-vista-nav-indicator,
+    .doc-vista-nav-panel,
+    .doc-vista-nav-link {
+        transition: none !important;
+    }
+}
+
+/* ===================================================================
+ * Responsive — hide on tablet / mobile
+ * =================================================================== */
+@media (max-width: 1024px) {
+    .doc-vista-nav-rail {
+        display: none !important;
+    }
+}
+
+/* ===================================================================
+ * 22. CHAPTER-BASED READER
+ * =================================================================== */
+
+/* ---------- Chapter containers ---------- */
+.doc-vista-chapter {
+    display: none;
+}
+
+.doc-vista-chapter-active {
+    display: block;
+    animation: doc-vista-chapter-fade-in 200ms ease;
+}
+
+@keyframes doc-vista-chapter-fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Ensure first heading in active chapter has proper scroll-margin */
+.doc-vista-chapter-active>h1:first-child {
+    scroll-margin-top: calc(var(--doc-vista-offset, 0px) + 24px);
+}
+
+/* ===================================================================
+ * NavRail — hidden when content does not extend below viewport
+ * =================================================================== */
+.doc-vista-nav-rail--at-bottom {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    transform: translateY(-50%) translateX(10px) !important;
+    transition:
+        opacity 200ms ease,
+        transform 300ms ease,
+        visibility 0ms 200ms !important;
+}
+
+/* ===================================================================
+ * Search suggestion — enhanced local content format
+ * =================================================================== */
+.doc-vista-suggestion-chapter {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--doc-vista-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 2px;
+    line-height: 1.3;
+}
+
+.doc-vista-suggestion-heading {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--doc-vista-text);
+    line-height: 1.4;
+}
+
+.doc-vista-suggestion-snippet {
+    display: block;
+    font-size: 12px;
+    color: var(--doc-vista-text-secondary);
+    margin-top: 4px;
+    line-height: 1.45;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.doc-vista-suggestion-snippet .doc-vista-suggestion-mark {
+    background: rgba(var(--doc-vista-primary-rgb), 0.12);
+    color: var(--doc-vista-primary);
+    font-weight: 500;
+    padding: 0 2px;
+    border-radius: 2px;
+}
+
+/* Separator between local and cross-doc suggestion sections */
+.doc-vista-suggestion-separator {
+    height: 1px;
+    background: var(--doc-vista-border);
+    margin: 4px 12px;
+}
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+    .doc-vista-chapter-active {
+        animation: none;
+    }
+}
