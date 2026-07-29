@@ -24,7 +24,7 @@
     min-width: 160px;
     flex: 1;
     text-align: center;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
 }
 
 .doc-vista-stat-number {
@@ -84,11 +84,21 @@
 
 /* Actions column */
 .doc-vista-actions {
-    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
 }
 
 .doc-vista-actions .button {
-    margin-right: 4px;
+    flex-shrink: 0;
+    white-space: nowrap;
+}
+
+.doc-vista-docs-table .doc-vista-actions {
+    min-width: 270px;
+    white-space: nowrap;
 }
 
 .button-link-delete {
@@ -214,7 +224,7 @@
     width: 1px;
     height: 1px;
     overflow: hidden;
-    clip: rect(0,0,0,0);
+    clip: rect(0, 0, 0, 0);
     border: 0;
 }
 
@@ -288,11 +298,114 @@
  * Docs table
  * --------------------------------------------------------------------- */
 .doc-vista-docs-table .column-title {
-    width: 28%;
+    min-width: 200px;
 }
 
 .doc-vista-docs-table th {
     white-space: nowrap;
+}
+
+.doc-vista-docs-table .column-author {
+    min-width: 140px;
+}
+
+.doc-vista-docs-table th:not(.column-cb) {
+    min-width: 80px;
+}
+
+/* -----------------------------------------------------------------------
+ * Table wrapper — responsive horizontal scroll
+ * --------------------------------------------------------------------- */
+.docvista-table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
+    border: 1px solid #dcdcde;
+    border-radius: 6px;
+    scrollbar-width: thin;
+    scrollbar-color: #c3c4c7 transparent;
+}
+
+.docvista-table-wrapper::-webkit-scrollbar {
+    height: 6px;
+}
+
+.docvista-table-wrapper::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.docvista-table-wrapper::-webkit-scrollbar-thumb {
+    background: #c3c4c7;
+    border-radius: 3px;
+}
+
+.docvista-table-wrapper::-webkit-scrollbar-thumb:hover {
+    background: #a7aaad;
+}
+
+.docvista-table-wrapper .wp-list-table {
+    border: none;
+    margin: 0;
+    width: max-content;
+    min-width: 100%;
+    table-layout: auto;
+}
+
+/* -----------------------------------------------------------------------
+ * Sticky table header
+ * --------------------------------------------------------------------- */
+.docvista-table-wrapper thead th {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: #f6f7f7;
+}
+
+.docvista-table-wrapper thead th a {
+    text-decoration: none;
+    color: #1d2327;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+}
+
+.docvista-table-wrapper thead th a:hover {
+    color: #135e96;
+}
+
+/* -----------------------------------------------------------------------
+ * Author column
+ * --------------------------------------------------------------------- */
+.doc-vista-author-avatar {
+    border-radius: 50%;
+    vertical-align: middle;
+    margin-right: 6px;
+    width: 24px;
+    height: 24px;
+}
+
+.doc-vista-author-name {
+    vertical-align: middle;
+}
+
+.doc-vista-author-unknown {
+    color: #646970;
+}
+
+/* -----------------------------------------------------------------------
+ * Sortable column headers
+ * --------------------------------------------------------------------- */
+.doc-vista-sortable .sorting-indicator {
+    font-size: 9px;
+    vertical-align: middle;
+    margin-left: 5px;
+    margin-bottom: 10px;
+    line-height: 1;
+}
+
+.doc-vista-sortable.sorted {
+    color: #1d2327;
 }
 
 /* -----------------------------------------------------------------------
@@ -405,6 +518,7 @@
 
 /* ---------- Reduced motion ---------- */
 @media (prefers-reduced-motion: reduce) {
+
     .doc-vista-modal-overlay,
     .doc-vista-modal,
     .doc-vista-deactivate-option {
@@ -420,8 +534,13 @@
 }
 
 @keyframes doc-vista-spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 .doc-vista-conflict-option input[type="radio"] {
@@ -444,4 +563,5 @@
 
 #doc-vista-select-all {
     accent-color: #2563EB;
+    margin: 0 !important;
 }

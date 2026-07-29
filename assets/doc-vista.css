@@ -754,6 +754,109 @@ li.is-open>.doc-vista-toc-link .doc-vista-toc-toggle {
     margin-bottom: 0;
 }
 
+/* ---------- Details / Summary (collapsible sections) ---------- */
+.doc-vista-content details {
+    margin: var(--doc-vista-space-6, 24px) 0;
+}
+
+.doc-vista-content details summary {
+    position: relative;
+    cursor: pointer;
+    padding: var(--doc-vista-space-1, 4px) 0;
+    padding-left: var(--doc-vista-space-6, 24px);
+    font-weight: 600;
+    font-size: 18px;
+    line-height: 1.5;
+    color: var(--doc-vista-text);
+    list-style: none;
+    -webkit-user-select: none;
+    user-select: none;
+    transition: color var(--doc-vista-transition);
+}
+
+.doc-vista-content details summary::-webkit-details-marker {
+    display: none;
+}
+
+.doc-vista-content details summary::marker {
+    display: none;
+    content: "";
+}
+
+.doc-vista-content details summary:hover {
+    color: var(--doc-vista-primary);
+}
+
+.doc-vista-content details[open] summary {
+    padding-bottom: var(--doc-vista-space-2, 8px);
+    border-bottom: 1px solid var(--doc-vista-border-light);
+}
+
+/* Custom expand/collapse chevron */
+.doc-vista-content details summary::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 8px;
+    height: 8px;
+    border-right: 2px solid var(--doc-vista-text-muted);
+    border-bottom: 2px solid var(--doc-vista-text-muted);
+    transform: translateY(-50%) rotate(-45deg);
+    transition: transform var(--doc-vista-transition-slow, 250ms), border-color var(--doc-vista-transition);
+    transform-origin: center center;
+}
+
+.doc-vista-content details summary:hover::before {
+    border-color: var(--doc-vista-primary);
+}
+
+.doc-vista-content details[open] summary::before {
+    transform: translateY(-50%) rotate(45deg);
+}
+
+/* Content spacing inside details */
+.doc-vista-content details[open] summary + * {
+    margin-top: var(--doc-vista-space-4, 16px);
+}
+
+.doc-vista-content details > *:not(summary) + * {
+    margin-top: var(--doc-vista-space-4, 16px);
+}
+
+/* Focus state */
+.doc-vista-content details summary:focus-visible {
+    outline: 2px solid var(--doc-vista-primary);
+    outline-offset: 2px;
+    border-radius: var(--doc-vista-radius-sm, 4px);
+}
+
+/* ---------- Content Spacing / Vertical Rhythm ---------- */
+.doc-vista-content > *:first-child {
+    margin-top: 0;
+}
+
+.doc-vista-content > * + * {
+    margin-top: var(--doc-vista-space-4, 16px);
+}
+
+.doc-vista-content > h1 + *,
+.doc-vista-content > h2 + *,
+.doc-vista-content > h3 + *,
+.doc-vista-content > h4 + *,
+.doc-vista-content > h5 + *,
+.doc-vista-content > h6 + * {
+    margin-top: var(--doc-vista-space-3, 12px);
+}
+
+.doc-vista-chapter-active > h2:first-child,
+.doc-vista-chapter-active > h3:first-child,
+.doc-vista-chapter-active > h4:first-child,
+.doc-vista-chapter-active > h5:first-child,
+.doc-vista-chapter-active > h6:first-child {
+    margin-top: 0;
+}
+
 /* -------------------------------------------------------------------
  * 7. CODE BLOCKS
  * ------------------------------------------------------------------- */
@@ -1215,6 +1318,15 @@ li.is-open>.doc-vista-toc-link .doc-vista-toc-toggle {
 
     .doc-vista-content blockquote {
         font-size: 16px;
+    }
+
+    .doc-vista-content details summary {
+        font-size: 17px;
+        padding-left: var(--doc-vista-space-5, 20px);
+    }
+
+    .doc-vista-content details[open] summary {
+        padding-bottom: var(--doc-vista-space-1, 4px);
     }
 
     /* ---------- Mobile TOC (normal document flow) ---------- */
