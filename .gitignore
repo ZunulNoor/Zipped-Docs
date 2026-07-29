@@ -1,3 +1,6 @@
 
 # Plugin check reports
 doc-vista-*.json
+
+# Tests / QA
+tests/
