@@ -8,12 +8,12 @@ if ( defined( 'DOC_VISTA_PRESERVE_DATA' ) && DOC_VISTA_PRESERVE_DATA ) {
     return;
 }
 
-$settings = get_option( 'doc_vista_settings', array() );
-if ( ! empty( $settings['doc_vista_preserve_data'] ) && 'yes' === $settings['doc_vista_preserve_data'] ) {
+$doc_vista_settings = get_option( 'doc_vista_settings', array() );
+if ( ! empty( $doc_vista_settings['doc_vista_preserve_data'] ) && 'yes' === $doc_vista_settings['doc_vista_preserve_data'] ) {
     return;
 }
 
-$caps = array(
+$doc_vista_caps = array(
     'doc_vista_read',
     'doc_vista_create',
     'doc_vista_edit',
@@ -30,11 +30,11 @@ global $wp_roles;
 if ( ! isset( $wp_roles ) ) {
     $wp_roles = new WP_Roles();
 }
-foreach ( $wp_roles->roles as $role_name => $role_info ) {
-    $role = get_role( $role_name );
+foreach ( $wp_roles->roles as $doc_vista_role_name => $doc_vista_role_info ) {
+    $role = get_role( $doc_vista_role_name );
     if ( $role ) {
-        foreach ( $caps as $cap ) {
-            $role->remove_cap( $cap );
+        foreach ( $doc_vista_caps as $doc_vista_cap ) {
+            $role->remove_cap( $doc_vista_cap );
         }
     }
 }
@@ -58,18 +58,18 @@ if ( ! empty( $posts ) ) {
     }
 }
 
-$taxonomies = array( 'doc_vista_category', 'doc_vista_product' );
+$doc_vista_taxonomies = array( 'doc_vista_category', 'doc_vista_product' );
 
-foreach ( $taxonomies as $taxonomy ) {
-    $terms = get_terms( array(
-        'taxonomy'   => $taxonomy,
+foreach ( $doc_vista_taxonomies as $doc_vista_taxonomy ) {
+    $doc_vista_terms = get_terms( array(
+        'taxonomy'   => $doc_vista_taxonomy,
         'hide_empty' => false,
         'fields'     => 'ids',
     ) );
 
-    if ( ! empty( $terms ) && ! is_wp_error( $terms ) ) {
-        foreach ( $terms as $term_id ) {
-            wp_delete_term( $term_id, $taxonomy );
+    if ( ! empty( $doc_vista_terms ) && ! is_wp_error( $doc_vista_terms ) ) {
+        foreach ( $doc_vista_terms as $doc_vista_term_id ) {
+            wp_delete_term( $doc_vista_term_id, $doc_vista_taxonomy );
         }
     }
 }

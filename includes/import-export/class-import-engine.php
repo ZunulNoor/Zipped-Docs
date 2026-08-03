@@ -19,10 +19,12 @@ class Doc_Vista_Import_Engine {
             require_once ABSPATH . 'wp-admin/includes/file.php';
         }
 
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verified in the AJAX handler (class-admin-ui.php).
         if ( ! isset( $_FILES['doc_vista_import_file'] ) ) {
             return new WP_Error( 'no_file', __( 'No file was uploaded.', 'doc-vista' ) );
         }
 
+        // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized,WordPress.Security.NonceVerification.Missing -- Upload array handled by wp_handle_upload below; nonce verified in AJAX handler.
         $file = $_FILES['doc_vista_import_file'];
 
         if ( UPLOAD_ERR_OK !== $file['error'] ) {
@@ -47,7 +49,8 @@ class Doc_Vista_Import_Engine {
         $max_size  = wp_max_upload_size();
         if ( false !== $max_size && $file_size > $max_size ) {
             return new WP_Error( 'file_too_large', sprintf(
-                __( 'The uploaded file (%s) exceeds the maximum allowed upload size (%s).', 'doc-vista' ),
+                /* translators: 1: uploaded file size, 2: maximum allowed upload size. */
+                __( 'The uploaded file (%1$s) exceeds the maximum allowed upload size (%2$s).', 'doc-vista' ),
                 size_format( $file_size ),
                 size_format( $max_size )
             ) );
@@ -62,34 +65,28 @@ class Doc_Vista_Import_Engine {
     }
 
     private function read_json_file( $path ) {
-        $handle = fopen( $path, 'r' );
-        if ( ! $handle ) {
+        global $wp_filesystem;
+
+        if ( empty( $wp_filesystem ) ) {
+            require_once ABSPATH . 'wp-admin/includes/file.php';
+            WP_Filesystem();
+        }
+
+        $buffer = $wp_filesystem->get_contents( $path );
+
+        if ( false === $buffer ) {
             return new WP_Error( 'read_error', __( 'Could not open the uploaded file for reading.', 'doc-vista' ) );
         }
 
-        $buffer = '';
-        $chunk_size = 8192;
-        $max_memory = 0;
         $memory_limit = $this->get_php_memory_limit();
-
-        while ( ! feof( $handle ) ) {
-            $chunk = fread( $handle, $chunk_size );
-            if ( false === $chunk ) {
-                fclose( $handle );
-                return new WP_Error( 'read_error', __( 'Error reading the uploaded file.', 'doc-vista' ) );
-            }
-            $buffer .= $chunk;
-            $max_memory = max( $max_memory, strlen( $buffer ) );
-            if ( $max_memory > $memory_limit * 0.5 ) {
-                fclose( $handle );
-                return new WP_Error( 'file_too_large', __( 'The file is too large to process. Try increasing PHP memory_limit.', 'doc-vista' ) );
-            }
+        if ( strlen( $buffer ) > $memory_limit * 0.5 ) {
+            return new WP_Error( 'file_too_large', __( 'The file is too large to process. Try increasing PHP memory_limit.', 'doc-vista' ) );
         }
-        fclose( $handle );
 
         $data = json_decode( $buffer, true );
         if ( JSON_ERROR_NONE !== json_last_error() ) {
             return new WP_Error( 'invalid_json', sprintf(
+                /* translators: %s: JSON parser error message. */
                 __( 'Invalid JSON: %s', 'doc-vista' ),
                 json_last_error_msg()
             ) );
@@ -118,10 +115,12 @@ class Doc_Vista_Import_Engine {
             require_once ABSPATH . 'wp-admin/includes/file.php';
         }
 
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verified in the AJAX handler (class-admin-ui.php).
         if ( ! isset( $_FILES['doc_vista_import_file'] ) ) {
             return new WP_Error( 'no_file', __( 'No file was uploaded.', 'doc-vista' ) );
         }
 
+        // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized,WordPress.Security.NonceVerification.Missing -- Upload array parsed directly; nonce verified in AJAX handler.
         $file = $_FILES['doc_vista_import_file'];
         if ( UPLOAD_ERR_OK !== $file['error'] ) {
             return new WP_Error( 'upload_error', __( 'File upload error.', 'doc-vista' ) );
@@ -136,7 +135,8 @@ class Doc_Vista_Import_Engine {
         $max_size  = wp_max_upload_size();
         if ( false !== $max_size && $file_size > $max_size ) {
             return new WP_Error( 'file_too_large', sprintf(
-                __( 'The uploaded file (%s) exceeds the maximum allowed upload size (%s).', 'doc-vista' ),
+                /* translators: 1: uploaded file size, 2: maximum allowed upload size. */
+                __( 'The uploaded file (%1$s) exceeds the maximum allowed upload size (%2$s).', 'doc-vista' ),
                 size_format( $file_size ),
                 size_format( $max_size )
             ) );
@@ -258,9 +258,11 @@ class Doc_Vista_Import_Engine {
             foreach ( $chunk as $index => $doc ) {
                 $validation_errors = Doc_Vista_Normalizer::validate( $doc );
                 if ( ! empty( $validation_errors ) ) {
+                    /* translators: %d: numeric index of the document being imported. */
                     $title = ! empty( $doc['title'] ) ? $doc['title'] : sprintf( __( 'Document #%d', 'doc-vista' ), $index + 1 );
                     $results['errors'][] = sprintf(
-                        __( '%s: %s', 'doc-vista' ),
+                        /* translators: 1: document title, 2: validation error message. */
+                        __( '%1$s: %2$s', 'doc-vista' ),
                         esc_html( $title ),
                         implode( ' ', $validation_errors )
                     );
@@ -281,7 +283,8 @@ class Doc_Vista_Import_Engine {
                     $result = $this->create_document( $doc );
                     if ( is_wp_error( $result ) ) {
                         $results['errors'][] = sprintf(
-                            __( '%s: %s', 'doc-vista' ),
+                            /* translators: 1: document title, 2: error message. */
+                            __( '%1$s: %2$s', 'doc-vista' ),
                             esc_html( $doc['title'] ),
                             $result->get_error_message()
                         );
@@ -341,6 +344,7 @@ class Doc_Vista_Import_Engine {
                     $deleted = wp_delete_post( $existing_id, true );
                     if ( ! $deleted ) {
                         $results['errors'][] = sprintf(
+                            /* translators: %d: ID of the existing document. */
                             __( 'Could not delete existing document %d.', 'doc-vista' ),
                             $existing_id
                         );
@@ -349,7 +353,8 @@ class Doc_Vista_Import_Engine {
                     $result = $this->create_document( $doc );
                     if ( is_wp_error( $result ) ) {
                         $results['errors'][] = sprintf(
-                            __( '%s: %s', 'doc-vista' ),
+                            /* translators: 1: document title, 2: error message. */
+                            __( '%1$s: %2$s', 'doc-vista' ),
                             esc_html( $doc['title'] ),
                             $result->get_error_message()
                         );
@@ -361,7 +366,8 @@ class Doc_Vista_Import_Engine {
                     $result = $this->update_document( $existing_id, $doc );
                     if ( is_wp_error( $result ) ) {
                         $results['errors'][] = sprintf(
-                            __( '%s: %s', 'doc-vista' ),
+                            /* translators: 1: document title, 2: error message. */
+                            __( '%1$s: %2$s', 'doc-vista' ),
                             esc_html( $doc['title'] ),
                             $result->get_error_message()
                         );
@@ -373,7 +379,8 @@ class Doc_Vista_Import_Engine {
                     $result = $this->create_document( $doc );
                     if ( is_wp_error( $result ) ) {
                         $results['errors'][] = sprintf(
-                            __( '%s: %s', 'doc-vista' ),
+                            /* translators: 1: document title, 2: error message. */
+                            __( '%1$s: %2$s', 'doc-vista' ),
                             esc_html( $doc['title'] ),
                             $result->get_error_message()
                         );
@@ -746,22 +753,22 @@ class Doc_Vista_Import_Engine {
     }
 
     private function get_attachment_by_url( $url ) {
-        global $wpdb;
-        $attachment = $wpdb->get_var( $wpdb->prepare(
-            "SELECT ID FROM $wpdb->posts WHERE guid = %s AND post_type = 'attachment' LIMIT 1",
-            $url
-        ) );
+        $attachment = attachment_url_to_postid( $url );
         if ( $attachment ) {
-            return (int) $attachment;
+            return $attachment;
         }
 
         $filename = basename( $url );
-        $attachment = $wpdb->get_var( $wpdb->prepare(
-            "SELECT ID FROM $wpdb->posts WHERE post_title = %s AND post_type = 'attachment' LIMIT 1",
-            $filename
+        $attachment = get_posts( array(
+            'post_type'      => 'attachment',
+            'post_status'    => 'inherit',
+            'title'          => $filename,
+            'exact'          => true,
+            'posts_per_page' => 1,
+            'fields'         => 'ids',
         ) );
-        if ( $attachment ) {
-            return (int) $attachment;
+        if ( ! empty( $attachment ) ) {
+            return (int) $attachment[0];
         }
 
         return 0;
@@ -778,7 +785,8 @@ class Doc_Vista_Import_Engine {
 
         if ( is_wp_error( $attachment_id ) ) {
             $this->warnings[] = sprintf(
-                __( 'Could not import media from %s: %s', 'doc-vista' ),
+                /* translators: 1: media URL, 2: error message. */
+                __( 'Could not import media from %1$s: %2$s', 'doc-vista' ),
                 esc_url( $url ),
                 $attachment_id->get_error_message()
             );
@@ -804,6 +812,7 @@ class Doc_Vista_Import_Engine {
                     continue;
                 }
                 $this->warnings[] = sprintf(
+                    /* translators: %d: ID of a missing attachment. */
                     __( 'Attachment ID %d not found. Document imported without it.', 'doc-vista' ),
                     (int) $attachment
                 );
@@ -815,6 +824,7 @@ class Doc_Vista_Import_Engine {
                 $result = $this->import_media_url( $post_id, $attachment, false );
                 if ( ! $result ) {
                     $this->warnings[] = sprintf(
+                        /* translators: %s: media URL. */
                         __( 'Could not import media from URL: %s. External URL kept as-is.', 'doc-vista' ),
                         esc_url( $attachment )
                     );

@@ -88,7 +88,11 @@ class Doc_Vista_Import_Export_Admin {
                 'no'                     => __( 'No', 'doc-vista' ),
                 'proceedImport'          => __( 'Proceed Import', 'doc-vista' ),
                 'cancel'                 => __( 'Cancel', 'doc-vista' ),
-                'maxUploadSizeMsg'       => sprintf( __( 'Maximum upload size: %s', 'doc-vista' ), size_format( $max_upload ) ),
+                'maxUploadSizeMsg'       => sprintf(
+                    /* translators: %s: formatted maximum allowed upload size, e.g. "64 MB". */
+                    __( 'Maximum upload size: %s', 'doc-vista' ),
+                    size_format( $max_upload )
+                ),
             ),
         ) );
     }
@@ -134,6 +138,7 @@ class Doc_Vista_Import_Export_Admin {
 
         check_ajax_referer( 'doc_vista_import_nonce', '_wpnonce' );
 
+        // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Raw JSON payload, decoded and validated below.
         $raw = isset( $_POST['decisions'] ) ? wp_unslash( $_POST['decisions'] ) : '';
         $decisions = json_decode( $raw, true );
 
@@ -164,6 +169,7 @@ class Doc_Vista_Import_Export_Admin {
 
         check_ajax_referer( 'doc_vista_export_nonce', '_wpnonce' );
 
+        // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Raw JSON payload, decoded and intval'd below.
         $doc_ids = isset( $_POST['doc_ids'] ) ? wp_unslash( $_POST['doc_ids'] ) : '';
         $doc_ids = json_decode( $doc_ids, true );
 

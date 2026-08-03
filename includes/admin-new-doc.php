@@ -14,13 +14,13 @@ function doc_vista_admin_new_doc_page() {
 
     $saved = false;
     if ( isset( $_SERVER['REQUEST_METHOD'] ) && 'POST' === $_SERVER['REQUEST_METHOD'] && isset( $_POST['doc_vista_new_doc_nonce'] ) ) {
-        if ( wp_verify_nonce( wp_unslash( $_POST['doc_vista_new_doc_nonce'] ), 'doc_vista_new_doc' ) ) {
+        if ( wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['doc_vista_new_doc_nonce'] ) ), 'doc_vista_new_doc' ) ) {
             if ( ! current_user_can( 'doc_vista_publish' ) ) {
         wp_die( esc_html__( 'You do not have sufficient permissions.', 'doc-vista' ) );
             }
             $title   = sanitize_text_field( wp_unslash( $_POST['doc_vista_title'] ?? '' ) );
             $content = wp_kses_post( wp_unslash( $_POST['doc_vista_content'] ?? '' ) );
-            $cat_id  = (int) ( wp_unslash( $_POST['doc_vista_category'] ?? 0 ) );
+            $cat_id  = isset( $_POST['doc_vista_category'] ) ? (int) wp_unslash( $_POST['doc_vista_category'] ) : 0;
 
             if ( $title ) {
                 $post_id = wp_insert_post( array(

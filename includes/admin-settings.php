@@ -165,7 +165,10 @@ function doc_vista_admin_settings_page() {
                                 <select id="toc_depth" name="toc_depth">
                                     <?php for ( $i = 2; $i <= 6; $i++ ) : ?>
                                         <option value="<?php echo esc_attr( $i ); ?>" <?php selected( $settings->get( 'toc_depth' ), $i ); ?>>
-                                            <?php echo esc_html( sprintf( __( 'H1–H%s', 'doc-vista' ), $i ) ); ?>
+                                            <?php
+                                            /* translators: %s: maximum heading level shown in the TOC depth dropdown. */
+                                            echo esc_html( sprintf( __( 'H1–H%s', 'doc-vista' ), $i ) );
+                                            ?>
                                         </option>
                                     <?php endfor; ?>
                                 </select>

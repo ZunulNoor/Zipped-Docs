@@ -28,6 +28,7 @@ function doc_vista_render_shortcode( $atts ) {
             if ( current_user_can( 'doc_vista_edit' ) ) {
                 return doc_vista_error(
                     sprintf(
+                        /* translators: %s: product category slug. */
                         __( 'The category "%s" does not exist. Please create it under Doc Vista → Categories or use a valid category slug.', 'doc-vista' ),
                         esc_html( $product )
                     )
@@ -43,6 +44,7 @@ function doc_vista_render_shortcode( $atts ) {
     if ( $doc_id ) {
         $doc_obj = get_post( $doc_id );
         if ( $doc_obj && 'publish' === $doc_obj->post_status && 'doc_vista_doc' === $doc_obj->post_type ) {
+            // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- Core WordPress filter.
             $page_content = apply_filters( 'the_content', $doc_obj->post_content );
             $page_title   = get_the_title( $doc_obj );
             if ( ! $product ) {
@@ -57,6 +59,7 @@ function doc_vista_render_shortcode( $atts ) {
             $first = reset( $list );
             $doc_obj = get_post( $first['id'] );
             if ( $doc_obj && 'publish' === $doc_obj->post_status ) {
+                // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- Core WordPress filter.
                 $page_content = apply_filters( 'the_content', $doc_obj->post_content );
                 $page_title   = get_the_title( $doc_obj );
                 $doc_id       = $first['id'];

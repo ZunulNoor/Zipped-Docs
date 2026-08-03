@@ -48,6 +48,7 @@ class Doc_Vista_Export_Engine {
             'post_type'      => 'doc_vista_doc',
             'post_status'    => 'any',
             'posts_per_page' => -1,
+            // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query -- Required for category export.
             'tax_query'      => array(
                 array(
                     'taxonomy' => 'doc_vista_category',

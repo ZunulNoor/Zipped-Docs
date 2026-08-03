@@ -80,7 +80,7 @@ function doc_vista_save_meta_box( $post_id ) {
     if ( ! isset( $_POST['doc_vista_doc_settings_nonce'] ) ) {
         return;
     }
-    if ( ! wp_verify_nonce( wp_unslash( $_POST['doc_vista_doc_settings_nonce'] ), 'doc_vista_save_doc_settings' ) ) {
+    if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['doc_vista_doc_settings_nonce'] ) ), 'doc_vista_save_doc_settings' ) ) {
         return;
     }
     if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
@@ -89,17 +89,18 @@ function doc_vista_save_meta_box( $post_id ) {
     if ( ! current_user_can( 'edit_post', $post_id ) ) {
         return;
     }
-    if ( 'doc_vista_doc' !== ( wp_unslash( $_POST['post_type'] ?? '' ) ) ) {
+    $post_type = isset( $_POST['post_type'] ) ? sanitize_text_field( wp_unslash( $_POST['post_type'] ) ) : '';
+    if ( 'doc_vista_doc' !== $post_type ) {
         return;
     }
 
-    $category_id = (int) ( wp_unslash( $_POST['doc_vista_category'] ?? 0 ) );
+    $category_id = isset( $_POST['doc_vista_category'] ) ? (int) wp_unslash( $_POST['doc_vista_category'] ) : 0;
     if ( $category_id && term_exists( $category_id, 'doc_vista_category' ) ) {
         wp_set_object_terms( $post_id, array( $category_id ), 'doc_vista_category' );
     } else {
         wp_set_object_terms( $post_id, array(), 'doc_vista_category' );
     }
 
-    $order = (int) ( wp_unslash( $_POST['doc_vista_order'] ?? 0 ) );
+    $order = isset( $_POST['doc_vista_order'] ) ? (int) wp_unslash( $_POST['doc_vista_order'] ) : 0;
     update_post_meta( $post_id, '_doc_vista_order', max( 0, $order ) );
 }

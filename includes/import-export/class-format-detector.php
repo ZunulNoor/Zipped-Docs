@@ -201,6 +201,7 @@ class Doc_Vista_Format_Detector {
             if ( isset( $sample['post_title'] ) ) {
                 $post_type = isset( $sample['post_type'] ) ? $sample['post_type'] : ( isset( $sample['type'] ) ? $sample['type'] : '' );
                 if ( $post_type ) {
+                    /* translators: %s: post type label, e.g. "Post" or "Page". */
                     return sprintf( __( 'WordPress %s Export', 'doc-vista' ), ucfirst( $post_type ) );
                 }
                 if ( isset( $sample['post_meta'] ) || isset( $sample['tax_input'] ) ) {

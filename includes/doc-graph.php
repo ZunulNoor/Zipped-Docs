@@ -84,7 +84,6 @@ function doc_vista_build_graph() {
             'orderby'        => 'menu_order title',
             'order'          => 'ASC',
             'no_found_rows'  => true,
-            'suppress_filters' => true,
         ) );
         if ( empty( $batch ) ) {
             break;

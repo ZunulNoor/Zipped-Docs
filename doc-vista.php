@@ -94,6 +94,7 @@ function doc_vista_activation_redirect_handler() {
 
     delete_transient( 'doc_vista_activation_redirect' );
 
+    // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Core WordPress activation redirect check.
     if ( is_network_admin() || isset( $_GET['activate-multi'] ) ) {
         return;
     }
@@ -346,6 +347,7 @@ function doc_vista_migrate_products_to_categories() {
         'posts_per_page' => -1,
         'fields'         => 'ids',
         'no_found_rows'  => true,
+        // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query -- One-time migration query.
         'tax_query'      => array(
             array(
                 'taxonomy' => 'doc_vista_product',

@@ -12,7 +12,7 @@ function doc_vista_admin_dashboard() {
         wp_die( esc_html__( 'You do not have sufficient permissions.', 'doc-vista' ) );
         }
         $doc_id = (int) $_GET['doc'];
-        if ( $doc_id && wp_verify_nonce( wp_unslash( $_GET['_wpnonce'] ?? '' ), 'delete_doc_' . $doc_id ) ) {
+        if ( $doc_id && wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ?? '' ) ), 'delete_doc_' . $doc_id ) ) {
             wp_delete_post( $doc_id, true );
             echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__( 'Doc deleted.', 'doc-vista' ) . '</p></div>';
         }
@@ -23,8 +23,14 @@ function doc_vista_admin_dashboard() {
     $per_page        = 20;
 
     $sortable_columns = array( 'title', 'author', 'status', 'updated', 'order' );
-    $current_orderby  = isset( $_GET['orderby'] ) && in_array( $_GET['orderby'], $sortable_columns, true ) ? $_GET['orderby'] : 'updated';
-    $current_order    = isset( $_GET['order'] ) && in_array( strtoupper( $_GET['order'] ), array( 'ASC', 'DESC' ), true ) ? strtoupper( $_GET['order'] ) : 'DESC';
+    $current_orderby  = isset( $_GET['orderby'] ) ? sanitize_text_field( wp_unslash( $_GET['orderby'] ) ) : 'updated';
+    if ( ! in_array( $current_orderby, $sortable_columns, true ) ) {
+        $current_orderby = 'updated';
+    }
+    $current_order = isset( $_GET['order'] ) ? strtoupper( sanitize_text_field( wp_unslash( $_GET['order'] ) ) ) : 'DESC';
+    if ( ! in_array( $current_order, array( 'ASC', 'DESC' ), true ) ) {
+        $current_order = 'DESC';
+    }
 
     $sort_url = function ( $column ) use ( $current_orderby, $current_order ) {
         $new_order = 'ASC';
@@ -37,7 +43,7 @@ function doc_vista_admin_dashboard() {
         }
         $arrow = '';
         if ( $current_orderby === $column ) {
-            $arrow = 'ASC' === $current_order ? '&#9650;' : '&#9660;';
+            $arrow = 'ASC' === $current_order ? '▲' : '▼';
         }
         return array(
             'url'   => add_query_arg( array( 'orderby' => $column, 'order' => $new_order, 'paged' => 1 ) ),
@@ -77,10 +83,12 @@ function doc_vista_admin_dashboard() {
     );
 
     if ( 'order' === $current_orderby ) {
+        // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- Required for sorting by custom order field.
         $args['meta_key'] = '_doc_vista_order';
     }
 
     if ( $filter_category ) {
+        // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query -- Required for category filtering.
         $args['tax_query'] = array(
             array(
                 'taxonomy' => 'doc_vista_category',
@@ -182,12 +190,12 @@ function doc_vista_admin_dashboard() {
                             <th scope="col" class="column-cb" style="width:32px;">
                                 <input type="checkbox" id="doc-vista-select-all" style="accent-color:#2563EB;">
                             </th>
-                            <th scope="col" class="column-title"><?php $s = $sort_url( 'title' ); ?><a href="<?php echo esc_url( $s['url'] ); ?>" class="<?php echo esc_attr( $s['class'] ); ?>"><?php esc_html_e( 'Title', 'doc-vista' ); ?><?php if ( $s['arrow'] ) : ?><span class="sorting-indicator"><?php echo $s['arrow']; ?></span><?php endif; ?></a></th>
+                            <th scope="col" class="column-title"><?php $s = $sort_url( 'title' ); ?><a href="<?php echo esc_url( $s['url'] ); ?>" class="<?php echo esc_attr( $s['class'] ); ?>"><?php esc_html_e( 'Title', 'doc-vista' ); ?><?php if ( $s['arrow'] ) : ?><span class="sorting-indicator"><?php echo esc_html( $s['arrow'] ); ?></span><?php endif; ?></a></th>
                             <th scope="col"><?php esc_html_e( 'Category', 'doc-vista' ); ?></th>
-                            <th scope="col"><?php $s = $sort_url( 'author' ); ?><a href="<?php echo esc_url( $s['url'] ); ?>" class="<?php echo esc_attr( $s['class'] ); ?>"><?php esc_html_e( 'Author', 'doc-vista' ); ?><?php if ( $s['arrow'] ) : ?><span class="sorting-indicator"><?php echo $s['arrow']; ?></span><?php endif; ?></a></th>
-                            <th scope="col"><?php $s = $sort_url( 'status' ); ?><a href="<?php echo esc_url( $s['url'] ); ?>" class="<?php echo esc_attr( $s['class'] ); ?>"><?php esc_html_e( 'Status', 'doc-vista' ); ?><?php if ( $s['arrow'] ) : ?><span class="sorting-indicator"><?php echo $s['arrow']; ?></span><?php endif; ?></a></th>
-                            <th scope="col"><?php $s = $sort_url( 'order' ); ?><a href="<?php echo esc_url( $s['url'] ); ?>" class="<?php echo esc_attr( $s['class'] ); ?>"><?php esc_html_e( 'Order', 'doc-vista' ); ?><?php if ( $s['arrow'] ) : ?><span class="sorting-indicator"><?php echo $s['arrow']; ?></span><?php endif; ?></a></th>
-                            <th scope="col"><?php $s = $sort_url( 'updated' ); ?><a href="<?php echo esc_url( $s['url'] ); ?>" class="<?php echo esc_attr( $s['class'] ); ?>"><?php esc_html_e( 'Updated', 'doc-vista' ); ?><?php if ( $s['arrow'] ) : ?><span class="sorting-indicator"><?php echo $s['arrow']; ?></span><?php endif; ?></a></th>
+                            <th scope="col"><?php $s = $sort_url( 'author' ); ?><a href="<?php echo esc_url( $s['url'] ); ?>" class="<?php echo esc_attr( $s['class'] ); ?>"><?php esc_html_e( 'Author', 'doc-vista' ); ?><?php if ( $s['arrow'] ) : ?><span class="sorting-indicator"><?php echo esc_html( $s['arrow'] ); ?></span><?php endif; ?></a></th>
+                            <th scope="col"><?php $s = $sort_url( 'status' ); ?><a href="<?php echo esc_url( $s['url'] ); ?>" class="<?php echo esc_attr( $s['class'] ); ?>"><?php esc_html_e( 'Status', 'doc-vista' ); ?><?php if ( $s['arrow'] ) : ?><span class="sorting-indicator"><?php echo esc_html( $s['arrow'] ); ?></span><?php endif; ?></a></th>
+                            <th scope="col"><?php $s = $sort_url( 'order' ); ?><a href="<?php echo esc_url( $s['url'] ); ?>" class="<?php echo esc_attr( $s['class'] ); ?>"><?php esc_html_e( 'Order', 'doc-vista' ); ?><?php if ( $s['arrow'] ) : ?><span class="sorting-indicator"><?php echo esc_html( $s['arrow'] ); ?></span><?php endif; ?></a></th>
+                            <th scope="col"><?php $s = $sort_url( 'updated' ); ?><a href="<?php echo esc_url( $s['url'] ); ?>" class="<?php echo esc_attr( $s['class'] ); ?>"><?php esc_html_e( 'Updated', 'doc-vista' ); ?><?php if ( $s['arrow'] ) : ?><span class="sorting-indicator"><?php echo esc_html( $s['arrow'] ); ?></span><?php endif; ?></a></th>
                             <th scope="col"><?php esc_html_e( 'Actions', 'doc-vista' ); ?></th>
                         </tr>
                     </thead>
