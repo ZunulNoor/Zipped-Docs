@@ -2,38 +2,38 @@
 
 defined( 'ABSPATH' ) || exit;
 
-add_action( 'save_post_doc_vista_doc', 'doc_vista_build_graph', 10, 2 );
-add_action( 'delete_post', 'doc_vista_on_delete_graph' );
-add_action( 'trashed_post', 'doc_vista_on_trash_untrash_graph' );
-add_action( 'untrashed_post', 'doc_vista_on_trash_untrash_graph' );
-add_action( 'edited_doc_vista_category', 'doc_vista_build_graph' );
-add_action( 'created_doc_vista_category', 'doc_vista_build_graph' );
-add_action( 'delete_doc_vista_category', 'doc_vista_build_graph' );
-add_action( 'edited_doc_vista_product', 'doc_vista_build_graph' );
-add_action( 'created_doc_vista_product', 'doc_vista_build_graph' );
-add_action( 'delete_doc_vista_product', 'doc_vista_build_graph' );
+add_action( 'save_post_zipped_docs_doc', 'zipped_docs_build_graph', 10, 2 );
+add_action( 'delete_post', 'zipped_docs_on_delete_graph' );
+add_action( 'trashed_post', 'zipped_docs_on_trash_untrash_graph' );
+add_action( 'untrashed_post', 'zipped_docs_on_trash_untrash_graph' );
+add_action( 'edited_zipped_docs_category', 'zipped_docs_build_graph' );
+add_action( 'created_zipped_docs_category', 'zipped_docs_build_graph' );
+add_action( 'delete_zipped_docs_category', 'zipped_docs_build_graph' );
+add_action( 'edited_zipped_docs_product', 'zipped_docs_build_graph' );
+add_action( 'created_zipped_docs_product', 'zipped_docs_build_graph' );
+add_action( 'delete_zipped_docs_product', 'zipped_docs_build_graph' );
 
-function doc_vista_get_graph() {
-    global $doc_vista_graph_cache;
-    if ( null !== $doc_vista_graph_cache ) {
-        return $doc_vista_graph_cache;
+function zipped_docs_get_graph() {
+    global $zipped_docs_graph_cache;
+    if ( null !== $zipped_docs_graph_cache ) {
+        return $zipped_docs_graph_cache;
     }
-    $graph = get_option( 'doc_vista_graph', false );
+    $graph = get_option( 'zipped_docs_graph', false );
     if ( ! is_array( $graph ) || empty( $graph ) ) {
-        doc_vista_build_graph();
-        $graph = get_option( 'doc_vista_graph', array() );
+        zipped_docs_build_graph();
+        $graph = get_option( 'zipped_docs_graph', array() );
     }
-    $doc_vista_graph_cache = $graph;
-    return $doc_vista_graph_cache;
+    $zipped_docs_graph_cache = $graph;
+    return $zipped_docs_graph_cache;
 }
 
-function doc_vista_clear_graph_cache() {
-    global $doc_vista_graph_cache;
-    $doc_vista_graph_cache = null;
+function zipped_docs_clear_graph_cache() {
+    global $zipped_docs_graph_cache;
+    $zipped_docs_graph_cache = null;
 }
 
-function doc_vista_get_product_graph( $category_slug ) {
-    $graph = doc_vista_get_graph();
+function zipped_docs_get_product_graph( $category_slug ) {
+    $graph = zipped_docs_get_graph();
     if ( is_array( $graph ) && isset( $graph['doc_tree'][ $category_slug ] ) ) {
         return $graph['doc_tree'][ $category_slug ];
     }
@@ -44,11 +44,11 @@ function doc_vista_get_product_graph( $category_slug ) {
     );
 }
 
-function doc_vista_build_graph() {
-    doc_vista_clear_graph_cache();
+function zipped_docs_build_graph() {
+    zipped_docs_clear_graph_cache();
 
     $categories = get_terms( array(
-        'taxonomy'   => 'doc_vista_category',
+        'taxonomy'   => 'zipped_docs_category',
         'hide_empty' => false,
     ) );
 
@@ -77,7 +77,7 @@ function doc_vista_build_graph() {
     $page = 1;
     do {
         $batch = get_posts( array(
-            'post_type'      => 'doc_vista_doc',
+            'post_type'      => 'zipped_docs_doc',
             'post_status'    => 'publish',
             'posts_per_page' => 500,
             'paged'          => $page,
@@ -98,7 +98,7 @@ function doc_vista_build_graph() {
         $docs_by_category[ $cat->slug ] = array();
     }
     foreach ( $all_docs as $doc ) {
-        $doc_cats = wp_get_post_terms( $doc->ID, 'doc_vista_category', array( 'fields' => 'slugs' ) );
+        $doc_cats = wp_get_post_terms( $doc->ID, 'zipped_docs_category', array( 'fields' => 'slugs' ) );
         foreach ( $doc_cats as $slug ) {
             if ( isset( $docs_by_category[ $slug ] ) ) {
                 $docs_by_category[ $slug ][] = $doc;
@@ -111,8 +111,8 @@ function doc_vista_build_graph() {
         $flat_list   = array();
 
         foreach ( $docs as $doc ) {
-            $order     = (int) get_post_meta( $doc->ID, '_doc_vista_order', true );
-            $headings  = doc_vista_extract_headings( $doc->post_content );
+            $order     = (int) get_post_meta( $doc->ID, '_zipped_docs_order', true );
+            $headings  = zipped_docs_extract_headings( $doc->post_content );
             $excerpt   = wp_trim_words( wp_strip_all_tags( $doc->post_content ), 30 );
 
             $entry = array(
@@ -125,7 +125,7 @@ function doc_vista_build_graph() {
                 'category_slug' => $cat->slug,
                 'category_name' => $cat->name,
                 'headings'  => $headings,
-                'url'       => add_query_arg( 'doc_vista', $doc->ID, home_url() ),
+                'url'       => add_query_arg( 'zipped_docs', $doc->ID, home_url() ),
             );
 
             $flat_list[ $doc->ID ] = $entry;
@@ -135,7 +135,7 @@ function doc_vista_build_graph() {
                 $text .= ' ' . mb_strtolower( $h['text'] );
             }
             $text .= ' ' . mb_strtolower( wp_strip_all_tags( $doc->post_content ) );
-            $tokens = doc_vista_tokenize( $text );
+            $tokens = zipped_docs_tokenize( $text );
 
             foreach ( $tokens as $token => $weight_mult ) {
                 if ( ! isset( $search_index[ $token ] ) ) {
@@ -172,30 +172,30 @@ function doc_vista_build_graph() {
         'built'         => time(),
     );
 
-    update_option( 'doc_vista_graph', $graph );
+    update_option( 'zipped_docs_graph', $graph );
 
-    doc_vista_purge_page_cache();
+    zipped_docs_purge_page_cache();
 }
 
-function doc_vista_on_delete_graph( $post_id ) {
-    if ( 'doc_vista_doc' !== get_post_type( $post_id ) ) {
+function zipped_docs_on_delete_graph( $post_id ) {
+    if ( 'zipped_docs_doc' !== get_post_type( $post_id ) ) {
         return;
     }
-    doc_vista_build_graph();
+    zipped_docs_build_graph();
 }
 
-function doc_vista_on_trash_untrash_graph( $post_id ) {
-    if ( 'doc_vista_doc' !== get_post_type( $post_id ) ) {
+function zipped_docs_on_trash_untrash_graph( $post_id ) {
+    if ( 'zipped_docs_doc' !== get_post_type( $post_id ) ) {
         return;
     }
-    doc_vista_build_graph();
+    zipped_docs_build_graph();
 }
 
-function doc_vista_is_ascii( $str ) {
+function zipped_docs_is_ascii( $str ) {
     return (bool) preg_match( '/^[\x00-\x7f]*$/', $str );
 }
 
-function doc_vista_tokenize( $text ) {
+function zipped_docs_tokenize( $text ) {
     $text = preg_replace( '/[^\p{L}\p{N}\s-]/u', ' ', $text );
     $text = preg_replace( '/\s+/', ' ', $text );
     $text = trim( $text );
@@ -221,8 +221,8 @@ function doc_vista_tokenize( $text ) {
     return $tokens;
 }
 
-function doc_vista_search( $query, $product_slug = '' ) {
-    $graph = doc_vista_get_graph();
+function zipped_docs_search( $query, $product_slug = '' ) {
+    $graph = zipped_docs_get_graph();
     if ( empty( $graph['search_index'] ) ) {
         return array();
     }
@@ -256,7 +256,7 @@ function doc_vista_search( $query, $product_slug = '' ) {
             if ( $key === $token ) {
                 continue;
             }
-            if ( ! doc_vista_is_ascii( $token ) || ! doc_vista_is_ascii( $key ) ) {
+            if ( ! zipped_docs_is_ascii( $token ) || ! zipped_docs_is_ascii( $key ) ) {
                 continue;
             }
             if ( false !== mb_strpos( $key, $token ) || false !== mb_strpos( $token, $key ) ) {
@@ -277,7 +277,7 @@ function doc_vista_search( $query, $product_slug = '' ) {
 
     $final = array();
     foreach ( $results as $doc_id => $score ) {
-        $info = doc_vista_get_doc_info( $doc_id, $graph );
+        $info = zipped_docs_get_doc_info( $doc_id, $graph );
         if ( $info ) {
             $info['score'] = $score;
             $final[] = $info;
@@ -297,9 +297,9 @@ function doc_vista_search( $query, $product_slug = '' ) {
     return $final;
 }
 
-function doc_vista_get_doc_info( $doc_id, $graph = null ) {
+function zipped_docs_get_doc_info( $doc_id, $graph = null ) {
     if ( null === $graph ) {
-        $graph = doc_vista_get_graph();
+        $graph = zipped_docs_get_graph();
     }
 
     if ( empty( $graph['doc_tree'] ) || ! is_array( $graph['doc_tree'] ) ) {
@@ -318,7 +318,7 @@ function doc_vista_get_doc_info( $doc_id, $graph = null ) {
     return null;
 }
 
-function doc_vista_extract_headings( $content ) {
+function zipped_docs_extract_headings( $content ) {
     if ( ! $content ) {
         return array();
     }
@@ -343,19 +343,19 @@ function doc_vista_extract_headings( $content ) {
     return $headings;
 }
 
-function doc_vista_get_breadcrumbs( $doc_id, $graph = null ) {
+function zipped_docs_get_breadcrumbs( $doc_id, $graph = null ) {
     if ( null === $graph ) {
-        $graph = doc_vista_get_graph();
+        $graph = zipped_docs_get_graph();
     }
 
-    $info = doc_vista_get_doc_info( $doc_id, $graph );
+    $info = zipped_docs_get_doc_info( $doc_id, $graph );
     if ( ! $info ) {
         return array();
     }
 
     $crumbs = array(
         array(
-            'label' => isset( $info['product_name'] ) ? $info['product_name'] : __( 'Documentation', 'doc-vista' ),
+            'label' => isset( $info['product_name'] ) ? $info['product_name'] : __( 'Documentation', 'zipped-docs' ),
             'slug'  => isset( $info['product_slug'] ) ? $info['product_slug'] : '',
         ),
     );
@@ -376,8 +376,8 @@ function doc_vista_get_breadcrumbs( $doc_id, $graph = null ) {
     return $crumbs;
 }
 
-function doc_vista_get_adjacent( $doc_id, $category_slug ) {
-    $tree = doc_vista_get_product_graph( $category_slug );
+function zipped_docs_get_adjacent( $doc_id, $category_slug ) {
+    $tree = zipped_docs_get_product_graph( $category_slug );
     $list = isset( $tree['flat_list'] ) ? $tree['flat_list'] : array();
 
     if ( empty( $list ) ) {
@@ -397,8 +397,8 @@ function doc_vista_get_adjacent( $doc_id, $category_slug ) {
     );
 }
 
-function doc_vista_get_related( $doc_id, $category_slug, $max = 3 ) {
-    $tree   = doc_vista_get_product_graph( $category_slug );
+function zipped_docs_get_related( $doc_id, $category_slug, $max = 3 ) {
+    $tree   = zipped_docs_get_product_graph( $category_slug );
     $flat   = isset( $tree['flat_list'] ) ? $tree['flat_list'] : array();
     $info   = isset( $flat[ $doc_id ] ) ? $flat[ $doc_id ] : null;
 
@@ -424,7 +424,7 @@ function doc_vista_get_related( $doc_id, $category_slug, $max = 3 ) {
     return $related;
 }
 
-function doc_vista_rebuild_graph() {
-    delete_option( 'doc_vista_graph' );
-    doc_vista_build_graph();
+function zipped_docs_rebuild_graph() {
+    delete_option( 'zipped_docs_graph' );
+    zipped_docs_build_graph();
 }

@@ -2,14 +2,14 @@
 
 defined( 'ABSPATH' ) || exit;
 
-class Doc_Vista_Gutenberg_Adapter implements Doc_Vista_Import_Adapter {
+class Zipped_Docs_Gutenberg_Adapter implements Zipped_Docs_Import_Adapter {
 
     public function supports( $data ) {
         if ( ! is_array( $data ) ) {
             return false;
         }
 
-        if ( isset( $data['doc_vista_version'] ) || ( isset( $data['source'] ) && 'doc-vista' === $data['source'] ) ) {
+        if ( isset( $data['zipped_docs_version'] ) || ( isset( $data['source'] ) && 'zipped-docs' === $data['source'] ) ) {
             return false;
         }
 
@@ -38,14 +38,14 @@ class Doc_Vista_Gutenberg_Adapter implements Doc_Vista_Import_Adapter {
     }
 
     public function normalize( $data ) {
-        $doc = Doc_Vista_Normalizer::empty_doc();
+        $doc = Zipped_Docs_Normalizer::empty_doc();
 
-        $doc['title']   = Doc_Vista_Field_Mapper::get_rendered( $data, 'title' );
-        $doc['slug']    = Doc_Vista_Field_Mapper::get( $data, 'slug' );
-        $doc['excerpt'] = Doc_Vista_Field_Mapper::get_rendered( $data, 'excerpt' );
-        $doc['status']  = Doc_Vista_Field_Mapper::get( $data, 'status', 'draft' );
+        $doc['title']   = Zipped_Docs_Field_Mapper::get_rendered( $data, 'title' );
+        $doc['slug']    = Zipped_Docs_Field_Mapper::get( $data, 'slug' );
+        $doc['excerpt'] = Zipped_Docs_Field_Mapper::get_rendered( $data, 'excerpt' );
+        $doc['status']  = Zipped_Docs_Field_Mapper::get( $data, 'status', 'draft' );
 
-        $content = Doc_Vista_Field_Mapper::get_rendered( $data, 'content' );
+        $content = Zipped_Docs_Field_Mapper::get_rendered( $data, 'content' );
         $doc['content'] = $content;
 
         if ( isset( $data['blocks'] ) && is_array( $data['blocks'] ) ) {
@@ -56,7 +56,7 @@ class Doc_Vista_Gutenberg_Adapter implements Doc_Vista_Import_Adapter {
             $doc['gutenberg_blocks'] = array( 'detected' => true );
         }
 
-        $author_raw = Doc_Vista_Field_Mapper::get( $data, 'author' );
+        $author_raw = Zipped_Docs_Field_Mapper::get( $data, 'author' );
         if ( $author_raw ) {
             if ( is_numeric( $author_raw ) ) {
                 $user = get_user_by( 'ID', (int) $author_raw );
@@ -74,14 +74,14 @@ class Doc_Vista_Gutenberg_Adapter implements Doc_Vista_Import_Adapter {
             $doc['author'] = get_current_user_id();
         }
 
-        $doc['created_date']  = Doc_Vista_Field_Mapper::get_rendered( $data, 'created_date' );
-        $doc['modified_date'] = Doc_Vista_Field_Mapper::get_rendered( $data, 'modified_date' );
+        $doc['created_date']  = Zipped_Docs_Field_Mapper::get_rendered( $data, 'created_date' );
+        $doc['modified_date'] = Zipped_Docs_Field_Mapper::get_rendered( $data, 'modified_date' );
 
-        $doc['categories'] = Doc_Vista_Field_Mapper::extract_category_names( $data );
-        $doc['tags']       = Doc_Vista_Field_Mapper::extract_tag_names( $data );
-        $doc['custom_fields'] = Doc_Vista_Field_Mapper::extract_custom_fields( $data );
+        $doc['categories'] = Zipped_Docs_Field_Mapper::extract_category_names( $data );
+        $doc['tags']       = Zipped_Docs_Field_Mapper::extract_tag_names( $data );
+        $doc['custom_fields'] = Zipped_Docs_Field_Mapper::extract_custom_fields( $data );
 
-        $featured = Doc_Vista_Field_Mapper::get( $data, 'featured_image' );
+        $featured = Zipped_Docs_Field_Mapper::get( $data, 'featured_image' );
         if ( $featured ) {
             if ( is_numeric( $featured ) ) {
                 $attachment = get_post( (int) $featured );
@@ -96,9 +96,9 @@ class Doc_Vista_Gutenberg_Adapter implements Doc_Vista_Import_Adapter {
             }
         }
 
-        $doc['menu_order'] = (int) Doc_Vista_Field_Mapper::get( $data, 'menu_order', 0 );
+        $doc['menu_order'] = (int) Zipped_Docs_Field_Mapper::get( $data, 'menu_order', 0 );
 
-        $template = Doc_Vista_Field_Mapper::get( $data, 'template' );
+        $template = Zipped_Docs_Field_Mapper::get( $data, 'template' );
         if ( $template ) {
             $doc['template'] = $template;
             $doc['custom_fields']['_wp_page_template'] = $template;

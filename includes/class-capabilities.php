@@ -2,68 +2,68 @@
 
 defined( 'ABSPATH' ) || exit;
 
-function doc_vista_get_all_capabilities() {
+function zipped_docs_get_all_capabilities() {
     return array(
-        'doc_vista_read'              => __( 'Read Documentation', 'doc-vista' ),
-        'doc_vista_create'            => __( 'Create Documentation', 'doc-vista' ),
-        'doc_vista_edit'              => __( 'Edit Documentation', 'doc-vista' ),
-        'doc_vista_publish'           => __( 'Publish Documentation', 'doc-vista' ),
-        'doc_vista_delete'            => __( 'Delete Documentation', 'doc-vista' ),
-        'doc_vista_manage_categories' => __( 'Manage Categories', 'doc-vista' ),
-        'doc_vista_manage_settings'   => __( 'Manage Settings', 'doc-vista' ),
-        'doc_vista_import'            => __( 'Import Documentation', 'doc-vista' ),
-        'doc_vista_export'            => __( 'Export Documentation', 'doc-vista' ),
-        'doc_vista_manage_plugin'     => __( 'Manage Plugin', 'doc-vista' ),
+        'zipped_docs_read'              => __( 'Read Documentation', 'zipped-docs' ),
+        'zipped_docs_create'            => __( 'Create Documentation', 'zipped-docs' ),
+        'zipped_docs_edit'              => __( 'Edit Documentation', 'zipped-docs' ),
+        'zipped_docs_publish'           => __( 'Publish Documentation', 'zipped-docs' ),
+        'zipped_docs_delete'            => __( 'Delete Documentation', 'zipped-docs' ),
+        'zipped_docs_manage_categories' => __( 'Manage Categories', 'zipped-docs' ),
+        'zipped_docs_manage_settings'   => __( 'Manage Settings', 'zipped-docs' ),
+        'zipped_docs_import'            => __( 'Import Documentation', 'zipped-docs' ),
+        'zipped_docs_export'            => __( 'Export Documentation', 'zipped-docs' ),
+        'zipped_docs_manage_plugin'     => __( 'Manage Plugin', 'zipped-docs' ),
     );
 }
 
-function doc_vista_get_capability_keys() {
-    return array_keys( doc_vista_get_all_capabilities() );
+function zipped_docs_get_capability_keys() {
+    return array_keys( zipped_docs_get_all_capabilities() );
 }
 
-function doc_vista_get_editor_capabilities() {
+function zipped_docs_get_editor_capabilities() {
     return array(
-        'doc_vista_read',
-        'doc_vista_create',
-        'doc_vista_edit',
-        'doc_vista_publish',
+        'zipped_docs_read',
+        'zipped_docs_create',
+        'zipped_docs_edit',
+        'zipped_docs_publish',
     );
 }
 
-function doc_vista_add_caps_to_role( $role_name, $caps = null ) {
+function zipped_docs_add_caps_to_role( $role_name, $caps = null ) {
     $role = get_role( $role_name );
     if ( ! $role ) {
         return;
     }
     if ( null === $caps ) {
-        $caps = doc_vista_get_capability_keys();
+        $caps = zipped_docs_get_capability_keys();
     }
     foreach ( $caps as $cap ) {
         $role->add_cap( $cap );
     }
 }
 
-function doc_vista_remove_caps_from_role( $role_name, $caps = null ) {
+function zipped_docs_remove_caps_from_role( $role_name, $caps = null ) {
     $role = get_role( $role_name );
     if ( ! $role ) {
         return;
     }
     if ( null === $caps ) {
-        $caps = doc_vista_get_capability_keys();
+        $caps = zipped_docs_get_capability_keys();
     }
     foreach ( $caps as $cap ) {
         $role->remove_cap( $cap );
     }
 }
 
-function doc_vista_create_editor_role() {
-    $role = get_role( 'doc_vista_editor' );
+function zipped_docs_create_editor_role() {
+    $role = get_role( 'zipped_docs_editor' );
     if ( $role ) {
-        doc_vista_remove_caps_from_role( 'doc_vista_editor', doc_vista_get_capability_keys() );
+        zipped_docs_remove_caps_from_role( 'zipped_docs_editor', zipped_docs_get_capability_keys() );
     } else {
         $role = add_role(
-            'doc_vista_editor',
-            __( 'Doc Vista Editor', 'doc-vista' ),
+            'zipped_docs_editor',
+            __( 'Zipped Docs Editor', 'zipped-docs' ),
             array(
                 'read'         => true,
                 'upload_files' => true,
@@ -75,26 +75,26 @@ function doc_vista_create_editor_role() {
         return;
     }
 
-    foreach ( doc_vista_get_editor_capabilities() as $cap ) {
+    foreach ( zipped_docs_get_editor_capabilities() as $cap ) {
         $role->add_cap( $cap );
     }
 }
 
-function doc_vista_register_capabilities() {
-    doc_vista_add_caps_to_role( 'administrator' );
-    doc_vista_create_editor_role();
-    doc_vista_sync_editor_role_caps();
+function zipped_docs_register_capabilities() {
+    zipped_docs_add_caps_to_role( 'administrator' );
+    zipped_docs_create_editor_role();
+    zipped_docs_sync_editor_role_caps();
 }
 
-function doc_vista_sync_editor_role_caps() {
-    $settings      = Doc_Vista_Settings::get_instance();
-    $allow_editors = 'yes' === $settings->get( 'doc_vista_allow_editors', 'no' );
+function zipped_docs_sync_editor_role_caps() {
+    $settings      = Zipped_Docs_Settings::get_instance();
+    $allow_editors = 'yes' === $settings->get( 'zipped_docs_allow_editors', 'no' );
 
     if ( $allow_editors ) {
-        doc_vista_add_caps_to_role( 'editor', doc_vista_get_editor_capabilities() );
+        zipped_docs_add_caps_to_role( 'editor', zipped_docs_get_editor_capabilities() );
     } else {
-        doc_vista_remove_caps_from_role( 'editor', doc_vista_get_editor_capabilities() );
+        zipped_docs_remove_caps_from_role( 'editor', zipped_docs_get_editor_capabilities() );
     }
 }
 
-add_action( 'doc_vista_settings_saved', 'doc_vista_sync_editor_role_caps' );
+add_action( 'zipped_docs_settings_saved', 'zipped_docs_sync_editor_role_caps' );

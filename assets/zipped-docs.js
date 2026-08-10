@@ -1,7 +1,7 @@
 (function () {
     'use strict';
 
-    var CFG = window.DocVistaConfig || {};
+    var CFG = window.ZippedDocsConfig || {};
     var DEBOUNCE_MS = 150;
     var MIN_QUERY = 2;
     var MAX_SUGGESTIONS = 10;
@@ -48,7 +48,7 @@
 
     function getTopOffset(wrapper) {
         var offset = 10;
-        if (wrapper && wrapper.classList.contains('doc-vista-has-admin-bar')) {
+        if (wrapper && wrapper.classList.contains('zipped-docs-has-admin-bar')) {
             var bar = document.getElementById('wpadminbar');
             if (bar) offset += bar.getBoundingClientRect().height;
         }
@@ -128,11 +128,11 @@
         show: function (results, query) {
             if (!this._el || !this._searchInput) return;
             this._el.innerHTML = '';
-            this._noResultsEl.classList.add('doc-vista-hidden');
+            this._noResultsEl.classList.add('zipped-docs-hidden');
 
             if (!results || !results.length) {
-                this._el.classList.add('doc-vista-hidden');
-                this._noResultsEl.classList.remove('doc-vista-hidden');
+                this._el.classList.add('zipped-docs-hidden');
+                this._noResultsEl.classList.remove('zipped-docs-hidden');
                 return;
             }
 
@@ -140,14 +140,14 @@
             results.forEach(function (r) {
                 if (r._separator) {
                     var sep = document.createElement('div');
-                    sep.className = 'doc-vista-suggestion-separator';
+                    sep.className = 'zipped-docs-suggestion-separator';
                     frag.appendChild(sep);
                     return;
                 }
 
                 var isLocal = r.chapterTitle !== undefined;
                 var item = document.createElement('button');
-                item.className = 'doc-vista-suggestion-item';
+                item.className = 'zipped-docs-suggestion-item';
                 item.setAttribute('role', 'option');
 
                 if (isLocal) {
@@ -155,19 +155,19 @@
                     item.dataset.headingId = r.headingId || '';
                     item.dataset.chapterId = r.chapterId || '';
 
-                    var inner = '<span class="doc-vista-suggestion-chapter">' + escapeHtml(r.chapterTitle) + '</span>';
+                    var inner = '<span class="zipped-docs-suggestion-chapter">' + escapeHtml(r.chapterTitle) + '</span>';
 
                     /* Show full heading chain (H2 -> H3 -> ...) when available */
                     var chain = r.headingChain || [];
                     var subChain = chain.slice(1);
                     if (subChain.length) {
-                        inner += '<span class="doc-vista-suggestion-heading">' + escapeHtml(subChain.join(' \u2192 ')) + '</span>';
+                        inner += '<span class="zipped-docs-suggestion-heading">' + escapeHtml(subChain.join(' \u2192 ')) + '</span>';
                     } else if (r.heading) {
-                        inner += '<span class="doc-vista-suggestion-heading">' + escapeHtml(r.heading) + '</span>';
+                        inner += '<span class="zipped-docs-suggestion-heading">' + escapeHtml(r.heading) + '</span>';
                     }
 
                     if (r.snippet) {
-                        inner += '<span class="doc-vista-suggestion-snippet">' + r.snippet + '</span>';
+                        inner += '<span class="zipped-docs-suggestion-snippet">' + r.snippet + '</span>';
                     }
 
                     item.innerHTML = inner;
@@ -179,11 +179,11 @@
                     var titleHtml = escapeHtml(r.title);
                     if (query) {
                         var re = new RegExp('(' + query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
-                        titleHtml = titleHtml.replace(re, '<mark class="doc-vista-suggestion-mark">$1</mark>');
+                        titleHtml = titleHtml.replace(re, '<mark class="zipped-docs-suggestion-mark">$1</mark>');
                     }
 
-                    item.innerHTML = '<span class="doc-vista-suggestion-title">' + titleHtml + '</span>' +
-                        (r.excerpt ? '<span class="doc-vista-suggestion-excerpt">' + escapeHtml(r.excerpt.slice(0, 80)) + '</span>' : '');
+                    item.innerHTML = '<span class="zipped-docs-suggestion-title">' + titleHtml + '</span>' +
+                        (r.excerpt ? '<span class="zipped-docs-suggestion-excerpt">' + escapeHtml(r.excerpt.slice(0, 80)) + '</span>' : '');
 
                     item.addEventListener('click', this._onSelect.bind(this, r));
                 }
@@ -192,17 +192,17 @@
             }, this);
 
             this._el.appendChild(frag);
-            this._el.classList.remove('doc-vista-hidden');
+            this._el.classList.remove('zipped-docs-hidden');
         },
 
         showLocal: function (results, query) {
             if (!this._el || !this._searchInput) return;
             this._el.innerHTML = '';
-            this._noResultsEl.classList.add('doc-vista-hidden');
+            this._noResultsEl.classList.add('zipped-docs-hidden');
 
             if (!results || !results.length) {
-                this._el.classList.add('doc-vista-hidden');
-                this._noResultsEl.classList.remove('doc-vista-hidden');
+                this._el.classList.add('zipped-docs-hidden');
+                this._noResultsEl.classList.remove('zipped-docs-hidden');
                 return;
             }
 
@@ -211,24 +211,24 @@
 
             results.forEach(function (r) {
                 var item = document.createElement('button');
-                item.className = 'doc-vista-suggestion-item';
+                item.className = 'zipped-docs-suggestion-item';
                 item.setAttribute('role', 'option');
                 item.dataset.local = 'true';
                 item.dataset.headingId = r.headingId || '';
                 item.dataset.chapterId = r.chapterId || '';
 
-                var inner = '<span class="doc-vista-suggestion-chapter">' + escapeHtml(r.chapterTitle) + '</span>';
+                var inner = '<span class="zipped-docs-suggestion-chapter">' + escapeHtml(r.chapterTitle) + '</span>';
 
                 var chain = r.headingChain || [];
                 var subChain = chain.slice(1);
                 if (subChain.length) {
-                    inner += '<span class="doc-vista-suggestion-heading">' + escapeHtml(subChain.join(' \u2192 ')) + '</span>';
+                    inner += '<span class="zipped-docs-suggestion-heading">' + escapeHtml(subChain.join(' \u2192 ')) + '</span>';
                 } else if (r.heading) {
-                    inner += '<span class="doc-vista-suggestion-heading">' + escapeHtml(r.heading) + '</span>';
+                    inner += '<span class="zipped-docs-suggestion-heading">' + escapeHtml(r.heading) + '</span>';
                 }
 
                 if (r.snippet) {
-                    inner += '<span class="doc-vista-suggestion-snippet">' + r.snippet + '</span>';
+                    inner += '<span class="zipped-docs-suggestion-snippet">' + r.snippet + '</span>';
                 }
 
                 item.innerHTML = inner;
@@ -241,12 +241,12 @@
             }, this);
 
             this._el.appendChild(frag);
-            this._el.classList.remove('doc-vista-hidden');
+            this._el.classList.remove('zipped-docs-hidden');
         },
 
         hide: function () {
             if (this._el) {
-                this._el.classList.add('doc-vista-hidden');
+                this._el.classList.add('zipped-docs-hidden');
                 this._el.innerHTML = '';
             }
         },
@@ -284,7 +284,7 @@
             this.hide();
             this._searchInput.value = result.title;
             this._searchInput.blur();
-            var event = new CustomEvent('doc-vista-navigate', { detail: { docId: result.id } });
+            var event = new CustomEvent('zipped-docs-navigate', { detail: { docId: result.id } });
             if (_activeWrapper) {
                 _activeWrapper.dispatchEvent(event);
             } else {
@@ -325,8 +325,8 @@
                     }
 
                     currentWrapper = document.createElement('div');
-                    currentWrapper.className = 'doc-vista-chapter';
-                    currentWrapper.id = 'doc-vista-chapter-' + child.id;
+                    currentWrapper.className = 'zipped-docs-chapter';
+                    currentWrapper.id = 'zipped-docs-chapter-' + child.id;
                     currentWrapper.dataset.chapterId = child.id;
 
                     this._chapters.push({
@@ -346,8 +346,8 @@
             /* Fallback: no H1 found -> treat all content as one chapter */
             if (this._chapters.length === 0 && children.length > 0) {
                 var defaultWrapper = document.createElement('div');
-                defaultWrapper.className = 'doc-vista-chapter doc-vista-chapter-active';
-                defaultWrapper.id = 'doc-vista-chapter-documentation';
+                defaultWrapper.className = 'zipped-docs-chapter zipped-docs-chapter-active';
+                defaultWrapper.id = 'zipped-docs-chapter-documentation';
                 defaultWrapper.dataset.chapterId = 'documentation';
 
                 children.forEach(function (child) {
@@ -447,7 +447,7 @@
             this._chapters.forEach(function (ch) {
                 var isActive = ch.id === chapterId;
                 ch.wrapper.style.display = isActive ? '' : 'none';
-                ch.wrapper.classList.toggle('doc-vista-chapter-active', isActive);
+                ch.wrapper.classList.toggle('zipped-docs-chapter-active', isActive);
             });
 
             if (options.noScroll) {
@@ -556,8 +556,8 @@
 
             tocEl.style.display = '';
 
-            tocEl.classList.remove('doc-vista-toc-mode-flat', 'doc-vista-toc-mode-hierarchy');
-            tocEl.classList.add(this._hierarchical ? 'doc-vista-toc-mode-hierarchy' : 'doc-vista-toc-mode-flat');
+            tocEl.classList.remove('zipped-docs-toc-mode-flat', 'zipped-docs-toc-mode-hierarchy');
+            tocEl.classList.add(this._hierarchical ? 'zipped-docs-toc-mode-hierarchy' : 'zipped-docs-toc-mode-flat');
 
             var self = this;
             var ul = document.createElement('ul');
@@ -570,7 +570,7 @@
 
                 var chLink = document.createElement('a');
                 chLink.href = '#' + ch.id;
-                chLink.className = 'doc-vista-toc-link doc-vista-toc-h1';
+                chLink.className = 'zipped-docs-toc-link zipped-docs-toc-h1';
                 chLink.dataset.tocId = ch.id;
                 chLink.dataset.target = ch.id;
                 chLink.textContent = ch.title;
@@ -650,7 +650,7 @@
 
                 var link = document.createElement('a');
                 link.href = '#' + node.id;
-                link.className = 'doc-vista-toc-link doc-vista-toc-h' + node.tagLevel;
+                link.className = 'zipped-docs-toc-link zipped-docs-toc-h' + node.tagLevel;
                 link.dataset.target = node.id;
                 link.textContent = node.text;
 
@@ -695,7 +695,7 @@
 
                 var link = document.createElement('a');
                 link.href = '#' + node.id;
-                link.className = 'doc-vista-toc-link doc-vista-toc-h' + node.tagLevel;
+                link.className = 'zipped-docs-toc-link zipped-docs-toc-h' + node.tagLevel;
                 link.dataset.target = node.id;
                 link.textContent = node.text;
 
@@ -743,7 +743,7 @@
                 li.classList.remove('is-open');
             });
 
-            var h1Links = qsa('.doc-vista-toc-h1', this._tocEl);
+            var h1Links = qsa('.zipped-docs-toc-h1', this._tocEl);
             h1Links.forEach(function (link) {
                 var isActive = link.dataset.tocId === id;
                 link.classList.toggle('is-active', isActive);
@@ -759,7 +759,7 @@
                 }
             });
 
-            var subLinks = qsa('.doc-vista-toc-h2, .doc-vista-toc-h3', this._tocEl);
+            var subLinks = qsa('.zipped-docs-toc-h2, .zipped-docs-toc-h3', this._tocEl);
             subLinks.forEach(function (link) {
                 link.classList.remove('is-active');
                 link.removeAttribute('aria-current');
@@ -770,17 +770,17 @@
             if (!this._tocEl) return;
             this._activeHeadingId = headingId;
 
-            var subLinks = qsa('.doc-vista-toc-h2, .doc-vista-toc-h3', this._tocEl);
+            var subLinks = qsa('.zipped-docs-toc-h2, .zipped-docs-toc-h3', this._tocEl);
             subLinks.forEach(function (link) {
                 link.classList.remove('is-active');
                 link.removeAttribute('aria-current');
             });
 
-            var h1Links = qsa('.doc-vista-toc-h1', this._tocEl);
+            var h1Links = qsa('.zipped-docs-toc-h1', this._tocEl);
 
             if (headingId) {
-                var activeLink = qs('.doc-vista-toc-link[data-target="' + headingId + '"]', this._tocEl);
-                if (activeLink && (activeLink.classList.contains('doc-vista-toc-h2') || activeLink.classList.contains('doc-vista-toc-h3'))) {
+                var activeLink = qs('.zipped-docs-toc-link[data-target="' + headingId + '"]', this._tocEl);
+                if (activeLink && (activeLink.classList.contains('zipped-docs-toc-h2') || activeLink.classList.contains('zipped-docs-toc-h3'))) {
                     activeLink.classList.add('is-active');
                     activeLink.setAttribute('aria-current', 'true');
 
@@ -824,12 +824,12 @@
                 return;
             }
 
-            var links = qsa('.doc-vista-toc-link', this._tocEl);
+            var links = qsa('.zipped-docs-toc-link', this._tocEl);
             var lis = qsa('li', this._tocEl);
 
             lis.forEach(function (li) {
-                li.classList.remove('doc-vista-toc-match');
-                li.classList.remove('doc-vista-toc-hidden');
+                li.classList.remove('zipped-docs-toc-match');
+                li.classList.remove('zipped-docs-toc-hidden');
             });
 
             var matchCount = 0;
@@ -839,7 +839,7 @@
                 if (text.indexOf(q) !== -1) {
                     var li = link.closest('li');
                     if (li) {
-                        li.classList.add('doc-vista-toc-match');
+                        li.classList.add('zipped-docs-toc-match');
                         matchCount++;
                         var parent = li.parentElement;
                         while (parent && parent !== self._tocEl) {
@@ -853,7 +853,7 @@
             });
 
             if (!matchCount) {
-                lis.forEach(function (li) { li.classList.add('doc-vista-toc-hidden'); });
+                lis.forEach(function (li) { li.classList.add('zipped-docs-toc-hidden'); });
                 if (!hasContentMatch) {
                     this._showNoResults(q);
                 } else {
@@ -862,14 +862,14 @@
                 return;
             }
 
-            lis.forEach(function (li) { li.classList.add('doc-vista-toc-hidden'); });
+            lis.forEach(function (li) { li.classList.add('zipped-docs-toc-hidden'); });
             lis.forEach(function (li) {
-                if (li.classList.contains('doc-vista-toc-match')) {
-                    li.classList.remove('doc-vista-toc-hidden');
+                if (li.classList.contains('zipped-docs-toc-match')) {
+                    li.classList.remove('zipped-docs-toc-hidden');
                     var parent = li.parentElement;
                     while (parent && parent !== this._tocEl) {
                         if (parent.tagName === 'LI') {
-                            parent.classList.remove('doc-vista-toc-hidden');
+                            parent.classList.remove('zipped-docs-toc-hidden');
                         }
                         parent = parent.parentElement;
                     }
@@ -882,8 +882,8 @@
         resetFilter: function () {
             var lis = qsa('li', this._tocEl);
             lis.forEach(function (li) {
-                li.classList.remove('doc-vista-toc-hidden');
-                li.classList.remove('doc-vista-toc-match');
+                li.classList.remove('zipped-docs-toc-hidden');
+                li.classList.remove('zipped-docs-toc-match');
                 /* Restore flat mode expansion after reset */
                 if (!this._hierarchical) {
                     li.classList.add('is-open');
@@ -893,19 +893,19 @@
         },
 
         _showNoResults: function (query) {
-            var el = qs('.doc-vista-toc-empty', this._tocEl);
+            var el = qs('.zipped-docs-toc-empty', this._tocEl);
             if (!el) {
                 el = document.createElement('p');
-                el.className = 'doc-vista-toc-empty';
+                el.className = 'zipped-docs-toc-empty';
                 this._tocEl.appendChild(el);
             }
             el.textContent = (CFG.i18n && CFG.i18n.tocNoResults) ? CFG.i18n.tocNoResults.replace('{query}', query) : 'No matching sections found for "' + query + '"';
-            el.classList.remove('doc-vista-hidden');
+            el.classList.remove('zipped-docs-hidden');
         },
 
         _hideNoResults: function () {
-            var el = qs('.doc-vista-toc-empty', this._tocEl);
-            if (el) el.classList.add('doc-vista-hidden');
+            var el = qs('.zipped-docs-toc-empty', this._tocEl);
+            if (el) el.classList.add('zipped-docs-hidden');
         }
     };
 
@@ -1027,7 +1027,7 @@
         _topOffset: 20,
 
         init: function (wrapEl) {
-            this._el = qs('.doc-vista-nav-rail', wrapEl);
+            this._el = qs('.zipped-docs-nav-rail', wrapEl);
             this._wrapper = wrapEl;
             var display = CFG.display || {};
             if (!this._el || !display.show_navigation_rail) return;
@@ -1085,12 +1085,12 @@
         _buildIndicators: function () {
             var self = this;
             var wrap = document.createElement('div');
-            wrap.className = 'doc-vista-nav-indicators';
+            wrap.className = 'zipped-docs-nav-indicators';
             wrap.setAttribute('aria-hidden', 'true');
 
             this._groups.forEach(function (group, idx) {
                 var dot = document.createElement('div');
-                dot.className = 'doc-vista-nav-indicator';
+                dot.className = 'zipped-docs-nav-indicator';
                 dot.dataset.groupIndex = idx;
                 wrap.appendChild(dot);
                 self._groupIndicators.push(dot);
@@ -1102,12 +1102,12 @@
         _renderFlatItem: function (heading, container) {
             var self = this;
             var li = document.createElement('li');
-            li.className = 'doc-vista-nav-item';
+            li.className = 'zipped-docs-nav-item';
             li.dataset.tagLevel = heading.tagLevel;
             li.dataset.id = heading.id;
 
             var link = document.createElement('a');
-            link.className = 'doc-vista-nav-link';
+            link.className = 'zipped-docs-nav-link';
             link.href = '#' + heading.id;
             link.textContent = heading.text;
             link.dataset.target = heading.id;
@@ -1138,15 +1138,15 @@
 
         _buildPanel: function (flat) {
             var panel = document.createElement('div');
-            panel.className = 'doc-vista-nav-panel';
+            panel.className = 'zipped-docs-nav-panel';
             panel.setAttribute('role', 'dialog');
             panel.setAttribute('aria-label', 'Section navigation');
 
             var header = document.createElement('div');
-            header.className = 'doc-vista-nav-panel-header';
+            header.className = 'zipped-docs-nav-panel-header';
 
             var icon = document.createElement('span');
-            icon.className = 'doc-vista-nav-panel-icon';
+            icon.className = 'zipped-docs-nav-panel-icon';
             icon.setAttribute('aria-hidden', 'true');
             icon.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>';
 
@@ -1155,7 +1155,7 @@
             panel.appendChild(header);
 
             var list = document.createElement('ul');
-            list.className = 'doc-vista-nav-list';
+            list.className = 'zipped-docs-nav-list';
 
             var self = this;
             flat.forEach(function (heading) {
@@ -1167,10 +1167,10 @@
         },
 
         _updatePanelForGroup: function (groupIdx) {
-            var panel = qs('.doc-vista-nav-panel', this._el);
+            var panel = qs('.zipped-docs-nav-panel', this._el);
             if (!panel) return;
 
-            var items = panel.querySelectorAll('.doc-vista-nav-item');
+            var items = panel.querySelectorAll('.zipped-docs-nav-item');
             var group = this._groups[groupIdx] || [];
             var groupIds = {};
             group.forEach(function (h) { groupIds[h.id] = true; });
@@ -1183,7 +1183,7 @@
 
         _initHover: function () {
             var self = this;
-            var panel = qs('.doc-vista-nav-panel', this._el);
+            var panel = qs('.zipped-docs-nav-panel', this._el);
             if (!panel) return;
 
             this._groupIndicators.forEach(function (dot, idx) {
@@ -1234,7 +1234,7 @@
 
         _initContentBoundary: function (wrapEl) {
             var self = this;
-            var contentEl = qs('.doc-vista-content', wrapEl);
+            var contentEl = qs('.zipped-docs-content', wrapEl);
             if (!contentEl) return;
 
             var updateVisibility = function () {
@@ -1247,7 +1247,7 @@
                 var docBelowRailBottom = rect.bottom > railCenter + railHalfHeight;
 
                 self._el.classList.toggle('is-visible', docAboveRailTop && docBelowRailBottom);
-                self._el.classList.remove('doc-vista-nav-rail--at-bottom');
+                self._el.classList.remove('zipped-docs-nav-rail--at-bottom');
             };
 
             this._scrollBoundaryHandler = updateVisibility;
@@ -1288,12 +1288,12 @@
                 item.link.setAttribute('aria-current', isActive ? 'true' : 'false');
                 var li = item.li;
                 if (li) {
-                    li.classList.toggle('doc-vista-nav-active', isActive);
-                    li.classList.remove('doc-vista-nav-parent-active');
+                    li.classList.toggle('zipped-docs-nav-active', isActive);
+                    li.classList.remove('zipped-docs-nav-parent-active');
                 }
             });
 
-            var activeLink = qs('.doc-vista-nav-link.is-active', this._el);
+            var activeLink = qs('.zipped-docs-nav-link.is-active', this._el);
             if (activeLink) {
                 activeLink.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
             }
@@ -1440,9 +1440,9 @@
                     }
 
                     var mark = document.createElement('mark');
-                    mark.className = 'doc-vista-highlight';
+                    mark.className = 'zipped-docs-highlight';
                     if (isFirst) {
-                        mark.classList.add('doc-vista-highlight-first');
+                        mark.classList.add('zipped-docs-highlight-first');
                         isFirst = false;
                     }
                     mark.textContent = match;
@@ -1461,7 +1461,7 @@
 
         _clearHighlights: function () {
             if (!this._contentEl) return;
-            var marks = qsa('mark.doc-vista-highlight, mark.doc-vista-highlight-first', this._contentEl);
+            var marks = qsa('mark.zipped-docs-highlight, mark.zipped-docs-highlight-first', this._contentEl);
             marks.forEach(function (mark) {
                 var parent = mark.parentNode;
                 parent.replaceChild(document.createTextNode(mark.textContent), mark);
@@ -1472,8 +1472,8 @@
         _scrollToFirst: function () {
             var activeCh = ChapterEngine.getActiveChapter();
             if (!activeCh || !activeCh.wrapper) return;
-            var first = qs('.doc-vista-highlight-first', activeCh.wrapper);
-            if (!first) first = qs('.doc-vista-highlight', activeCh.wrapper);
+            var first = qs('.zipped-docs-highlight-first', activeCh.wrapper);
+            if (!first) first = qs('.zipped-docs-highlight', activeCh.wrapper);
             if (!first) return;
             var offset = getTopOffset(_activeWrapper);
             var top = first.getBoundingClientRect().top + window.pageYOffset - offset - 10;
@@ -1732,7 +1732,7 @@
             var matched = text.substring(matchStart, matchEnd);
             var after = text.substring(matchEnd, end);
             return prefix + escapeHtml(before) +
-                '<mark class="doc-vista-suggestion-mark">' +
+                '<mark class="zipped-docs-suggestion-mark">' +
                 escapeHtml(matched) +
                 '</mark>' +
                 escapeHtml(after) + suffix;
@@ -1747,7 +1747,7 @@
      * Reading Progress Bar — per-chapter
      * =================================================================== */
     function initReadingProgress(wrapEl) {
-        var bar = qs('.doc-vista-progress-bar-fill', wrapEl);
+        var bar = qs('.zipped-docs-progress-bar-fill', wrapEl);
         if (!bar) return;
 
         var update = function () {
@@ -1765,7 +1765,7 @@
 
     var ReadingProgress = {
         reset: function () {
-            var bar = _activeWrapper ? qs('.doc-vista-progress-bar-fill', _activeWrapper) : null;
+            var bar = _activeWrapper ? qs('.zipped-docs-progress-bar-fill', _activeWrapper) : null;
             if (bar) {
                 bar.style.width = '0%';
             }
@@ -1778,13 +1778,13 @@
     function renderBreadcrumbs(wrapEl) {
         var display = CFG.display || {};
         if (!display.show_breadcrumbs) {
-            var hideEl = qs('.doc-vista-breadcrumbs', wrapEl);
+            var hideEl = qs('.zipped-docs-breadcrumbs', wrapEl);
             if (hideEl) hideEl.style.display = 'none';
             return;
         }
 
         var crumbs = CFG.breadcrumbs || [];
-        var el = qs('.doc-vista-breadcrumbs', wrapEl);
+        var el = qs('.zipped-docs-breadcrumbs', wrapEl);
         if (!el) return;
 
         if (!crumbs.length) {
@@ -1797,12 +1797,12 @@
             var span = document.createElement('span');
             if (i > 0) {
                 var sep = document.createElement('span');
-                sep.className = 'doc-vista-breadcrumb-sep';
+                sep.className = 'zipped-docs-breadcrumb-sep';
                 sep.setAttribute('aria-hidden', 'true');
                 sep.textContent = '/';
                 el.appendChild(sep);
             }
-            span.className = 'doc-vista-breadcrumb' + (i === crumbs.length - 1 ? ' is-current' : '');
+            span.className = 'zipped-docs-breadcrumb' + (i === crumbs.length - 1 ? ' is-current' : '');
             span.textContent = crumb.label;
             el.appendChild(span);
         });
@@ -1813,7 +1813,7 @@
      * Prev / Next navigation
      * =================================================================== */
     function renderPageNav(wrapEl) {
-        var el = qs('.doc-vista-page-nav', wrapEl);
+        var el = qs('.zipped-docs-page-nav', wrapEl);
         if (!el) return;
 
         var display = CFG.display || {};
@@ -1836,13 +1836,13 @@
 
         if (hasPrev) {
             var prevLink = document.createElement('a');
-            prevLink.href = '?doc_vista=' + prev.id;
-            prevLink.className = 'doc-vista-page-nav-link doc-vista-page-nav-prev';
-            prevLink.innerHTML = '<span class="doc-vista-nav-direction">' + (CFG.i18n.prev || 'Previous') + '</span>' +
-                '<span class="doc-vista-nav-title">' + escapeHtml(prev.title) + '</span>';
+            prevLink.href = '?zipped_docs=' + prev.id;
+            prevLink.className = 'zipped-docs-page-nav-link zipped-docs-page-nav-prev';
+            prevLink.innerHTML = '<span class="zipped-docs-nav-direction">' + (CFG.i18n.prev || 'Previous') + '</span>' +
+                '<span class="zipped-docs-nav-title">' + escapeHtml(prev.title) + '</span>';
             prevLink.addEventListener('click', function (e) {
                 e.preventDefault();
-                var event = new CustomEvent('doc-vista-navigate', { detail: { docId: prev.id } });
+                var event = new CustomEvent('zipped-docs-navigate', { detail: { docId: prev.id } });
                 wrapEl.dispatchEvent(event);
             });
             el.appendChild(prevLink);
@@ -1850,13 +1850,13 @@
 
         if (hasNext) {
             var nextLink = document.createElement('a');
-            nextLink.href = '?doc_vista=' + next.id;
-            nextLink.className = 'doc-vista-page-nav-link doc-vista-page-nav-next';
-            nextLink.innerHTML = '<span class="doc-vista-nav-direction">' + (CFG.i18n.next || 'Next') + '</span>' +
-                '<span class="doc-vista-nav-title">' + escapeHtml(next.title) + '</span>';
+            nextLink.href = '?zipped_docs=' + next.id;
+            nextLink.className = 'zipped-docs-page-nav-link zipped-docs-page-nav-next';
+            nextLink.innerHTML = '<span class="zipped-docs-nav-direction">' + (CFG.i18n.next || 'Next') + '</span>' +
+                '<span class="zipped-docs-nav-title">' + escapeHtml(next.title) + '</span>';
             nextLink.addEventListener('click', function (e) {
                 e.preventDefault();
-                var event = new CustomEvent('doc-vista-navigate', { detail: { docId: next.id } });
+                var event = new CustomEvent('zipped-docs-navigate', { detail: { docId: next.id } });
                 wrapEl.dispatchEvent(event);
             });
             el.appendChild(nextLink);
@@ -1869,7 +1869,7 @@
      * Related articles
      * =================================================================== */
     function renderRelated(wrapEl) {
-        var wrap = qs('.doc-vista-related-wrap', wrapEl);
+        var wrap = qs('.zipped-docs-related-wrap', wrapEl);
         if (!wrap) return;
 
         var display = CFG.display || {};
@@ -1885,18 +1885,18 @@
             return;
         }
 
-        var list = qs('.doc-vista-related-list', wrap);
+        var list = qs('.zipped-docs-related-list', wrap);
         if (!list) return;
 
         list.innerHTML = '';
         related.forEach(function (r) {
             var li = document.createElement('li');
             var a = document.createElement('a');
-            a.href = '?doc_vista=' + r.id;
+            a.href = '?zipped_docs=' + r.id;
             a.textContent = r.title;
             a.addEventListener('click', function (e) {
                 e.preventDefault();
-                var event = new CustomEvent('doc-vista-navigate', { detail: { docId: r.id } });
+                var event = new CustomEvent('zipped-docs-navigate', { detail: { docId: r.id } });
                 wrapEl.dispatchEvent(event);
             });
             li.appendChild(a);
@@ -1910,12 +1910,12 @@
      * Search UI
      * =================================================================== */
     function initSearch(wrapEl) {
-        var input = qs('.doc-vista-search-input', wrapEl);
-        var clear = qs('.doc-vista-search-clear', wrapEl);
-        var noResults = qs('.doc-vista-no-results', wrapEl);
-        var suggestionsEl = qs('.doc-vista-suggestions', wrapEl);
-        var tocEl = qs('.doc-vista-toc', wrapEl);
-        var contentEl = qs('.doc-vista-content', wrapEl);
+        var input = qs('.zipped-docs-search-input', wrapEl);
+        var clear = qs('.zipped-docs-search-clear', wrapEl);
+        var noResults = qs('.zipped-docs-no-results', wrapEl);
+        var suggestionsEl = qs('.zipped-docs-suggestions', wrapEl);
+        var tocEl = qs('.zipped-docs-toc', wrapEl);
+        var contentEl = qs('.zipped-docs-content', wrapEl);
 
         if (!input) return;
 
@@ -1927,8 +1927,8 @@
         function clearAll() {
             input.value = '';
             Suggestions.hide();
-            noResults.classList.add('doc-vista-hidden');
-            clear.classList.add('doc-vista-hidden');
+            noResults.classList.add('zipped-docs-hidden');
+            clear.classList.add('zipped-docs-hidden');
             ContentSearch.clear();
             TocBuilder.resetFilter();
         }
@@ -1938,8 +1938,8 @@
 
             if (q.length < MIN_QUERY) {
                 Suggestions.hide();
-                noResults.classList.add('doc-vista-hidden');
-                clear.classList.toggle('doc-vista-hidden', !q);
+                noResults.classList.add('zipped-docs-hidden');
+                clear.classList.toggle('zipped-docs-hidden', !q);
                 ContentSearch.clear();
                 TocBuilder.resetFilter();
                 return;
@@ -1971,7 +1971,7 @@
             ContentSearch.search(q);
             TocBuilder.filterByQuery(q, hasLocal);
 
-            clear.classList.remove('doc-vista-hidden');
+            clear.classList.remove('zipped-docs-hidden');
         }
 
         var debouncedSearch = debounce(performSearch, DEBOUNCE_MS);
@@ -1991,15 +1991,15 @@
                 clearAll();
                 input.blur();
             } else if (e.key === 'ArrowDown') {
-                var first = qs('.doc-vista-suggestion-item', suggestionsEl);
+                var first = qs('.zipped-docs-suggestion-item', suggestionsEl);
                 if (first) first.focus();
                 e.preventDefault();
             }
         });
 
         suggestionsEl.addEventListener('keydown', function (e) {
-            var items = qsa('.doc-vista-suggestion-item', suggestionsEl);
-            var current = qs('.doc-vista-suggestion-item:focus', suggestionsEl);
+            var items = qsa('.zipped-docs-suggestion-item', suggestionsEl);
+            var current = qs('.zipped-docs-suggestion-item:focus', suggestionsEl);
             var idx = items.indexOf(current);
 
             if (e.key === 'ArrowDown') {
@@ -2026,7 +2026,7 @@
 
         wrapEl.addEventListener('click', function (e) {
             if (e.target === input) return;
-            if (!e.target.closest('.doc-vista-suggestions')) {
+            if (!e.target.closest('.zipped-docs-suggestions')) {
                 setTimeout(function () { Suggestions.hide(); }, 200);
             }
         });
@@ -2061,18 +2061,18 @@
      * Navigation event handling
      * =================================================================== */
     function initNavigation(wrapEl) {
-        wrapEl.addEventListener('doc-vista-navigate', function (e) {
+        wrapEl.addEventListener('zipped-docs-navigate', function (e) {
             var docId = e.detail && e.detail.docId;
             if (!docId) return;
             var url = new URL(window.location.href);
-            url.searchParams.set('doc_vista', docId);
+            url.searchParams.set('zipped_docs', docId);
             window.location.href = url.toString();
         });
 
-        qsa('.doc-vista-content a[href*="doc_vista="]', wrapEl).forEach(function (a) {
+        qsa('.zipped-docs-content a[href*="zipped_docs="]', wrapEl).forEach(function (a) {
             a.addEventListener('click', function (e) {
                 var url = new URL(a.href);
-                var docId = url.searchParams.get('doc_vista');
+                var docId = url.searchParams.get('zipped_docs');
                 if (docId) {
                     e.preventDefault();
                     window.location.href = a.href;
@@ -2088,13 +2088,13 @@
         var bar = document.getElementById('wpadminbar');
         if (!bar) return;
 
-        wrapEl.classList.add('doc-vista-has-admin-bar');
+        wrapEl.classList.add('zipped-docs-has-admin-bar');
 
         var update = function () {
             var h = bar.getBoundingClientRect().height;
-            wrapEl.style.setProperty('--doc-vista-adminbar-h', h + 'px');
-            wrapEl.style.setProperty('--doc-vista-offset', h + 'px');
-            wrapEl.style.setProperty('--doc-vista-sidebar-top', h + 'px');
+            wrapEl.style.setProperty('--zipped-docs-adminbar-h', h + 'px');
+            wrapEl.style.setProperty('--zipped-docs-offset', h + 'px');
+            wrapEl.style.setProperty('--zipped-docs-sidebar-top', h + 'px');
         };
 
         update();
@@ -2137,13 +2137,13 @@
      * Only one H1 expanded at a time. Replaces NavRail on mobile.
      * =================================================================== */
     function initMobileToc(wrapEl) {
-        var mobileToc = qs('.doc-vista-mobile-toc', wrapEl);
-        var trigger = qs('.doc-vista-mobile-toc-trigger', wrapEl);
-        var closeBtn = qs('.doc-vista-mobile-toc-close', wrapEl);
-        var backdrop = qs('.doc-vista-mobile-toc-backdrop', wrapEl);
-        var panel = qs('.doc-vista-mobile-toc-panel', wrapEl);
-        var panelBody = qs('.doc-vista-mobile-toc-panel-body', wrapEl);
-        var sidebar = qs('.doc-vista-sidebar', wrapEl);
+        var mobileToc = qs('.zipped-docs-mobile-toc', wrapEl);
+        var trigger = qs('.zipped-docs-mobile-toc-trigger', wrapEl);
+        var closeBtn = qs('.zipped-docs-mobile-toc-close', wrapEl);
+        var backdrop = qs('.zipped-docs-mobile-toc-backdrop', wrapEl);
+        var panel = qs('.zipped-docs-mobile-toc-panel', wrapEl);
+        var panelBody = qs('.zipped-docs-mobile-toc-panel-body', wrapEl);
+        var sidebar = qs('.zipped-docs-sidebar', wrapEl);
 
         if (!trigger || !mobileToc) return;
 
@@ -2190,7 +2190,7 @@
 
         function getScrollOffset() {
             if (isMobile()) {
-                var triggerBar = qs('.doc-vista-mobile-toc', wrapEl);
+                var triggerBar = qs('.zipped-docs-mobile-toc', wrapEl);
                 var h = triggerBar ? triggerBar.getBoundingClientRect().height : 0;
                 return h + 16;
             }
@@ -2207,7 +2207,7 @@
 
                 var link = document.createElement('a');
                 link.href = '#' + node.id;
-                link.className = 'doc-vista-toc-link';
+                link.className = 'zipped-docs-toc-link';
                 link.dataset.target = node.id;
                 link.textContent = node.text;
 
@@ -2237,7 +2237,7 @@
         function buildMobileToc() {
             if (!panelBody) return;
 
-            var existing = qs('.doc-vista-toc', panelBody);
+            var existing = qs('.zipped-docs-toc', panelBody);
             if (existing) existing.remove();
 
             var chapters = ChapterEngine.getAllChapters();
@@ -2245,7 +2245,7 @@
             if (!chapters.length) return;
 
             var tocEl = document.createElement('nav');
-            tocEl.className = 'doc-vista-toc';
+            tocEl.className = 'zipped-docs-toc';
             tocEl.setAttribute('aria-label', 'Table of Contents');
 
             var ul = document.createElement('ul');
@@ -2259,7 +2259,7 @@
 
                 var chLink = document.createElement('a');
                 chLink.href = '#' + ch.id;
-                chLink.className = 'doc-vista-toc-link';
+                chLink.className = 'zipped-docs-toc-link';
                 chLink.dataset.target = ch.id;
                 chLink.dataset.tocId = ch.id;
                 chLink.textContent = ch.title;
@@ -2270,7 +2270,7 @@
                 }
 
                 var toggle = document.createElement('span');
-                toggle.className = 'doc-vista-toc-toggle';
+                toggle.className = 'zipped-docs-toc-toggle';
                 toggle.setAttribute('role', 'button');
                 toggle.setAttribute('tabindex', '0');
                 toggle.setAttribute('aria-label', 'Toggle section');
@@ -2301,15 +2301,15 @@
 
         function updateMobileActive(id) {
             if (!isMobile() || !panelBody) return;
-            var tocEl = qs('.doc-vista-toc', panelBody);
+            var tocEl = qs('.zipped-docs-toc', panelBody);
             if (!tocEl) return;
 
-            qsa('.doc-vista-toc-link.is-active', tocEl).forEach(function (link) {
+            qsa('.zipped-docs-toc-link.is-active', tocEl).forEach(function (link) {
                 link.classList.remove('is-active');
             });
 
             var targetId = id || ChapterEngine.getActiveChapterId();
-            var activeLink = qs('.doc-vista-toc-link[data-target="' + targetId + '"]', tocEl);
+            var activeLink = qs('.zipped-docs-toc-link[data-target="' + targetId + '"]', tocEl);
             if (activeLink) {
                 activeLink.classList.add('is-active');
                 activeLink.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
@@ -2323,17 +2323,17 @@
         });
 
         function filterMobileToc(query) {
-            var tocEl = qs('.doc-vista-toc', panelBody);
+            var tocEl = qs('.zipped-docs-toc', panelBody);
             if (!tocEl) return;
 
             var q = query.trim().toLowerCase();
 
-            var allLinks = qsa('.doc-vista-toc-link', tocEl);
+            var allLinks = qsa('.zipped-docs-toc-link', tocEl);
             allLinks.forEach(function (link) {
                 var li = link.closest('li');
                 if (li) {
-                    li.classList.remove('doc-vista-toc-match');
-                    li.classList.remove('doc-vista-toc-hidden');
+                    li.classList.remove('zipped-docs-toc-match');
+                    li.classList.remove('zipped-docs-toc-hidden');
                 }
             });
 
@@ -2345,7 +2345,7 @@
                 if (text.indexOf(q) !== -1) {
                     var li = link.closest('li');
                     if (li) {
-                        li.classList.add('doc-vista-toc-match');
+                        li.classList.add('zipped-docs-toc-match');
                         matchCount++;
                     }
                 }
@@ -2354,19 +2354,19 @@
             if (!matchCount) {
                 allLinks.forEach(function (link) {
                     var li = link.closest('li');
-                    if (li) li.classList.add('doc-vista-toc-hidden');
+                    if (li) li.classList.add('zipped-docs-toc-hidden');
                 });
                 return;
             }
 
             allLinks.forEach(function (link) {
                 var li = link.closest('li');
-                if (li && !li.classList.contains('doc-vista-toc-match')) {
-                    li.classList.add('doc-vista-toc-hidden');
+                if (li && !li.classList.contains('zipped-docs-toc-match')) {
+                    li.classList.add('zipped-docs-toc-hidden');
                 }
             });
 
-            qsa('.doc-vista-toc-match', tocEl).forEach(function (matchLi) {
+            qsa('.zipped-docs-toc-match', tocEl).forEach(function (matchLi) {
                 var parent = matchLi.parentElement;
                 while (parent && parent !== tocEl) {
                     if (parent.tagName === 'LI' && parent.dataset.depth === '1') {
@@ -2382,22 +2382,22 @@
             mobileToc.classList.add('is-open');
             trigger.setAttribute('aria-expanded', 'true');
             if (position !== 'bottom') {
-                document.body.classList.add('doc-vista-toc-open');
+                document.body.classList.add('zipped-docs-toc-open');
             }
 
             if (panelBody && sidebar) {
-                if (!panelBody.querySelector('.doc-vista-search-wrap')) {
-                    var searchWrap = qs('.doc-vista-search-wrap', sidebar);
-                    var suggestions = qs('.doc-vista-suggestions', sidebar);
-                    var noResults = qs('.doc-vista-no-results', sidebar);
+                if (!panelBody.querySelector('.zipped-docs-search-wrap')) {
+                    var searchWrap = qs('.zipped-docs-search-wrap', sidebar);
+                    var suggestions = qs('.zipped-docs-suggestions', sidebar);
+                    var noResults = qs('.zipped-docs-no-results', sidebar);
 
                     if (searchWrap) {
                         var searchClone = searchWrap.cloneNode(true);
                         panelBody.insertBefore(searchClone, panelBody.firstChild);
-                        var newInput = qs('.doc-vista-search-input', panelBody);
+                        var newInput = qs('.zipped-docs-search-input', panelBody);
                         if (newInput) {
                             newInput.addEventListener('input', function (e) {
-                                var sidebarInput = qs('.doc-vista-search-input', sidebar);
+                                var sidebarInput = qs('.zipped-docs-search-input', sidebar);
                                 if (sidebarInput) {
                                     sidebarInput.value = e.target.value;
                                     sidebarInput.dispatchEvent(new Event('input', { bubbles: true }));
@@ -2405,7 +2405,7 @@
                                 filterMobileToc(e.target.value);
                             });
                             newInput.addEventListener('focus', function () {
-                                var sidebarInput = qs('.doc-vista-search-input', sidebar);
+                                var sidebarInput = qs('.zipped-docs-search-input', sidebar);
                                 if (sidebarInput) sidebarInput.focus();
                             });
                         }
@@ -2424,8 +2424,8 @@
 
                 buildMobileToc();
 
-                var sidebarInput = qs('.doc-vista-search-input', sidebar);
-                var panelInput = qs('.doc-vista-search-input', panelBody);
+                var sidebarInput = qs('.zipped-docs-search-input', sidebar);
+                var panelInput = qs('.zipped-docs-search-input', panelBody);
                 if (sidebarInput && panelInput) {
                     panelInput.value = sidebarInput.value;
                     if (sidebarInput.value.trim().length >= 2) {
@@ -2438,7 +2438,7 @@
         function closeToc() {
             mobileToc.classList.remove('is-open');
             trigger.setAttribute('aria-expanded', 'false');
-            document.body.classList.remove('doc-vista-toc-open');
+            document.body.classList.remove('zipped-docs-toc-open');
         }
 
         trigger.addEventListener('click', function (e) {
@@ -2474,7 +2474,7 @@
 
         if (panelBody) {
             panelBody.addEventListener('click', function (e) {
-                var link = e.target.closest('.doc-vista-toc-link');
+                var link = e.target.closest('.zipped-docs-toc-link');
                 if (link && isMobile()) {
                     var id = link.dataset.tocId;
                     if (id) {
@@ -2501,8 +2501,8 @@
         _activeWrapper = wrapEl;
         _runCleanups();
 
-        var contentEl = qs('.doc-vista-content', wrapEl);
-        var tocEl = qs('.doc-vista-toc', wrapEl);
+        var contentEl = qs('.zipped-docs-content', wrapEl);
+        var tocEl = qs('.zipped-docs-toc', wrapEl);
         if (!contentEl || !tocEl) return;
 
         /* 1. Build chapter structure */
@@ -2573,7 +2573,7 @@
      * Entry Point
      * =================================================================== */
     function boot() {
-        var instances = qsa('.doc-vista');
+        var instances = qsa('.zipped-docs');
         instances.forEach(function (wrap) { initInstance(wrap); });
     }
 

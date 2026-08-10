@@ -2,7 +2,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-class Doc_Vista_Format_Detector {
+class Zipped_Docs_Format_Detector {
 
     private $adapters = array();
 
@@ -21,7 +21,7 @@ class Doc_Vista_Format_Detector {
             $class_name = $this->get_class_name_from_file( $file );
             if ( $class_name && class_exists( $class_name ) ) {
                 $adapter = new $class_name();
-                if ( $adapter instanceof Doc_Vista_Import_Adapter ) {
+                if ( $adapter instanceof Zipped_Docs_Import_Adapter ) {
                     $this->adapters[] = $adapter;
                 }
             }
@@ -37,10 +37,10 @@ class Doc_Vista_Format_Detector {
         foreach ( $parts as $part ) {
             $name_parts[] = ucfirst( $part );
         }
-        return 'Doc_Vista_' . implode( '_', $name_parts ) . '_Adapter';
+        return 'Zipped_Docs_' . implode( '_', $name_parts ) . '_Adapter';
     }
 
-    public function register_adapter( Doc_Vista_Import_Adapter $adapter ) {
+    public function register_adapter( Zipped_Docs_Import_Adapter $adapter ) {
         $this->adapters[] = $adapter;
     }
 
@@ -75,8 +75,8 @@ class Doc_Vista_Format_Detector {
 
         $diagnostics['is_array'] = true;
 
-        if ( isset( $data['_doc_vista_export'] ) && isset( $data['documents'] ) ) {
-            $diagnostics['structure_type'] = 'doc_vista_wrapper';
+        if ( isset( $data['_zipped_docs_export'] ) && isset( $data['documents'] ) ) {
+            $diagnostics['structure_type'] = 'zipped_docs_wrapper';
             $diagnostics['count'] = count( $data['documents'] );
             if ( isset( $data['documents'][0] ) && is_array( $data['documents'][0] ) ) {
                 $diagnostics['sample_keys'] = array_keys( $data['documents'][0] );
@@ -104,42 +104,42 @@ class Doc_Vista_Format_Detector {
     private function analyze_keys( &$diagnostics, $sample ) {
         $detected = array();
 
-        if ( Doc_Vista_Field_Mapper::has_any_field( $sample, 'title' ) ) {
+        if ( Zipped_Docs_Field_Mapper::has_any_field( $sample, 'title' ) ) {
             $detected[] = 'title';
         }
-        if ( Doc_Vista_Field_Mapper::has_any_field( $sample, 'content' ) ) {
+        if ( Zipped_Docs_Field_Mapper::has_any_field( $sample, 'content' ) ) {
             $detected[] = 'content';
         }
-        if ( Doc_Vista_Field_Mapper::has_any_field( $sample, 'slug' ) ) {
+        if ( Zipped_Docs_Field_Mapper::has_any_field( $sample, 'slug' ) ) {
             $detected[] = 'slug';
         }
-        if ( Doc_Vista_Field_Mapper::has_any_field( $sample, 'excerpt' ) ) {
+        if ( Zipped_Docs_Field_Mapper::has_any_field( $sample, 'excerpt' ) ) {
             $detected[] = 'excerpt';
         }
-        if ( Doc_Vista_Field_Mapper::has_any_field( $sample, 'status' ) ) {
+        if ( Zipped_Docs_Field_Mapper::has_any_field( $sample, 'status' ) ) {
             $detected[] = 'status';
         }
-        if ( Doc_Vista_Field_Mapper::has_any_field( $sample, 'author' ) ) {
+        if ( Zipped_Docs_Field_Mapper::has_any_field( $sample, 'author' ) ) {
             $detected[] = 'author';
             $diagnostics['has_author'] = true;
         }
-        if ( Doc_Vista_Field_Mapper::has_any_field( $sample, 'created_date' ) ) {
+        if ( Zipped_Docs_Field_Mapper::has_any_field( $sample, 'created_date' ) ) {
             $detected[] = 'date';
             $diagnostics['has_dates'] = true;
         }
-        if ( Doc_Vista_Field_Mapper::has_any_field( $sample, 'featured_image' ) ) {
+        if ( Zipped_Docs_Field_Mapper::has_any_field( $sample, 'featured_image' ) ) {
             $detected[] = 'image';
             $diagnostics['has_media'] = true;
         }
-        if ( Doc_Vista_Field_Mapper::has_any_field( $sample, 'custom_fields' ) || isset( $sample['meta_input'] ) ) {
+        if ( Zipped_Docs_Field_Mapper::has_any_field( $sample, 'custom_fields' ) || isset( $sample['meta_input'] ) ) {
             $detected[] = 'meta';
             $diagnostics['has_meta'] = true;
         }
-        if ( isset( $sample['tax_input'] ) || Doc_Vista_Field_Mapper::has_any_field( $sample, 'categories' ) ) {
+        if ( isset( $sample['tax_input'] ) || Zipped_Docs_Field_Mapper::has_any_field( $sample, 'categories' ) ) {
             $detected[] = 'tax';
             $diagnostics['has_tax'] = true;
         }
-        if ( Doc_Vista_Field_Mapper::has_any_field( $sample, 'tags' ) ) {
+        if ( Zipped_Docs_Field_Mapper::has_any_field( $sample, 'tags' ) ) {
             $detected[] = 'tags';
         }
         $has_gutenberg_content = false;
@@ -148,11 +148,11 @@ class Doc_Vista_Format_Detector {
         } elseif ( isset( $sample['post_content'] ) && is_string( $sample['post_content'] ) && preg_match( '/<!--\s+wp:/', $sample['post_content'] ) ) {
             $has_gutenberg_content = true;
         }
-        if ( Doc_Vista_Field_Mapper::has_any_field( $sample, 'gutenberg_blocks' ) || $has_gutenberg_content ) {
+        if ( Zipped_Docs_Field_Mapper::has_any_field( $sample, 'gutenberg_blocks' ) || $has_gutenberg_content ) {
             $detected[] = 'blocks';
             $diagnostics['has_blocks'] = true;
         }
-        if ( Doc_Vista_Field_Mapper::has_any_field( $sample, 'attachments' ) ) {
+        if ( Zipped_Docs_Field_Mapper::has_any_field( $sample, 'attachments' ) ) {
             $detected[] = 'attachments';
             $diagnostics['has_media'] = true;
         }
@@ -168,69 +168,69 @@ class Doc_Vista_Format_Detector {
         if ( $detected_adapter ) {
             $class = get_class( $detected_adapter );
             $labels = array(
-                'Doc_Vista_Docvista_Adapter' => __( 'Doc Vista Export', 'doc-vista' ),
-                'Doc_Vista_Wordpress_Adapter' => __( 'WordPress Export', 'doc-vista' ),
-                'Doc_Vista_Post_Page_Export_Adapter' => __( 'Post/Page Export (with Custom Fields)', 'doc-vista' ),
-                'Doc_Vista_Gutenberg_Adapter' => __( 'Gutenberg Block Export', 'doc-vista' ),
+                'Zipped_Docs_Native_Adapter' => __( 'Zipped Docs Export', 'zipped-docs' ),
+                'Zipped_Docs_Wordpress_Adapter' => __( 'WordPress Export', 'zipped-docs' ),
+                'Zipped_Docs_Post_Page_Export_Adapter' => __( 'Post/Page Export (with Custom Fields)', 'zipped-docs' ),
+                'Zipped_Docs_Gutenberg_Adapter' => __( 'Gutenberg Block Export', 'zipped-docs' ),
             );
-            return isset( $labels[ $class ] ) ? $labels[ $class ] : __( 'Unknown Format', 'doc-vista' );
+            return isset( $labels[ $class ] ) ? $labels[ $class ] : __( 'Unknown Format', 'zipped-docs' );
         }
 
-        if ( isset( $data['_doc_vista_export'] ) ) {
-            return __( 'Doc Vista Export', 'doc-vista' );
+        if ( isset( $data['_zipped_docs_export'] ) ) {
+            return __( 'Zipped Docs Export', 'zipped-docs' );
         }
 
         if ( isset( $data[0] ) && is_array( $data[0] ) ) {
             $sample = $data[0];
             if ( isset( $sample['post_type'] ) ) {
                 if ( 'post' === $sample['post_type'] ) {
-                    return __( 'WordPress Post Export', 'doc-vista' );
+                    return __( 'WordPress Post Export', 'zipped-docs' );
                 }
                 if ( 'page' === $sample['post_type'] ) {
-                    return __( 'WordPress Page Export', 'doc-vista' );
+                    return __( 'WordPress Page Export', 'zipped-docs' );
                 }
             }
             if ( isset( $sample['type'] ) ) {
                 if ( 'post' === $sample['type'] ) {
-                    return __( 'WordPress Post Export', 'doc-vista' );
+                    return __( 'WordPress Post Export', 'zipped-docs' );
                 }
                 if ( 'page' === $sample['type'] ) {
-                    return __( 'WordPress Page Export', 'doc-vista' );
+                    return __( 'WordPress Page Export', 'zipped-docs' );
                 }
             }
             if ( isset( $sample['post_title'] ) ) {
                 $post_type = isset( $sample['post_type'] ) ? $sample['post_type'] : ( isset( $sample['type'] ) ? $sample['type'] : '' );
                 if ( $post_type ) {
                     /* translators: %s: post type label, e.g. "Post" or "Page". */
-                    return sprintf( __( 'WordPress %s Export', 'doc-vista' ), ucfirst( $post_type ) );
+                    return sprintf( __( 'WordPress %s Export', 'zipped-docs' ), ucfirst( $post_type ) );
                 }
                 if ( isset( $sample['post_meta'] ) || isset( $sample['tax_input'] ) ) {
-                    return __( 'WordPress Export', 'doc-vista' );
+                    return __( 'WordPress Export', 'zipped-docs' );
                 }
-                return __( 'WordPress Export', 'doc-vista' );
+                return __( 'WordPress Export', 'zipped-docs' );
             }
             if ( isset( $sample['title'] ) && isset( $sample['content'] ) ) {
                 if ( preg_match( '/<!--\s+wp:/', $sample['content'] ) ) {
-                    return __( 'Gutenberg Export', 'doc-vista' );
+                    return __( 'Gutenberg Export', 'zipped-docs' );
                 }
-                return __( 'Content Export', 'doc-vista' );
+                return __( 'Content Export', 'zipped-docs' );
             }
         }
 
         if ( isset( $data['post_title'] ) || isset( $data['title'] ) ) {
-            return __( 'WordPress Export', 'doc-vista' );
+            return __( 'WordPress Export', 'zipped-docs' );
         }
 
-        return __( 'Content Export', 'doc-vista' );
+        return __( 'Content Export', 'zipped-docs' );
     }
 
     public function get_supported_labels() {
         return array(
-            __( 'Doc Vista JSON', 'doc-vista' ),
-            __( 'WordPress Page JSON', 'doc-vista' ),
-            __( 'WordPress Post JSON', 'doc-vista' ),
-            __( 'Gutenberg Block JSON', 'doc-vista' ),
-            __( 'Post/Page Import Export JSON', 'doc-vista' ),
+            __( 'Zipped Docs JSON', 'zipped-docs' ),
+            __( 'WordPress Page JSON', 'zipped-docs' ),
+            __( 'WordPress Post JSON', 'zipped-docs' ),
+            __( 'Gutenberg Block JSON', 'zipped-docs' ),
+            __( 'Post/Page Import Export JSON', 'zipped-docs' ),
         );
     }
 }

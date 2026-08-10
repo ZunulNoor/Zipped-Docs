@@ -1,22 +1,22 @@
 /*
- * Doc Vista — Admin Styles
+ * Zipped Docs — Admin Styles
  */
 
 /* -----------------------------------------------------------------------
  * Dashboard
  * --------------------------------------------------------------------- */
-.doc-vista-dashboard h1 {
+.zipped-docs-dashboard h1 {
     margin-bottom: 20px;
 }
 
-.doc-vista-stats-grid {
+.zipped-docs-stats-grid {
     display: flex;
     gap: 16px;
     margin-bottom: 32px;
     flex-wrap: wrap;
 }
 
-.doc-vista-stat-card {
+.zipped-docs-stat-card {
     background: #fff;
     border: 1px solid #dcdcde;
     border-radius: 6px;
@@ -27,7 +27,7 @@
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
 }
 
-.doc-vista-stat-number {
+.zipped-docs-stat-number {
     display: block;
     font-size: 32px;
     font-weight: 700;
@@ -35,7 +35,7 @@
     color: #1d2327;
 }
 
-.doc-vista-stat-label {
+.zipped-docs-stat-label {
     display: block;
     font-size: 13px;
     color: #646970;
@@ -44,12 +44,12 @@
     letter-spacing: 0.05em;
 }
 
-.doc-vista-section-title {
+.zipped-docs-section-title {
     margin-bottom: 16px;
     font-size: 18px;
 }
 
-.doc-vista-empty-admin {
+.zipped-docs-empty-admin {
     background: #fff;
     border: 1px solid #dcdcde;
     border-radius: 6px;
@@ -57,14 +57,14 @@
     text-align: center;
 }
 
-.doc-vista-empty-admin p {
+.zipped-docs-empty-admin p {
     font-size: 15px;
     color: #646970;
     margin-bottom: 16px;
 }
 
 /* Status badges */
-.doc-vista-status-badge {
+.zipped-docs-status-badge {
     display: inline-block;
     padding: 2px 10px;
     border-radius: 12px;
@@ -72,18 +72,18 @@
     font-weight: 500;
 }
 
-.doc-vista-status-published {
+.zipped-docs-status-published {
     background: #edf7ed;
     color: #2a7a2a;
 }
 
-.doc-vista-status-draft {
+.zipped-docs-status-draft {
     background: #f0f0f1;
     color: #646970;
 }
 
 /* Actions column */
-.doc-vista-actions {
+.zipped-docs-actions {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -91,12 +91,12 @@
     justify-content: flex-start;
 }
 
-.doc-vista-actions .button {
+.zipped-docs-actions .button {
     flex-shrink: 0;
     white-space: nowrap;
 }
 
-.doc-vista-docs-table .doc-vista-actions {
+.zipped-docs-docs-table .zipped-docs-actions {
     min-width: 270px;
     white-space: nowrap;
 }
@@ -114,14 +114,14 @@
 /* -----------------------------------------------------------------------
  * Add New Doc
  * --------------------------------------------------------------------- */
-.doc-vista-new-doc .doc-vista-new-doc-layout {
+.zipped-docs-new-doc .zipped-docs-new-doc-layout {
     display: flex;
     gap: 32px;
     margin-top: 20px;
     flex-wrap: wrap;
 }
 
-.doc-vista-new-doc .doc-vista-quick-form {
+.zipped-docs-new-doc .zipped-docs-quick-form {
     flex: 2;
     min-width: 400px;
     background: #fff;
@@ -130,7 +130,7 @@
     padding: 24px;
 }
 
-.doc-vista-new-doc .doc-vista-full-editor-link {
+.zipped-docs-new-doc .zipped-docs-full-editor-link {
     flex: 1;
     min-width: 240px;
     background: #f6f7f7;
@@ -141,14 +141,14 @@
     align-self: flex-start;
 }
 
-.doc-vista-new-doc .doc-vista-full-editor-link h2 {
+.zipped-docs-new-doc .zipped-docs-full-editor-link h2 {
     margin-top: 0;
 }
 
 /* -----------------------------------------------------------------------
  * Categories
  * --------------------------------------------------------------------- */
-.doc-vista-categories .doc-vista-cats-layout {
+.zipped-docs-categories .zipped-docs-cats-layout {
     display: flex;
     gap: 32px;
     margin-top: 20px;
@@ -156,7 +156,7 @@
     align-items: flex-start;
 }
 
-.doc-vista-categories .doc-vista-cats-form {
+.zipped-docs-categories .zipped-docs-cats-form {
     flex: 1;
     min-width: 320px;
     background: #fff;
@@ -165,27 +165,27 @@
     padding: 24px;
 }
 
-.doc-vista-categories .doc-vista-cats-list {
+.zipped-docs-categories .zipped-docs-cats-list {
     flex: 2;
     min-width: 400px;
 }
 
-.doc-vista-categories .doc-vista-cats-list h2 {
+.zipped-docs-categories .zipped-docs-cats-list h2 {
     margin-top: 0;
 }
 
 /* -----------------------------------------------------------------------
  * Settings
  * --------------------------------------------------------------------- */
-.doc-vista-settings .form-table th {
+.zipped-docs-settings .form-table th {
     width: 180px;
 }
 
-.doc-vista-settings .doc-vista-settings-info {
+.zipped-docs-settings .zipped-docs-settings-info {
     margin-top: 32px;
 }
 
-.doc-vista-settings .doc-vista-settings-info pre {
+.zipped-docs-settings .zipped-docs-settings-info pre {
     background: #f0f0f1;
     border: 1px solid #dcdcde;
     border-radius: 4px;
@@ -193,14 +193,14 @@
     overflow-x: auto;
 }
 
-.doc-vista-settings .doc-vista-settings-info code {
+.zipped-docs-settings .zipped-docs-settings-info code {
     font-size: 13px;
 }
 
 /* -----------------------------------------------------------------------
  * Filter bar
  * --------------------------------------------------------------------- */
-.doc-vista-filter-bar {
+.zipped-docs-filter-bar {
     background: #fff;
     border: 1px solid #dcdcde;
     border-radius: 6px;
@@ -208,18 +208,18 @@
     margin-bottom: 20px;
 }
 
-.doc-vista-filter-bar form {
+.zipped-docs-filter-bar form {
     display: flex;
     gap: 8px;
     align-items: center;
     flex-wrap: wrap;
 }
 
-.doc-vista-filter-bar select {
+.zipped-docs-filter-bar select {
     min-width: 160px;
 }
 
-.doc-vista-sr-admin {
+.zipped-docs-sr-admin {
     position: absolute;
     width: 1px;
     height: 1px;
@@ -231,7 +231,7 @@
 /* -----------------------------------------------------------------------
  * Settings page — tabbed layout
  * --------------------------------------------------------------------- */
-.doc-vista-settings-page .doc-vista-settings-tabs {
+.zipped-docs-settings-page .zipped-docs-settings-tabs {
     background: #fff;
     border: 1px solid #dcdcde;
     border-radius: 6px;
@@ -239,14 +239,14 @@
     overflow: hidden;
 }
 
-.doc-vista-tab-nav {
+.zipped-docs-tab-nav {
     display: flex;
     gap: 0;
     border-bottom: 1px solid #dcdcde;
     background: #f6f7f7;
 }
 
-.doc-vista-tab-nav a {
+.zipped-docs-tab-nav a {
     display: block;
     padding: 12px 20px;
     text-decoration: none;
@@ -258,36 +258,36 @@
     transition: all 0.15s ease;
 }
 
-.doc-vista-tab-nav a:hover {
+.zipped-docs-tab-nav a:hover {
     color: #1d2327;
     background: #fff;
 }
 
-.doc-vista-tab-nav a.doc-vista-tab-active {
+.zipped-docs-tab-nav a.zipped-docs-tab-active {
     color: #E8500A;
     border-bottom-color: #E8500A;
     background: #fff;
 }
 
-.doc-vista-tab-panel {
+.zipped-docs-tab-panel {
     display: none;
     padding: 24px;
 }
 
-.doc-vista-tab-panel.doc-vista-tab-active {
+.zipped-docs-tab-panel.zipped-docs-tab-active {
     display: block;
 }
 
-.doc-vista-tab-panel h2 {
+.zipped-docs-tab-panel h2 {
     margin-top: 0;
     font-size: 16px;
 }
 
-.doc-vista-settings-page .form-table th {
+.zipped-docs-settings-page .form-table th {
     width: 200px;
 }
 
-.doc-vista-settings-page input[type="color"] {
+.zipped-docs-settings-page input[type="color"] {
     width: 50px;
     height: 30px;
     padding: 1px;
@@ -297,26 +297,26 @@
 /* -----------------------------------------------------------------------
  * Docs table
  * --------------------------------------------------------------------- */
-.doc-vista-docs-table .column-title {
+.zipped-docs-docs-table .column-title {
     min-width: 200px;
 }
 
-.doc-vista-docs-table th {
+.zipped-docs-docs-table th {
     white-space: nowrap;
 }
 
-.doc-vista-docs-table .column-author {
+.zipped-docs-docs-table .column-author {
     min-width: 140px;
 }
 
-.doc-vista-docs-table th:not(.column-cb) {
+.zipped-docs-docs-table th:not(.column-cb) {
     min-width: 80px;
 }
 
 /* -----------------------------------------------------------------------
  * Table wrapper — responsive horizontal scroll
  * --------------------------------------------------------------------- */
-.docvista-table-wrapper {
+.zippeddocs-table-wrapper {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     width: 100%;
@@ -326,24 +326,24 @@
     scrollbar-color: #c3c4c7 transparent;
 }
 
-.docvista-table-wrapper::-webkit-scrollbar {
+.zippeddocs-table-wrapper::-webkit-scrollbar {
     height: 6px;
 }
 
-.docvista-table-wrapper::-webkit-scrollbar-track {
+.zippeddocs-table-wrapper::-webkit-scrollbar-track {
     background: transparent;
 }
 
-.docvista-table-wrapper::-webkit-scrollbar-thumb {
+.zippeddocs-table-wrapper::-webkit-scrollbar-thumb {
     background: #c3c4c7;
     border-radius: 3px;
 }
 
-.docvista-table-wrapper::-webkit-scrollbar-thumb:hover {
+.zippeddocs-table-wrapper::-webkit-scrollbar-thumb:hover {
     background: #a7aaad;
 }
 
-.docvista-table-wrapper .wp-list-table {
+.zippeddocs-table-wrapper .wp-list-table {
     border: none;
     margin: 0;
     width: max-content;
@@ -354,14 +354,14 @@
 /* -----------------------------------------------------------------------
  * Sticky table header
  * --------------------------------------------------------------------- */
-.docvista-table-wrapper thead th {
+.zippeddocs-table-wrapper thead th {
     position: sticky;
     top: 0;
     z-index: 2;
     background: #f6f7f7;
 }
 
-.docvista-table-wrapper thead th a {
+.zippeddocs-table-wrapper thead th a {
     text-decoration: none;
     color: #1d2327;
     white-space: nowrap;
@@ -370,14 +370,14 @@
     gap: 2px;
 }
 
-.docvista-table-wrapper thead th a:hover {
+.zippeddocs-table-wrapper thead th a:hover {
     color: #135e96;
 }
 
 /* -----------------------------------------------------------------------
  * Author column
  * --------------------------------------------------------------------- */
-.doc-vista-author-avatar {
+.zipped-docs-author-avatar {
     border-radius: 50%;
     vertical-align: middle;
     margin-right: 6px;
@@ -385,18 +385,18 @@
     height: 24px;
 }
 
-.doc-vista-author-name {
+.zipped-docs-author-name {
     vertical-align: middle;
 }
 
-.doc-vista-author-unknown {
+.zipped-docs-author-unknown {
     color: #646970;
 }
 
 /* -----------------------------------------------------------------------
  * Sortable column headers
  * --------------------------------------------------------------------- */
-.doc-vista-sortable .sorting-indicator {
+.zipped-docs-sortable .sorting-indicator {
     font-size: 9px;
     vertical-align: middle;
     margin-left: 5px;
@@ -404,21 +404,21 @@
     line-height: 1;
 }
 
-.doc-vista-sortable.sorted {
+.zipped-docs-sortable.sorted {
     color: #1d2327;
 }
 
 /* -----------------------------------------------------------------------
  * Settings — cache info
  * --------------------------------------------------------------------- */
-.doc-vista-settings-info .button {
+.zipped-docs-settings-info .button {
     margin-right: 8px;
 }
 
 /* -----------------------------------------------------------------------
  * Disabled delete button (last category protection)
  * --------------------------------------------------------------------- */
-.doc-vista-btn-disabled {
+.zipped-docs-btn-disabled {
     opacity: 0.5;
     cursor: not-allowed !important;
     pointer-events: none;
@@ -427,7 +427,7 @@
 /* -----------------------------------------------------------------------
  * Modal / Popup system
  * --------------------------------------------------------------------- */
-.doc-vista-modal-overlay {
+.zipped-docs-modal-overlay {
     position: fixed;
     inset: 0;
     z-index: 999999;
@@ -442,16 +442,16 @@
     backdrop-filter: blur(2px);
 }
 
-.doc-vista-modal-overlay.is-open {
+.zipped-docs-modal-overlay.is-open {
     opacity: 1;
     visibility: visible;
 }
 
-.doc-vista-modal-overlay.is-open .doc-vista-modal {
+.zipped-docs-modal-overlay.is-open .zipped-docs-modal {
     transform: scale(1) translateY(0);
 }
 
-.doc-vista-modal {
+.zipped-docs-modal {
     background: #fff;
     border-radius: 16px;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15), 0 8px 20px rgba(0, 0, 0, 0.08);
@@ -467,7 +467,7 @@
 
 /* Responsive popup */
 @media (max-width: 480px) {
-    .doc-vista-modal {
+    .zipped-docs-modal {
         max-width: 100%;
         width: calc(100% - 16px);
         border-radius: 12px;
@@ -477,7 +477,7 @@
 /* -----------------------------------------------------------------------
  * Deactivation modal — radio button custom styles
  * --------------------------------------------------------------------- */
-.doc-vista-deactivate-option {
+.zipped-docs-deactivate-option {
     display: flex;
     align-items: flex-start;
     gap: 10px;
@@ -490,27 +490,27 @@
     transition: border-color 0.15s ease, background 0.15s ease;
 }
 
-.doc-vista-deactivate-option:hover {
+.zipped-docs-deactivate-option:hover {
     background: #f0f0f1;
 }
 
-.doc-vista-deactivate-option.is-selected {
+.zipped-docs-deactivate-option.is-selected {
     border-color: #2563EB;
     background: #eff6ff;
 }
 
-.doc-vista-deactivate-option input[type="radio"] {
+.zipped-docs-deactivate-option input[type="radio"] {
     margin-top: 3px;
     accent-color: #2563EB;
 }
 
-.doc-vista-deactivate-option strong {
+.zipped-docs-deactivate-option strong {
     display: block;
     font-size: 14px;
     color: #1d2327;
 }
 
-.doc-vista-deactivate-option span {
+.zipped-docs-deactivate-option span {
     display: block;
     font-size: 13px;
     color: #646970;
@@ -519,9 +519,9 @@
 /* ---------- Reduced motion ---------- */
 @media (prefers-reduced-motion: reduce) {
 
-    .doc-vista-modal-overlay,
-    .doc-vista-modal,
-    .doc-vista-deactivate-option {
+    .zipped-docs-modal-overlay,
+    .zipped-docs-modal,
+    .zipped-docs-deactivate-option {
         transition: none !important;
     }
 }
@@ -529,11 +529,11 @@
 /* -----------------------------------------------------------------------
  * Import / Export
  * --------------------------------------------------------------------- */
-.doc-vista-spinner {
-    animation: doc-vista-spin 1s linear infinite;
+.zipped-docs-spinner {
+    animation: zipped-docs-spin 1s linear infinite;
 }
 
-@keyframes doc-vista-spin {
+@keyframes zipped-docs-spin {
     from {
         transform: rotate(0deg);
     }
@@ -543,25 +543,25 @@
     }
 }
 
-.doc-vista-conflict-option input[type="radio"] {
+.zipped-docs-conflict-option input[type="radio"] {
     margin: 0;
     accent-color: #2563EB;
 }
 
-.doc-vista-conflict-option:hover {
+.zipped-docs-conflict-option:hover {
     border-color: #2563EB !important;
 }
 
-#doc-vista-dropzone:hover {
+#zipped-docs-dropzone:hover {
     border-color: #2563EB;
     background: #eff6ff;
 }
 
-.doc-vista-export-checkbox {
+.zipped-docs-export-checkbox {
     accent-color: #2563EB;
 }
 
-#doc-vista-select-all {
+#zipped-docs-select-all {
     accent-color: #2563EB;
     margin: 0 !important;
 }

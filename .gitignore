@@ -1,6 +1,6 @@
 
 # Plugin check reports
-doc-vista-*.json
+zipped-docs-*.json
 
 # Tests / QA
 tests/

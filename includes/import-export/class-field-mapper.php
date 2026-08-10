@@ -2,7 +2,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-class Doc_Vista_Field_Mapper {
+class Zipped_Docs_Field_Mapper {
 
     private static $field_map = array(
         'title' => array( 'post_title', 'document_title', 'name', 'heading', 'headline' ),
@@ -14,12 +14,12 @@ class Doc_Vista_Field_Mapper {
         'created_date' => array( 'post_date', 'date', 'created', 'publish_date', 'published', 'post_date_gmt' ),
         'modified_date' => array( 'post_modified', 'modified', 'updated', 'last_modified', 'post_modified_gmt', 'changed' ),
         'featured_image' => array( 'post_thumbnail', '_thumbnail_id', 'thumbnail', 'featured_media', 'image', 'post_image' ),
-        'categories' => array( 'category', 'category_name', 'cat', 'doc_vista_category', 'terms', 'taxonomy', 'taxonomies' ),
-        'tags' => array( 'tags_input', 'post_tags', 'tag', 'doc_vista_tags' ),
+        'categories' => array( 'category', 'category_name', 'cat', 'zipped_docs_category', 'terms', 'taxonomy', 'taxonomies' ),
+        'tags' => array( 'tags_input', 'post_tags', 'tag', 'zipped_docs_tags' ),
         'custom_fields' => array( 'post_meta', 'meta', 'meta_data', 'fields', 'custom_meta', 'post_custom' ),
         'gutenberg_blocks' => array( 'blocks', 'block_data', 'inner_blocks' ),
         'attachments' => array( 'media', 'images', 'files', 'uploads', 'enclosure' ),
-        'menu_order' => array( 'order', 'doc_vista_order', 'sort_order', 'position', 'menu_order' ),
+        'menu_order' => array( 'order', 'zipped_docs_order', 'sort_order', 'position', 'menu_order' ),
         'template' => array( 'page_template', 'wp_page_template', '_wp_page_template', 'template_name' ),
         'post_type' => array( 'type', 'document_type', 'content_type' ),
     );
@@ -104,7 +104,7 @@ class Doc_Vista_Field_Mapper {
 
         if ( empty( $cats ) && isset( $data['tax_input'] ) && is_array( $data['tax_input'] ) ) {
             foreach ( $data['tax_input'] as $tax => $terms ) {
-                if ( in_array( $tax, array( 'category', 'doc_vista_category' ), true ) ) {
+                if ( in_array( $tax, array( 'category', 'zipped_docs_category' ), true ) ) {
                     if ( is_array( $terms ) ) {
                         foreach ( $terms as $t ) {
                             if ( is_string( $t ) ) {

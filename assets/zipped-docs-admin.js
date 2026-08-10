@@ -1,14 +1,14 @@
 (function () {
     'use strict';
 
-    var CFG = window.DOC_VISTA_ADMIN || {};
+    var CFG = window.ZIPPED_DOCS_ADMIN || {};
     var THEME_COLOR = CFG.themeColor || '#2563EB';
 
     /* ===================================================================
-     * DocVistaPopup — unified modal dialog system
+     * ZippedDocsPopup — unified modal dialog system
      * Replaces all window.alert(), window.confirm(), window.prompt()
      * =================================================================== */
-    var DocVistaPopup = {
+    var ZippedDocsPopup = {
         _overlay: null,
         _modal: null,
         _resolve: null,
@@ -26,11 +26,11 @@
             if (this._overlay) return;
 
             var overlay = document.createElement('div');
-            overlay.className = 'doc-vista-modal-overlay';
+            overlay.className = 'zipped-docs-modal-overlay';
             overlay.style.cssText = 'position:fixed;inset:0;z-index:999999;background:rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:opacity 0.2s ease,visibility 0.2s ease;-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px);';
 
             var modal = document.createElement('div');
-            modal.className = 'doc-vista-modal';
+            modal.className = 'zipped-docs-modal';
             modal.setAttribute('role', 'dialog');
             modal.setAttribute('aria-modal', 'true');
             modal.style.cssText = 'background:#fff;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,0.15),0 8px 20px rgba(0,0,0,0.08);max-width:420px;width:calc(100% - 32px);max-height:85vh;overflow-y:auto;transform:scale(0.92) translateY(8px);transition:transform 0.25s cubic-bezier(0.34,1.56,0.64,1);padding:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif;';
@@ -152,7 +152,7 @@
             opts = opts || {};
             return this.show({
                 type: opts.type || 'info',
-                title: opts.title || 'Doc Vista',
+                title: opts.title || 'Zipped Docs',
                 message: message,
                 confirmText: opts.confirmText || 'OK'
             });
@@ -162,7 +162,7 @@
             opts = opts || {};
             return this.show({
                 type: 'question',
-                title: opts.title || 'Doc Vista',
+                title: opts.title || 'Zipped Docs',
                 message: message,
                 confirmText: opts.confirmText || 'Delete',
                 cancelText: opts.cancelText || 'Cancel'
@@ -201,14 +201,14 @@
      * =================================================================== */
     function initDeleteConfirmations() {
         document.addEventListener('click', function (e) {
-            var delBtn = e.target.closest('.doc-vista-delete-cat, .doc-vista-delete-doc');
+            var delBtn = e.target.closest('.zipped-docs-delete-cat, .zipped-docs-delete-doc');
             if (!delBtn) return;
 
             var msg = delBtn.getAttribute('data-confirm') || 'Are you sure?';
             e.preventDefault();
             var href = delBtn.getAttribute('href');
 
-            DocVistaPopup.confirm(msg, {
+            ZippedDocsPopup.confirm(msg, {
                 title: 'Confirm Delete',
                 confirmText: 'Delete'
             }).then(function (confirmed) {
@@ -223,7 +223,7 @@
      * Deactivation flow — branded modal on plugins page
      * =================================================================== */
     function initDeactivationFlow() {
-        var deactivateLink = document.querySelector('a[href*="action=deactivate"][href*="doc-vista"]');
+        var deactivateLink = document.querySelector('a[href*="action=deactivate"][href*="zipped-docs"]');
         if (!deactivateLink) return;
 
         deactivateLink.addEventListener('click', function (e) {
@@ -236,7 +236,7 @@
 
     function showDeactivationModal(deactivateHref) {
         var overlay = document.createElement('div');
-        overlay.className = 'doc-vista-modal-overlay';
+        overlay.className = 'zipped-docs-modal-overlay';
         overlay.style.cssText = 'position:fixed;inset:0;z-index:999999;background:rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:opacity 0.2s ease,visibility 0.2s ease;-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px);';
 
         var modal = document.createElement('div');
@@ -249,24 +249,24 @@
             '<div style="width:48px;height:48px;margin:0 auto 12px;background:#FEF3C7;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#F59E0B;">' +
             '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>' +
             '</div>' +
-            '<h2 style="margin:0 0 4px;font-size:18px;font-weight:700;color:#1d2327;">' + (CFG.i18n.deactivationTitle || 'Leaving Doc Vista?') + '</h2>' +
+            '<h2 style="margin:0 0 4px;font-size:18px;font-weight:700;color:#1d2327;">' + (CFG.i18n.deactivationTitle || 'Leaving Zipped Docs?') + '</h2>' +
             '<p style="margin:0 0 20px;font-size:14px;color:#50575e;line-height:1.5;">' + (CFG.i18n.deactivationDesc || 'Would you like to keep your documentation and settings for future use?') + '</p>' +
             '</div>' +
             '<div style="padding:0 24px 20px;">' +
-            '<label style="display:flex;align-items:flex-start;gap:10px;padding:12px 14px;background:#f6f7f7;border-radius:10px;cursor:pointer;margin-bottom:8px;border:2px solid ' + THEME_COLOR + ';" id="doc-vista-deactivate-keep">' +
-            '<input type="radio" name="doc_vista_deactivate_action" value="keep" checked style="margin-top:3px;accent-color:' + THEME_COLOR + ';">' +
+            '<label style="display:flex;align-items:flex-start;gap:10px;padding:12px 14px;background:#f6f7f7;border-radius:10px;cursor:pointer;margin-bottom:8px;border:2px solid ' + THEME_COLOR + ';" id="zipped-docs-deactivate-keep">' +
+            '<input type="radio" name="zipped_docs_deactivate_action" value="keep" checked style="margin-top:3px;accent-color:' + THEME_COLOR + ';">' +
             '<div><strong style="display:block;font-size:14px;color:#1d2327;">' + (CFG.i18n.keepData || 'Keep my documentation and settings') + '</strong>' +
             '<span style="font-size:13px;color:#646970;">' + (CFG.i18n.keepDataDesc || 'Database will remain intact for future use.') + '</span></div>' +
             '</label>' +
-            '<label style="display:flex;align-items:flex-start;gap:10px;padding:12px 14px;background:#f6f7f7;border-radius:10px;cursor:pointer;border:2px solid transparent;" id="doc-vista-deactivate-remove">' +
-            '<input type="radio" name="doc_vista_deactivate_action" value="remove" style="margin-top:3px;accent-color:' + THEME_COLOR + ';">' +
+            '<label style="display:flex;align-items:flex-start;gap:10px;padding:12px 14px;background:#f6f7f7;border-radius:10px;cursor:pointer;border:2px solid transparent;" id="zipped-docs-deactivate-remove">' +
+            '<input type="radio" name="zipped_docs_deactivate_action" value="remove" style="margin-top:3px;accent-color:' + THEME_COLOR + ';">' +
             '<div><strong style="display:block;font-size:14px;color:#1d2327;">' + (CFG.i18n.removeData || 'Remove all plugin data') + '</strong>' +
             '<span style="font-size:13px;color:#646970;">' + (CFG.i18n.removeDataDesc || 'All documentation, categories, and settings will be deleted on uninstall.') + '</span></div>' +
             '</label>' +
             '</div>' +
             '<div style="display:flex;justify-content:flex-end;gap:8px;padding:16px 24px;border-top:1px solid #f0f0f1;">' +
-            '<button class="button" id="doc-vista-deactivate-cancel" style="min-height:36px;padding:6px 16px;border-radius:8px;">' + (CFG.i18n.cancel || 'Cancel') + '</button>' +
-            '<button class="button button-primary" id="doc-vista-deactivate-confirm" style="min-height:36px;padding:6px 20px;border-radius:8px;border:none;background:' + THEME_COLOR + ';color:#fff;font-weight:500;cursor:pointer;">' + (CFG.i18n.deactivate || 'Deactivate Plugin') + '</button>' +
+            '<button class="button" id="zipped-docs-deactivate-cancel" style="min-height:36px;padding:6px 16px;border-radius:8px;">' + (CFG.i18n.cancel || 'Cancel') + '</button>' +
+            '<button class="button button-primary" id="zipped-docs-deactivate-confirm" style="min-height:36px;padding:6px 20px;border-radius:8px;border:none;background:' + THEME_COLOR + ';color:#fff;font-weight:500;cursor:pointer;">' + (CFG.i18n.deactivate || 'Deactivate Plugin') + '</button>' +
             '</div>';
 
         overlay.appendChild(modal);
@@ -276,7 +276,7 @@
             overlay.style.opacity = '1';
             overlay.style.visibility = 'visible';
             modal.style.transform = 'scale(1) translateY(0)';
-            document.getElementById('doc-vista-deactivate-confirm').focus();
+            document.getElementById('zipped-docs-deactivate-confirm').focus();
         });
 
         function closeModal() {
@@ -294,10 +294,10 @@
             }, 200);
         }
 
-        document.getElementById('doc-vista-deactivate-cancel').addEventListener('click', closeModal);
+        document.getElementById('zipped-docs-deactivate-cancel').addEventListener('click', closeModal);
 
-        document.getElementById('doc-vista-deactivate-confirm').addEventListener('click', function () {
-            var selected = document.querySelector('input[name="doc_vista_deactivate_action"]:checked');
+        document.getElementById('zipped-docs-deactivate-confirm').addEventListener('click', function () {
+            var selected = document.querySelector('input[name="zipped_docs_deactivate_action"]:checked');
             var action = selected ? selected.value : 'keep';
 
             var xhr = new XMLHttpRequest();
@@ -311,19 +311,19 @@
                 closeModal();
                 window.location.href = deactivateHref;
             };
-            xhr.send('action=doc_vista_set_deactivation_pref&deactivate_action=' + encodeURIComponent(action) + '&_wpnonce=' + encodeURIComponent(CFG.deactivationNonce || ''));
+            xhr.send('action=zipped_docs_set_deactivation_pref&deactivate_action=' + encodeURIComponent(action) + '&_wpnonce=' + encodeURIComponent(CFG.deactivationNonce || ''));
         });
 
-        document.getElementById('doc-vista-deactivate-keep').addEventListener('click', function () {
-            document.querySelector('#doc-vista-deactivate-keep input').checked = true;
+        document.getElementById('zipped-docs-deactivate-keep').addEventListener('click', function () {
+            document.querySelector('#zipped-docs-deactivate-keep input').checked = true;
             this.style.borderColor = THEME_COLOR;
-            document.getElementById('doc-vista-deactivate-remove').style.borderColor = 'transparent';
+            document.getElementById('zipped-docs-deactivate-remove').style.borderColor = 'transparent';
         });
 
-        document.getElementById('doc-vista-deactivate-remove').addEventListener('click', function () {
-            document.querySelector('#doc-vista-deactivate-remove input').checked = true;
+        document.getElementById('zipped-docs-deactivate-remove').addEventListener('click', function () {
+            document.querySelector('#zipped-docs-deactivate-remove input').checked = true;
             this.style.borderColor = THEME_COLOR;
-            document.getElementById('doc-vista-deactivate-keep').style.borderColor = 'transparent';
+            document.getElementById('zipped-docs-deactivate-keep').style.borderColor = 'transparent';
         });
 
         document.addEventListener('keydown', function escHandler(e) {

@@ -2,7 +2,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-class Doc_Vista_Import_Engine {
+class Zipped_Docs_Import_Engine {
 
     private $detector;
     private $imported_ids = array();
@@ -11,7 +11,7 @@ class Doc_Vista_Import_Engine {
     private $chunk_size   = 50;
 
     public function __construct() {
-        $this->detector = new Doc_Vista_Format_Detector();
+        $this->detector = new Zipped_Docs_Format_Detector();
     }
 
     public function process_upload() {
@@ -19,30 +19,31 @@ class Doc_Vista_Import_Engine {
             require_once ABSPATH . 'wp-admin/includes/file.php';
         }
 
-        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verified in the AJAX handler (class-admin-ui.php).
-        if ( ! isset( $_FILES['doc_vista_import_file'] ) ) {
-            return new WP_Error( 'no_file', __( 'No file was uploaded.', 'doc-vista' ) );
+        check_ajax_referer( 'zipped_docs_import_nonce', '_wpnonce' );
+
+        if ( ! isset( $_FILES['zipped_docs_import_file'] ) ) {
+            return new WP_Error( 'no_file', __( 'No file was uploaded.', 'zipped-docs' ) );
         }
 
-        // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized,WordPress.Security.NonceVerification.Missing -- Upload array handled by wp_handle_upload below; nonce verified in AJAX handler.
-        $file = $_FILES['doc_vista_import_file'];
+        // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- File upload array, validated below (error code, extension, size).
+        $file = $_FILES['zipped_docs_import_file'];
 
         if ( UPLOAD_ERR_OK !== $file['error'] ) {
             $error_messages = array(
-                UPLOAD_ERR_INI_SIZE   => __( 'The uploaded file exceeds the server\'s upload_max_filesize directive.', 'doc-vista' ),
-                UPLOAD_ERR_FORM_SIZE  => __( 'The uploaded file exceeds the MAX_FILE_SIZE directive.', 'doc-vista' ),
-                UPLOAD_ERR_PARTIAL    => __( 'The uploaded file was only partially uploaded.', 'doc-vista' ),
-                UPLOAD_ERR_NO_FILE    => __( 'No file was uploaded.', 'doc-vista' ),
-                UPLOAD_ERR_NO_TMP_DIR => __( 'Missing a temporary folder.', 'doc-vista' ),
-                UPLOAD_ERR_CANT_WRITE => __( 'Failed to write file to disk.', 'doc-vista' ),
+                UPLOAD_ERR_INI_SIZE   => __( 'The uploaded file exceeds the server\'s upload_max_filesize directive.', 'zipped-docs' ),
+                UPLOAD_ERR_FORM_SIZE  => __( 'The uploaded file exceeds the MAX_FILE_SIZE directive.', 'zipped-docs' ),
+                UPLOAD_ERR_PARTIAL    => __( 'The uploaded file was only partially uploaded.', 'zipped-docs' ),
+                UPLOAD_ERR_NO_FILE    => __( 'No file was uploaded.', 'zipped-docs' ),
+                UPLOAD_ERR_NO_TMP_DIR => __( 'Missing a temporary folder.', 'zipped-docs' ),
+                UPLOAD_ERR_CANT_WRITE => __( 'Failed to write file to disk.', 'zipped-docs' ),
             );
-            $msg = isset( $error_messages[ $file['error'] ] ) ? $error_messages[ $file['error'] ] : __( 'Unknown upload error.', 'doc-vista' );
+            $msg = isset( $error_messages[ $file['error'] ] ) ? $error_messages[ $file['error'] ] : __( 'Unknown upload error.', 'zipped-docs' );
             return new WP_Error( 'upload_error', $msg );
         }
 
         $file_ext = strtolower( pathinfo( $file['name'], PATHINFO_EXTENSION ) );
         if ( 'json' !== $file_ext ) {
-            return new WP_Error( 'invalid_format', __( 'Only .json files are supported.', 'doc-vista' ) );
+            return new WP_Error( 'invalid_format', __( 'Only .json files are supported.', 'zipped-docs' ) );
         }
 
         $file_size = filesize( $file['tmp_name'] );
@@ -50,7 +51,7 @@ class Doc_Vista_Import_Engine {
         if ( false !== $max_size && $file_size > $max_size ) {
             return new WP_Error( 'file_too_large', sprintf(
                 /* translators: 1: uploaded file size, 2: maximum allowed upload size. */
-                __( 'The uploaded file (%1$s) exceeds the maximum allowed upload size (%2$s).', 'doc-vista' ),
+                __( 'The uploaded file (%1$s) exceeds the maximum allowed upload size (%2$s).', 'zipped-docs' ),
                 size_format( $file_size ),
                 size_format( $max_size )
             ) );
@@ -75,19 +76,19 @@ class Doc_Vista_Import_Engine {
         $buffer = $wp_filesystem->get_contents( $path );
 
         if ( false === $buffer ) {
-            return new WP_Error( 'read_error', __( 'Could not open the uploaded file for reading.', 'doc-vista' ) );
+            return new WP_Error( 'read_error', __( 'Could not open the uploaded file for reading.', 'zipped-docs' ) );
         }
 
         $memory_limit = $this->get_php_memory_limit();
         if ( strlen( $buffer ) > $memory_limit * 0.5 ) {
-            return new WP_Error( 'file_too_large', __( 'The file is too large to process. Try increasing PHP memory_limit.', 'doc-vista' ) );
+            return new WP_Error( 'file_too_large', __( 'The file is too large to process. Try increasing PHP memory_limit.', 'zipped-docs' ) );
         }
 
         $data = json_decode( $buffer, true );
         if ( JSON_ERROR_NONE !== json_last_error() ) {
             return new WP_Error( 'invalid_json', sprintf(
                 /* translators: %s: JSON parser error message. */
-                __( 'Invalid JSON: %s', 'doc-vista' ),
+                __( 'Invalid JSON: %s', 'zipped-docs' ),
                 json_last_error_msg()
             ) );
         }
@@ -115,20 +116,21 @@ class Doc_Vista_Import_Engine {
             require_once ABSPATH . 'wp-admin/includes/file.php';
         }
 
-        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verified in the AJAX handler (class-admin-ui.php).
-        if ( ! isset( $_FILES['doc_vista_import_file'] ) ) {
-            return new WP_Error( 'no_file', __( 'No file was uploaded.', 'doc-vista' ) );
+        check_ajax_referer( 'zipped_docs_import_nonce', '_wpnonce' );
+
+        if ( ! isset( $_FILES['zipped_docs_import_file'] ) ) {
+            return new WP_Error( 'no_file', __( 'No file was uploaded.', 'zipped-docs' ) );
         }
 
-        // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized,WordPress.Security.NonceVerification.Missing -- Upload array parsed directly; nonce verified in AJAX handler.
-        $file = $_FILES['doc_vista_import_file'];
+        // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- File upload array, validated below (error code, extension, size).
+        $file = $_FILES['zipped_docs_import_file'];
         if ( UPLOAD_ERR_OK !== $file['error'] ) {
-            return new WP_Error( 'upload_error', __( 'File upload error.', 'doc-vista' ) );
+            return new WP_Error( 'upload_error', __( 'File upload error.', 'zipped-docs' ) );
         }
 
         $file_ext = strtolower( pathinfo( $file['name'], PATHINFO_EXTENSION ) );
         if ( 'json' !== $file_ext ) {
-            return new WP_Error( 'invalid_format', __( 'Only .json files are supported.', 'doc-vista' ) );
+            return new WP_Error( 'invalid_format', __( 'Only .json files are supported.', 'zipped-docs' ) );
         }
 
         $file_size = filesize( $file['tmp_name'] );
@@ -136,7 +138,7 @@ class Doc_Vista_Import_Engine {
         if ( false !== $max_size && $file_size > $max_size ) {
             return new WP_Error( 'file_too_large', sprintf(
                 /* translators: 1: uploaded file size, 2: maximum allowed upload size. */
-                __( 'The uploaded file (%1$s) exceeds the maximum allowed upload size (%2$s).', 'doc-vista' ),
+                __( 'The uploaded file (%1$s) exceeds the maximum allowed upload size (%2$s).', 'zipped-docs' ),
                 size_format( $file_size ),
                 size_format( $max_size )
             ) );
@@ -177,7 +179,7 @@ class Doc_Vista_Import_Engine {
         $documents = $this->normalize_input( $data );
 
         if ( empty( $documents ) ) {
-            $preview['error_message'] = Doc_Vista_Normalizer::get_error_reason( $data, $diagnostics );
+            $preview['error_message'] = Zipped_Docs_Normalizer::get_error_reason( $data, $diagnostics );
             return $preview;
         }
 
@@ -240,7 +242,7 @@ class Doc_Vista_Import_Engine {
         $documents = $this->normalize_input( $data );
         if ( empty( $documents ) ) {
             $diagnostics = $this->detector->analyze_structure( $data );
-            return new WP_Error( 'no_documents', Doc_Vista_Normalizer::get_error_reason( $data, $diagnostics ) );
+            return new WP_Error( 'no_documents', Zipped_Docs_Normalizer::get_error_reason( $data, $diagnostics ) );
         }
 
         $results = array(
@@ -256,13 +258,13 @@ class Doc_Vista_Import_Engine {
         $chunks = array_chunk( $documents, $this->chunk_size );
         foreach ( $chunks as $chunk ) {
             foreach ( $chunk as $index => $doc ) {
-                $validation_errors = Doc_Vista_Normalizer::validate( $doc );
+                $validation_errors = Zipped_Docs_Normalizer::validate( $doc );
                 if ( ! empty( $validation_errors ) ) {
                     /* translators: %d: numeric index of the document being imported. */
-                    $title = ! empty( $doc['title'] ) ? $doc['title'] : sprintf( __( 'Document #%d', 'doc-vista' ), $index + 1 );
+                    $title = ! empty( $doc['title'] ) ? $doc['title'] : sprintf( __( 'Document #%d', 'zipped-docs' ), $index + 1 );
                     $results['errors'][] = sprintf(
                         /* translators: 1: document title, 2: validation error message. */
-                        __( '%1$s: %2$s', 'doc-vista' ),
+                        __( '%1$s: %2$s', 'zipped-docs' ),
                         esc_html( $title ),
                         implode( ' ', $validation_errors )
                     );
@@ -284,7 +286,7 @@ class Doc_Vista_Import_Engine {
                     if ( is_wp_error( $result ) ) {
                         $results['errors'][] = sprintf(
                             /* translators: 1: document title, 2: error message. */
-                            __( '%1$s: %2$s', 'doc-vista' ),
+                            __( '%1$s: %2$s', 'zipped-docs' ),
                             esc_html( $doc['title'] ),
                             $result->get_error_message()
                         );
@@ -324,7 +326,7 @@ class Doc_Vista_Import_Engine {
         );
 
         if ( ! isset( $decisions['documents'] ) || ! is_array( $decisions['documents'] ) ) {
-            return new WP_Error( 'invalid_decisions', __( 'No import decisions provided.', 'doc-vista' ) );
+            return new WP_Error( 'invalid_decisions', __( 'No import decisions provided.', 'zipped-docs' ) );
         }
 
         $chunks = array_chunk( $decisions['documents'], $this->chunk_size );
@@ -335,7 +337,7 @@ class Doc_Vista_Import_Engine {
                 $existing_id = isset( $item['existing_id'] ) ? (int) $item['existing_id'] : 0;
 
                 if ( 'skip' === $decision ) {
-                    $title = ! empty( $doc['title'] ) ? $doc['title'] : __( 'Untitled', 'doc-vista' );
+                    $title = ! empty( $doc['title'] ) ? $doc['title'] : __( 'Untitled', 'zipped-docs' );
                     $results['skipped'][] = $title;
                     continue;
                 }
@@ -345,7 +347,7 @@ class Doc_Vista_Import_Engine {
                     if ( ! $deleted ) {
                         $results['errors'][] = sprintf(
                             /* translators: %d: ID of the existing document. */
-                            __( 'Could not delete existing document %d.', 'doc-vista' ),
+                            __( 'Could not delete existing document %d.', 'zipped-docs' ),
                             $existing_id
                         );
                         continue;
@@ -354,7 +356,7 @@ class Doc_Vista_Import_Engine {
                     if ( is_wp_error( $result ) ) {
                         $results['errors'][] = sprintf(
                             /* translators: 1: document title, 2: error message. */
-                            __( '%1$s: %2$s', 'doc-vista' ),
+                            __( '%1$s: %2$s', 'zipped-docs' ),
                             esc_html( $doc['title'] ),
                             $result->get_error_message()
                         );
@@ -367,7 +369,7 @@ class Doc_Vista_Import_Engine {
                     if ( is_wp_error( $result ) ) {
                         $results['errors'][] = sprintf(
                             /* translators: 1: document title, 2: error message. */
-                            __( '%1$s: %2$s', 'doc-vista' ),
+                            __( '%1$s: %2$s', 'zipped-docs' ),
                             esc_html( $doc['title'] ),
                             $result->get_error_message()
                         );
@@ -380,7 +382,7 @@ class Doc_Vista_Import_Engine {
                     if ( is_wp_error( $result ) ) {
                         $results['errors'][] = sprintf(
                             /* translators: 1: document title, 2: error message. */
-                            __( '%1$s: %2$s', 'doc-vista' ),
+                            __( '%1$s: %2$s', 'zipped-docs' ),
                             esc_html( $doc['title'] ),
                             $result->get_error_message()
                         );
@@ -401,17 +403,17 @@ class Doc_Vista_Import_Engine {
     }
 
     private function normalize_input( $data ) {
-        if ( isset( $data['_doc_vista_export'] ) && true === $data['_doc_vista_export'] ) {
+        if ( isset( $data['_zipped_docs_export'] ) && true === $data['_zipped_docs_export'] ) {
             if ( isset( $data['documents'] ) && is_array( $data['documents'] ) ) {
                 $documents = array();
-                $doc_vista_fallback = null;
+                $zipped_docs_fallback = null;
                 foreach ( $data['documents'] as $raw ) {
                     $detected = $this->detector->detect( $raw );
                     if ( ! $detected ) {
-                        if ( null === $doc_vista_fallback ) {
-                            $doc_vista_fallback = new Doc_Vista_Docvista_Adapter();
+                        if ( null === $zipped_docs_fallback ) {
+                            $zipped_docs_fallback = new Zipped_Docs_Native_Adapter();
                         }
-                        $detected = $doc_vista_fallback;
+                        $detected = $zipped_docs_fallback;
                     }
                     if ( $detected ) {
                         $documents[] = $detected->normalize( $raw );
@@ -521,7 +523,7 @@ class Doc_Vista_Import_Engine {
     private function find_existing( $doc ) {
         if ( ! empty( $doc['slug'] ) ) {
             $existing = get_posts( array(
-                'post_type'      => 'doc_vista_doc',
+                'post_type'      => 'zipped_docs_doc',
                 'name'           => $doc['slug'],
                 'post_status'    => 'any',
                 'posts_per_page' => 1,
@@ -539,7 +541,7 @@ class Doc_Vista_Import_Engine {
 
         if ( ! empty( $doc['title'] ) ) {
             $existing = get_posts( array(
-                'post_type'      => 'doc_vista_doc',
+                'post_type'      => 'zipped_docs_doc',
                 'title'          => $doc['title'],
                 'post_status'    => 'any',
                 'posts_per_page' => 1,
@@ -564,7 +566,7 @@ class Doc_Vista_Import_Engine {
             'post_title'   => $doc['title'],
             'post_content' => $doc['content'],
             'post_status'  => $doc['status'] ?: 'draft',
-            'post_type'    => 'doc_vista_doc',
+            'post_type'    => 'zipped_docs_doc',
             'post_excerpt' => $doc['excerpt'],
             'post_author'  => $doc['author'] ?: get_current_user_id(),
         );
@@ -602,10 +604,10 @@ class Doc_Vista_Import_Engine {
         }
 
         if ( isset( $doc['gutenberg_blocks'] ) && is_array( $doc['gutenberg_blocks'] ) && ! isset( $doc['gutenberg_blocks']['detected'] ) ) {
-            update_post_meta( $post_id, '_doc_vista_gutenberg_blocks', $doc['gutenberg_blocks'] );
+            update_post_meta( $post_id, '_zipped_docs_gutenberg_blocks', $doc['gutenberg_blocks'] );
         }
 
-        update_post_meta( $post_id, '_doc_vista_order', (int) $doc['menu_order'] );
+        update_post_meta( $post_id, '_zipped_docs_order', (int) $doc['menu_order'] );
 
         return $post_id;
     }
@@ -646,7 +648,7 @@ class Doc_Vista_Import_Engine {
             update_post_meta( $post_id, '_wp_page_template', sanitize_text_field( $doc['template'] ) );
         }
 
-        update_post_meta( $post_id, '_doc_vista_order', (int) $doc['menu_order'] );
+        update_post_meta( $post_id, '_zipped_docs_order', (int) $doc['menu_order'] );
 
         return $post_id;
     }
@@ -659,7 +661,7 @@ class Doc_Vista_Import_Engine {
         $term_ids = array();
         foreach ( $doc['categories'] as $cat ) {
             if ( is_numeric( $cat ) ) {
-                $term = get_term( (int) $cat, 'doc_vista_category' );
+                $term = get_term( (int) $cat, 'zipped_docs_category' );
                 if ( $term && ! is_wp_error( $term ) ) {
                     $term_ids[] = (int) $cat;
                     continue;
@@ -667,11 +669,11 @@ class Doc_Vista_Import_Engine {
             }
 
             if ( is_string( $cat ) ) {
-                $term = term_exists( $cat, 'doc_vista_category' );
+                $term = term_exists( $cat, 'zipped_docs_category' );
                 if ( $term ) {
                     $term_ids[] = (int) ( is_array( $term ) ? $term['term_id'] : $term );
                 } else {
-                    $new_term = wp_insert_term( ucfirst( str_replace( array( '-', '_' ), ' ', $cat ) ), 'doc_vista_category', array( 'slug' => sanitize_title( $cat ) ) );
+                    $new_term = wp_insert_term( ucfirst( str_replace( array( '-', '_' ), ' ', $cat ) ), 'zipped_docs_category', array( 'slug' => sanitize_title( $cat ) ) );
                     if ( ! is_wp_error( $new_term ) ) {
                         $term_ids[] = (int) $new_term['term_id'];
                     }
@@ -680,7 +682,7 @@ class Doc_Vista_Import_Engine {
         }
 
         if ( ! empty( $term_ids ) ) {
-            wp_set_object_terms( $post_id, $term_ids, 'doc_vista_category' );
+            wp_set_object_terms( $post_id, $term_ids, 'zipped_docs_category' );
         }
     }
 
@@ -786,7 +788,7 @@ class Doc_Vista_Import_Engine {
         if ( is_wp_error( $attachment_id ) ) {
             $this->warnings[] = sprintf(
                 /* translators: 1: media URL, 2: error message. */
-                __( 'Could not import media from %1$s: %2$s', 'doc-vista' ),
+                __( 'Could not import media from %1$s: %2$s', 'zipped-docs' ),
                 esc_url( $url ),
                 $attachment_id->get_error_message()
             );
@@ -813,7 +815,7 @@ class Doc_Vista_Import_Engine {
                 }
                 $this->warnings[] = sprintf(
                     /* translators: %d: ID of a missing attachment. */
-                    __( 'Attachment ID %d not found. Document imported without it.', 'doc-vista' ),
+                    __( 'Attachment ID %d not found. Document imported without it.', 'zipped-docs' ),
                     (int) $attachment
                 );
             } elseif ( is_string( $attachment ) && filter_var( $attachment, FILTER_VALIDATE_URL ) ) {
@@ -825,7 +827,7 @@ class Doc_Vista_Import_Engine {
                 if ( ! $result ) {
                     $this->warnings[] = sprintf(
                         /* translators: %s: media URL. */
-                        __( 'Could not import media from URL: %s. External URL kept as-is.', 'doc-vista' ),
+                        __( 'Could not import media from URL: %s. External URL kept as-is.', 'zipped-docs' ),
                         esc_url( $attachment )
                     );
                 }
@@ -835,16 +837,16 @@ class Doc_Vista_Import_Engine {
 
     private function finalize() {
         if ( ! empty( $this->imported_ids ) ) {
-            doc_vista_rebuild_graph();
+            zipped_docs_rebuild_graph();
         }
 
         if ( ! empty( $this->warnings ) ) {
-            $existing_warnings = get_transient( 'doc_vista_import_warnings' );
+            $existing_warnings = get_transient( 'zipped_docs_import_warnings' );
             if ( false === $existing_warnings ) {
                 $existing_warnings = array();
             }
             $existing_warnings = array_merge( $existing_warnings, $this->warnings );
-            set_transient( 'doc_vista_import_warnings', $existing_warnings, HOUR_IN_SECONDS );
+            set_transient( 'zipped_docs_import_warnings', $existing_warnings, HOUR_IN_SECONDS );
         }
     }
 

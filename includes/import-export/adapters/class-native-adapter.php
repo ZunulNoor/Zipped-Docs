@@ -2,30 +2,30 @@
 
 defined( 'ABSPATH' ) || exit;
 
-class Doc_Vista_Docvista_Adapter implements Doc_Vista_Import_Adapter {
+class Zipped_Docs_Native_Adapter implements Zipped_Docs_Import_Adapter {
 
     public function supports( $data ) {
-        if ( isset( $data['doc_vista_version'] ) ) {
+        if ( isset( $data['zipped_docs_version'] ) ) {
             return true;
         }
-        if ( isset( $data['_doc_vista_export'] ) && true === $data['_doc_vista_export'] ) {
+        if ( isset( $data['_zipped_docs_export'] ) && true === $data['_zipped_docs_export'] ) {
             return true;
         }
-        if ( isset( $data['source'] ) && 'doc-vista' === $data['source'] ) {
+        if ( isset( $data['source'] ) && 'zipped-docs' === $data['source'] ) {
             return true;
         }
         return false;
     }
 
     public function normalize( $data ) {
-        $doc = Doc_Vista_Normalizer::empty_doc();
+        $doc = Zipped_Docs_Normalizer::empty_doc();
 
-        $doc['title'] = Doc_Vista_Field_Mapper::get( $data, 'title' );
-        $doc['slug']  = Doc_Vista_Field_Mapper::get( $data, 'slug' );
-        $doc['status'] = Doc_Vista_Field_Mapper::get( $data, 'status', 'draft' );
-        $doc['excerpt'] = Doc_Vista_Field_Mapper::get( $data, 'excerpt' );
+        $doc['title'] = Zipped_Docs_Field_Mapper::get( $data, 'title' );
+        $doc['slug']  = Zipped_Docs_Field_Mapper::get( $data, 'slug' );
+        $doc['status'] = Zipped_Docs_Field_Mapper::get( $data, 'status', 'draft' );
+        $doc['excerpt'] = Zipped_Docs_Field_Mapper::get( $data, 'excerpt' );
 
-        $content = Doc_Vista_Field_Mapper::get_rendered( $data, 'content' );
+        $content = Zipped_Docs_Field_Mapper::get_rendered( $data, 'content' );
         $doc['content'] = $content;
 
         if ( isset( $data['gutenberg_blocks'] ) && is_array( $data['gutenberg_blocks'] ) ) {
@@ -34,15 +34,15 @@ class Doc_Vista_Docvista_Adapter implements Doc_Vista_Import_Adapter {
             $doc['gutenberg_blocks'] = $data['blocks'];
         }
 
-        $doc['categories'] = Doc_Vista_Field_Mapper::extract_category_names( $data );
-        $doc['tags'] = Doc_Vista_Field_Mapper::extract_tag_names( $data );
-        $doc['custom_fields'] = Doc_Vista_Field_Mapper::extract_custom_fields( $data );
+        $doc['categories'] = Zipped_Docs_Field_Mapper::extract_category_names( $data );
+        $doc['tags'] = Zipped_Docs_Field_Mapper::extract_tag_names( $data );
+        $doc['custom_fields'] = Zipped_Docs_Field_Mapper::extract_custom_fields( $data );
 
         if ( isset( $data['meta'] ) && is_array( $data['meta'] ) ) {
             $doc['meta'] = $data['meta'];
         }
 
-        $featured = Doc_Vista_Field_Mapper::get( $data, 'featured_image' );
+        $featured = Zipped_Docs_Field_Mapper::get( $data, 'featured_image' );
         if ( $featured ) {
             if ( is_numeric( $featured ) ) {
                 $attachment = get_post( (int) $featured );
@@ -62,7 +62,7 @@ class Doc_Vista_Docvista_Adapter implements Doc_Vista_Import_Adapter {
             $doc['attachments'] = $data['attachments'];
         }
 
-        $author_raw = Doc_Vista_Field_Mapper::get( $data, 'author' );
+        $author_raw = Zipped_Docs_Field_Mapper::get( $data, 'author' );
         if ( $author_raw ) {
             if ( is_numeric( $author_raw ) ) {
                 $user = get_user_by( 'ID', (int) $author_raw );
@@ -80,13 +80,13 @@ class Doc_Vista_Docvista_Adapter implements Doc_Vista_Import_Adapter {
             $doc['author'] = get_current_user_id();
         }
 
-        $doc['created_date'] = Doc_Vista_Field_Mapper::get_rendered( $data, 'created_date' );
-        $doc['modified_date'] = Doc_Vista_Field_Mapper::get_rendered( $data, 'modified_date' );
+        $doc['created_date'] = Zipped_Docs_Field_Mapper::get_rendered( $data, 'created_date' );
+        $doc['modified_date'] = Zipped_Docs_Field_Mapper::get_rendered( $data, 'modified_date' );
 
-        $doc['menu_order'] = (int) Doc_Vista_Field_Mapper::get( $data, 'menu_order', 0 );
-        $doc['template'] = Doc_Vista_Field_Mapper::get( $data, 'template' );
+        $doc['menu_order'] = (int) Zipped_Docs_Field_Mapper::get( $data, 'menu_order', 0 );
+        $doc['template'] = Zipped_Docs_Field_Mapper::get( $data, 'template' );
 
-        $doc['source'] = 'doc-vista';
+        $doc['source'] = 'zipped-docs';
         $doc['original_data'] = $data;
 
         return $doc;

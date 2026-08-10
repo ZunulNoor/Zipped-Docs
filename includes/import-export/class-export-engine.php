@@ -2,12 +2,12 @@
 
 defined( 'ABSPATH' ) || exit;
 
-class Doc_Vista_Export_Engine {
+class Zipped_Docs_Export_Engine {
 
     public function export_single( $post_id ) {
         $post = get_post( $post_id );
-        if ( ! $post || 'doc_vista_doc' !== $post->post_type ) {
-            return new WP_Error( 'invalid_post', __( 'Invalid document.', 'doc-vista' ) );
+        if ( ! $post || 'zipped_docs_doc' !== $post->post_type ) {
+            return new WP_Error( 'invalid_post', __( 'Invalid document.', 'zipped-docs' ) );
         }
 
         return $this->build_export_doc( $post );
@@ -15,11 +15,11 @@ class Doc_Vista_Export_Engine {
 
     public function export_selected( $post_ids ) {
         if ( empty( $post_ids ) ) {
-            return new WP_Error( 'no_docs', __( 'No documents selected.', 'doc-vista' ) );
+            return new WP_Error( 'no_docs', __( 'No documents selected.', 'zipped-docs' ) );
         }
 
         $posts = get_posts( array(
-            'post_type'      => 'doc_vista_doc',
+            'post_type'      => 'zipped_docs_doc',
             'post_status'    => 'any',
             'posts_per_page' => -1,
             'post__in'       => $post_ids,
@@ -27,7 +27,7 @@ class Doc_Vista_Export_Engine {
         ) );
 
         if ( empty( $posts ) ) {
-            return new WP_Error( 'no_docs', __( 'No documents found.', 'doc-vista' ) );
+            return new WP_Error( 'no_docs', __( 'No documents found.', 'zipped-docs' ) );
         }
 
         $documents = array();
@@ -39,19 +39,19 @@ class Doc_Vista_Export_Engine {
     }
 
     public function export_category( $category_slug ) {
-        $term = get_term_by( 'slug', $category_slug, 'doc_vista_category' );
+        $term = get_term_by( 'slug', $category_slug, 'zipped_docs_category' );
         if ( ! $term ) {
-            return new WP_Error( 'invalid_category', __( 'Category not found.', 'doc-vista' ) );
+            return new WP_Error( 'invalid_category', __( 'Category not found.', 'zipped-docs' ) );
         }
 
         $posts = get_posts( array(
-            'post_type'      => 'doc_vista_doc',
+            'post_type'      => 'zipped_docs_doc',
             'post_status'    => 'any',
             'posts_per_page' => -1,
             // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query -- Required for category export.
             'tax_query'      => array(
                 array(
-                    'taxonomy' => 'doc_vista_category',
+                    'taxonomy' => 'zipped_docs_category',
                     'field'    => 'slug',
                     'terms'    => $category_slug,
                 ),
@@ -61,7 +61,7 @@ class Doc_Vista_Export_Engine {
         ) );
 
         if ( empty( $posts ) ) {
-            return new WP_Error( 'no_docs', __( 'No documents found in this category.', 'doc-vista' ) );
+            return new WP_Error( 'no_docs', __( 'No documents found in this category.', 'zipped-docs' ) );
         }
 
         $documents = array();
@@ -74,7 +74,7 @@ class Doc_Vista_Export_Engine {
 
     public function export_all() {
         $posts = get_posts( array(
-            'post_type'      => 'doc_vista_doc',
+            'post_type'      => 'zipped_docs_doc',
             'post_status'    => 'any',
             'posts_per_page' => -1,
             'orderby'        => 'menu_order',
@@ -82,7 +82,7 @@ class Doc_Vista_Export_Engine {
         ) );
 
         if ( empty( $posts ) ) {
-            return new WP_Error( 'no_docs', __( 'No documents found.', 'doc-vista' ) );
+            return new WP_Error( 'no_docs', __( 'No documents found.', 'zipped-docs' ) );
         }
 
         $documents = array();
@@ -99,7 +99,7 @@ class Doc_Vista_Export_Engine {
 
         foreach ( $batches as $batch ) {
             $posts = get_posts( array(
-                'post_type'      => 'doc_vista_doc',
+                'post_type'      => 'zipped_docs_doc',
                 'post_status'    => 'any',
                 'posts_per_page' => count( $batch ),
                 'post__in'       => $batch,
@@ -112,14 +112,14 @@ class Doc_Vista_Export_Engine {
         }
 
         if ( empty( $all_documents ) ) {
-            return new WP_Error( 'no_docs', __( 'No documents found.', 'doc-vista' ) );
+            return new WP_Error( 'no_docs', __( 'No documents found.', 'zipped-docs' ) );
         }
 
         return $this->build_export_package( $all_documents );
     }
 
     private function build_export_doc( $post ) {
-        $categories = wp_get_post_terms( $post->ID, 'doc_vista_category', array( 'fields' => 'slugs' ) );
+        $categories = wp_get_post_terms( $post->ID, 'zipped_docs_category', array( 'fields' => 'slugs' ) );
         $tags       = wp_get_post_tags( $post->ID, array( 'fields' => 'names' ) );
 
         $custom_fields = array();
@@ -127,7 +127,7 @@ class Doc_Vista_Export_Engine {
         if ( is_array( $meta ) ) {
             foreach ( $meta as $key => $values ) {
                 if ( strpos( $key, '_' ) === 0 ) {
-                    if ( in_array( $key, array( '_wp_page_template', '_doc_vista_order', '_doc_vista_gutenberg_blocks' ), true ) ) {
+                    if ( in_array( $key, array( '_wp_page_template', '_zipped_docs_order', '_zipped_docs_gutenberg_blocks' ), true ) ) {
                         $v = maybe_unserialize( $values[0] );
                         $custom_fields[ $key ] = $v;
                     }
@@ -159,8 +159,8 @@ class Doc_Vista_Export_Engine {
         }
 
         $page_template = get_post_meta( $post->ID, '_wp_page_template', true );
-        $doc_order     = get_post_meta( $post->ID, '_doc_vista_order', true );
-        $guten_blocks  = get_post_meta( $post->ID, '_doc_vista_gutenberg_blocks', true );
+        $doc_order     = get_post_meta( $post->ID, '_zipped_docs_order', true );
+        $guten_blocks  = get_post_meta( $post->ID, '_zipped_docs_gutenberg_blocks', true );
 
         $doc = array(
             'title'             => $post->post_title,
@@ -176,16 +176,16 @@ class Doc_Vista_Export_Engine {
             'attachments'       => $attachments,
             'custom_fields'     => $custom_fields,
             'meta'              => array(
-                'doc_vista_order'   => $doc_order ? (int) $doc_order : 0,
+                'zipped_docs_order'   => $doc_order ? (int) $doc_order : 0,
                 'page_template'     => $page_template ? $page_template : '',
-                'doc_vista_version' => DOC_VISTA_VERSION,
+                'zipped_docs_version' => ZIPPED_DOCS_VERSION,
             ),
             'menu_order'        => $post->menu_order,
             'template'          => $page_template ? $page_template : '',
             'author'            => $post->post_author,
             'created_date'      => $post->post_date,
             'modified_date'     => $post->post_modified,
-            'source'            => 'doc-vista',
+            'source'            => 'zipped-docs',
         );
 
         return $doc;
@@ -193,12 +193,12 @@ class Doc_Vista_Export_Engine {
 
     private function build_export_package( $documents ) {
         return array(
-            '_doc_vista_export'   => true,
-            'doc_vista_version'   => DOC_VISTA_VERSION,
+            '_zipped_docs_export'   => true,
+            'zipped_docs_version'   => ZIPPED_DOCS_VERSION,
             'export_date'         => current_time( 'mysql' ),
             'total_documents'     => count( $documents ),
-            'source'              => 'doc-vista',
-            'generator'           => 'Doc Vista ' . DOC_VISTA_VERSION,
+            'source'              => 'zipped-docs',
+            'generator'           => 'Zipped Docs ' . ZIPPED_DOCS_VERSION,
             'documents'           => $documents,
         );
     }

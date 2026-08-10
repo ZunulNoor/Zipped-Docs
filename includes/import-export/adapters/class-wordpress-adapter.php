@@ -2,25 +2,25 @@
 
 defined( 'ABSPATH' ) || exit;
 
-class Doc_Vista_Wordpress_Adapter implements Doc_Vista_Import_Adapter {
+class Zipped_Docs_Wordpress_Adapter implements Zipped_Docs_Import_Adapter {
 
     public function supports( $data ) {
         if ( ! is_array( $data ) ) {
             return false;
         }
 
-        if ( isset( $data['doc_vista_version'] ) || ( isset( $data['source'] ) && 'doc-vista' === $data['source'] ) ) {
+        if ( isset( $data['zipped_docs_version'] ) || ( isset( $data['source'] ) && 'zipped-docs' === $data['source'] ) ) {
             return false;
         }
 
         if ( isset( $data['post_type'] ) && in_array( $data['post_type'], array( 'page', 'post' ), true ) ) {
-            if ( Doc_Vista_Field_Mapper::has_any_field( $data, 'title' ) && Doc_Vista_Field_Mapper::has_any_field( $data, 'content' ) ) {
+            if ( Zipped_Docs_Field_Mapper::has_any_field( $data, 'title' ) && Zipped_Docs_Field_Mapper::has_any_field( $data, 'content' ) ) {
                 return true;
             }
         }
 
-        $has_title = Doc_Vista_Field_Mapper::has_any_field( $data, 'title' );
-        $has_content = Doc_Vista_Field_Mapper::has_any_field( $data, 'content' );
+        $has_title = Zipped_Docs_Field_Mapper::has_any_field( $data, 'title' );
+        $has_content = Zipped_Docs_Field_Mapper::has_any_field( $data, 'content' );
 
         if ( $has_title && $has_content && ! isset( $data['type'] ) ) {
             if ( isset( $data['post_title'] ) || isset( $data['post_name'] ) || isset( $data['post_date'] ) || isset( $data['post_status'] ) ) {
@@ -39,15 +39,15 @@ class Doc_Vista_Wordpress_Adapter implements Doc_Vista_Import_Adapter {
     }
 
     public function normalize( $data ) {
-        $doc = Doc_Vista_Normalizer::empty_doc();
+        $doc = Zipped_Docs_Normalizer::empty_doc();
 
-        $doc['title']   = Doc_Vista_Field_Mapper::get_rendered( $data, 'title' );
-        $doc['slug']    = Doc_Vista_Field_Mapper::get( $data, 'slug' );
-        $doc['content'] = Doc_Vista_Field_Mapper::get_rendered( $data, 'content' );
-        $doc['excerpt'] = Doc_Vista_Field_Mapper::get_rendered( $data, 'excerpt' );
-        $doc['status']  = Doc_Vista_Field_Mapper::get( $data, 'status', 'draft' );
+        $doc['title']   = Zipped_Docs_Field_Mapper::get_rendered( $data, 'title' );
+        $doc['slug']    = Zipped_Docs_Field_Mapper::get( $data, 'slug' );
+        $doc['content'] = Zipped_Docs_Field_Mapper::get_rendered( $data, 'content' );
+        $doc['excerpt'] = Zipped_Docs_Field_Mapper::get_rendered( $data, 'excerpt' );
+        $doc['status']  = Zipped_Docs_Field_Mapper::get( $data, 'status', 'draft' );
 
-        $author_raw = Doc_Vista_Field_Mapper::get( $data, 'author' );
+        $author_raw = Zipped_Docs_Field_Mapper::get( $data, 'author' );
         if ( $author_raw ) {
             if ( is_numeric( $author_raw ) ) {
                 $user = get_user_by( 'ID', (int) $author_raw );
@@ -60,14 +60,14 @@ class Doc_Vista_Wordpress_Adapter implements Doc_Vista_Import_Adapter {
             $doc['author'] = get_current_user_id();
         }
 
-        $doc['created_date']  = Doc_Vista_Field_Mapper::get_rendered( $data, 'created_date' );
-        $doc['modified_date'] = Doc_Vista_Field_Mapper::get_rendered( $data, 'modified_date' );
+        $doc['created_date']  = Zipped_Docs_Field_Mapper::get_rendered( $data, 'created_date' );
+        $doc['modified_date'] = Zipped_Docs_Field_Mapper::get_rendered( $data, 'modified_date' );
 
-        $doc['categories'] = Doc_Vista_Field_Mapper::extract_category_names( $data );
-        $doc['tags']       = Doc_Vista_Field_Mapper::extract_tag_names( $data );
-        $doc['custom_fields'] = Doc_Vista_Field_Mapper::extract_custom_fields( $data );
+        $doc['categories'] = Zipped_Docs_Field_Mapper::extract_category_names( $data );
+        $doc['tags']       = Zipped_Docs_Field_Mapper::extract_tag_names( $data );
+        $doc['custom_fields'] = Zipped_Docs_Field_Mapper::extract_custom_fields( $data );
 
-        $featured = Doc_Vista_Field_Mapper::get( $data, 'featured_image' );
+        $featured = Zipped_Docs_Field_Mapper::get( $data, 'featured_image' );
         if ( $featured ) {
             if ( is_numeric( $featured ) ) {
                 $attachment = get_post( (int) $featured );
@@ -89,9 +89,9 @@ class Doc_Vista_Wordpress_Adapter implements Doc_Vista_Import_Adapter {
             }
         }
 
-        $doc['menu_order'] = (int) Doc_Vista_Field_Mapper::get( $data, 'menu_order', 0 );
+        $doc['menu_order'] = (int) Zipped_Docs_Field_Mapper::get( $data, 'menu_order', 0 );
 
-        $template = Doc_Vista_Field_Mapper::get( $data, 'template' );
+        $template = Zipped_Docs_Field_Mapper::get( $data, 'template' );
         if ( $template ) {
             $doc['template'] = $template;
             $doc['custom_fields']['_wp_page_template'] = $template;

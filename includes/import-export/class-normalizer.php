@@ -2,7 +2,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-class Doc_Vista_Normalizer {
+class Zipped_Docs_Normalizer {
 
     const VALID_STATUSES = array( 'publish', 'draft', 'pending', 'private', 'future' );
 
@@ -33,10 +33,10 @@ class Doc_Vista_Normalizer {
     public static function validate( $doc ) {
         $errors = array();
         if ( empty( $doc['title'] ) ) {
-            $errors[] = __( 'Document title is required.', 'doc-vista' );
+            $errors[] = __( 'Document title is required.', 'zipped-docs' );
         }
         if ( ! is_string( $doc['content'] ) ) {
-            $errors[] = __( 'Document content must be a string.', 'doc-vista' );
+            $errors[] = __( 'Document content must be a string.', 'zipped-docs' );
         }
         if ( ! empty( $doc['status'] ) && ! in_array( $doc['status'], self::VALID_STATUSES, true ) ) {
             $doc['status'] = 'draft';
@@ -46,30 +46,30 @@ class Doc_Vista_Normalizer {
 
     public static function get_error_reason( $data, $diagnostics ) {
         if ( empty( $data ) ) {
-            return __( 'Empty export. The file contains no data.', 'doc-vista' );
+            return __( 'Empty export. The file contains no data.', 'zipped-docs' );
         }
 
         if ( ! is_array( $data ) ) {
-            return __( 'Invalid JSON structure. Expected an object or array, got a different type.', 'doc-vista' );
+            return __( 'Invalid JSON structure. Expected an object or array, got a different type.', 'zipped-docs' );
         }
 
         $detected = $diagnostics['detected_keys'] ?? array();
         if ( empty( $detected ) ) {
-            return __( 'Unknown export format. The JSON structure does not match any supported format.', 'doc-vista' );
+            return __( 'Unknown export format. The JSON structure does not match any supported format.', 'zipped-docs' );
         }
 
         if ( ! in_array( 'title', $detected, true ) ) {
-            return __( 'Missing document title. No title field found in the JSON data.', 'doc-vista' );
+            return __( 'Missing document title. No title field found in the JSON data.', 'zipped-docs' );
         }
 
         if ( ! in_array( 'content', $detected, true ) ) {
-            return __( 'Missing document content. No content field found in the JSON data.', 'doc-vista' );
+            return __( 'Missing document content. No content field found in the JSON data.', 'zipped-docs' );
         }
 
         if ( $diagnostics['is_collection'] && 0 === $diagnostics['count'] ) {
-            return __( 'Empty export. The file contains an empty array.', 'doc-vista' );
+            return __( 'Empty export. The file contains an empty array.', 'zipped-docs' );
         }
 
-        return __( 'No supported posts/pages found. The data format is recognized but contains no importable documents.', 'doc-vista' );
+        return __( 'No supported posts/pages found. The data format is recognized but contains no importable documents.', 'zipped-docs' );
     }
 }

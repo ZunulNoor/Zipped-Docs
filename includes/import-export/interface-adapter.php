@@ -2,7 +2,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-interface Doc_Vista_Import_Adapter {
+interface Zipped_Docs_Import_Adapter {
 
     public function supports( $data );
 

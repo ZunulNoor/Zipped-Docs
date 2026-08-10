@@ -2,23 +2,23 @@
 
 defined( 'ABSPATH' ) || exit;
 
-function doc_vista_admin_dashboard() {
-    if ( ! current_user_can( 'doc_vista_read' ) ) {
-            wp_die( esc_html__( 'You do not have sufficient permissions.', 'doc-vista' ) );
+function zipped_docs_admin_dashboard() {
+    if ( ! current_user_can( 'zipped_docs_read' ) ) {
+            wp_die( esc_html__( 'You do not have sufficient permissions.', 'zipped-docs' ) );
     }
 
     if ( isset( $_GET['action'], $_GET['doc'] ) && 'delete' === $_GET['action'] ) {
-        if ( ! current_user_can( 'doc_vista_delete' ) ) {
-        wp_die( esc_html__( 'You do not have sufficient permissions.', 'doc-vista' ) );
+        if ( ! current_user_can( 'zipped_docs_delete' ) ) {
+        wp_die( esc_html__( 'You do not have sufficient permissions.', 'zipped-docs' ) );
         }
         $doc_id = (int) $_GET['doc'];
         if ( $doc_id && wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ?? '' ) ), 'delete_doc_' . $doc_id ) ) {
             wp_delete_post( $doc_id, true );
-            echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__( 'Doc deleted.', 'doc-vista' ) . '</p></div>';
+            echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__( 'Doc deleted.', 'zipped-docs' ) . '</p></div>';
         }
     }
 
-    $filter_category = isset( $_GET['doc_vista_category'] ) ? (int) $_GET['doc_vista_category'] : 0;
+    $filter_category = isset( $_GET['zipped_docs_category'] ) ? (int) $_GET['zipped_docs_category'] : 0;
     $paged           = isset( $_GET['paged'] ) ? max( 1, (int) $_GET['paged'] ) : 1;
     $per_page        = 20;
 
@@ -37,7 +37,7 @@ function doc_vista_admin_dashboard() {
         if ( $current_orderby === $column ) {
             $new_order = 'ASC' === $current_order ? 'DESC' : 'ASC';
         }
-        $classes = 'doc-vista-sortable';
+        $classes = 'zipped-docs-sortable';
         if ( $current_orderby === $column ) {
             $classes .= ' sorted ' . strtolower( $current_order );
         }
@@ -52,12 +52,12 @@ function doc_vista_admin_dashboard() {
         );
     };
 
-    $counts    = (array) wp_count_posts( 'doc_vista_doc' );
+    $counts    = (array) wp_count_posts( 'zipped_docs_doc' );
     $total     = (int) ( $counts['publish'] ?? 0 ) + (int) ( $counts['draft'] ?? 0 ) + (int) ( $counts['pending'] ?? 0 );
     $published = (int) ( $counts['publish'] ?? 0 );
     $drafts    = (int) ( $counts['draft'] ?? 0 );
 
-    $graph      = doc_vista_get_graph();
+    $graph      = zipped_docs_get_graph();
     $graph_total = 0;
     if ( isset( $graph['doc_tree'] ) && is_array( $graph['doc_tree'] ) ) {
         foreach ( $graph['doc_tree'] as $slug => $tree ) {
@@ -74,7 +74,7 @@ function doc_vista_admin_dashboard() {
     );
 
     $args = array(
-        'post_type'      => 'doc_vista_doc',
+        'post_type'      => 'zipped_docs_doc',
         'post_status'    => array( 'publish', 'draft', 'pending' ),
         'posts_per_page' => $per_page,
         'paged'          => $paged,
@@ -84,14 +84,14 @@ function doc_vista_admin_dashboard() {
 
     if ( 'order' === $current_orderby ) {
         // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- Required for sorting by custom order field.
-        $args['meta_key'] = '_doc_vista_order';
+        $args['meta_key'] = '_zipped_docs_order';
     }
 
     if ( $filter_category ) {
         // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query -- Required for category filtering.
         $args['tax_query'] = array(
             array(
-                'taxonomy' => 'doc_vista_category',
+                'taxonomy' => 'zipped_docs_category',
                 'field'    => 'term_id',
                 'terms'    => $filter_category,
             ),
@@ -103,60 +103,60 @@ function doc_vista_admin_dashboard() {
     $total_pages = $query->max_num_pages;
 
     $categories = get_terms( array(
-        'taxonomy'   => 'doc_vista_category',
+        'taxonomy'   => 'zipped_docs_category',
         'hide_empty' => false,
         'orderby'    => 'name',
         'order'      => 'ASC',
     ) );
     ?>
-    <div class="wrap doc-vista-dashboard">
+    <div class="wrap zipped-docs-dashboard">
         <h1>
-            <?php esc_html_e( 'Doc Vista', 'doc-vista' ); ?>
-            <?php if ( current_user_can( 'doc_vista_create' ) ) : ?>
-                <a href="<?php echo esc_url( admin_url( 'admin.php?page=doc-vista-new' ) ); ?>" class="page-title-action">
-                    <?php esc_html_e( 'Add New Doc', 'doc-vista' ); ?>
+            <?php esc_html_e( 'Zipped Docs', 'zipped-docs' ); ?>
+            <?php if ( current_user_can( 'zipped_docs_create' ) ) : ?>
+                <a href="<?php echo esc_url( admin_url( 'admin.php?page=zipped-docs-new' ) ); ?>" class="page-title-action">
+                    <?php esc_html_e( 'Add New Doc', 'zipped-docs' ); ?>
                 </a>
             <?php endif; ?>
-            <?php if ( current_user_can( 'doc_vista_import' ) ) : ?>
-                <a href="#" id="doc-vista-import-btn" class="page-title-action" style="border-color:#2563EB;color:#2563EB;">
-                    <?php esc_html_e( 'Import Documentation', 'doc-vista' ); ?>
+            <?php if ( current_user_can( 'zipped_docs_import' ) ) : ?>
+                <a href="#" id="zipped-docs-import-btn" class="page-title-action" style="border-color:#2563EB;color:#2563EB;">
+                    <?php esc_html_e( 'Import Documentation', 'zipped-docs' ); ?>
                 </a>
             <?php endif; ?>
-            <?php if ( current_user_can( 'doc_vista_export' ) ) : ?>
-                <a href="#" id="doc-vista-export-btn" class="page-title-action" style="border-color:#16A34A;color:#16A34A;">
-                    <?php esc_html_e( 'Export Documentation', 'doc-vista' ); ?>
+            <?php if ( current_user_can( 'zipped_docs_export' ) ) : ?>
+                <a href="#" id="zipped-docs-export-btn" class="page-title-action" style="border-color:#16A34A;color:#16A34A;">
+                    <?php esc_html_e( 'Export Documentation', 'zipped-docs' ); ?>
                 </a>
             <?php endif; ?>
         </h1>
 
-        <div class="doc-vista-stats-grid">
-            <div class="doc-vista-stat-card">
-                <span class="doc-vista-stat-number"><?php echo esc_html( $total ); ?></span>
-                <span class="doc-vista-stat-label"><?php esc_html_e( 'Total Docs', 'doc-vista' ); ?></span>
+        <div class="zipped-docs-stats-grid">
+            <div class="zipped-docs-stat-card">
+                <span class="zipped-docs-stat-number"><?php echo esc_html( $total ); ?></span>
+                <span class="zipped-docs-stat-label"><?php esc_html_e( 'Total Docs', 'zipped-docs' ); ?></span>
             </div>
-            <div class="doc-vista-stat-card doc-vista-stat-published">
-                <span class="doc-vista-stat-number"><?php echo esc_html( $published ); ?></span>
-                <span class="doc-vista-stat-label"><?php esc_html_e( 'Published', 'doc-vista' ); ?></span>
+            <div class="zipped-docs-stat-card zipped-docs-stat-published">
+                <span class="zipped-docs-stat-number"><?php echo esc_html( $published ); ?></span>
+                <span class="zipped-docs-stat-label"><?php esc_html_e( 'Published', 'zipped-docs' ); ?></span>
             </div>
-            <div class="doc-vista-stat-card doc-vista-stat-draft">
-                <span class="doc-vista-stat-number"><?php echo esc_html( $drafts ); ?></span>
-                <span class="doc-vista-stat-label"><?php esc_html_e( 'Drafts', 'doc-vista' ); ?></span>
+            <div class="zipped-docs-stat-card zipped-docs-stat-draft">
+                <span class="zipped-docs-stat-number"><?php echo esc_html( $drafts ); ?></span>
+                <span class="zipped-docs-stat-label"><?php esc_html_e( 'Drafts', 'zipped-docs' ); ?></span>
             </div>
-            <div class="doc-vista-stat-card doc-vista-stat-cats">
-                <span class="doc-vista-stat-number"><?php echo esc_html( count( $categories ) ); ?></span>
-                <span class="doc-vista-stat-label"><?php esc_html_e( 'Categories', 'doc-vista' ); ?></span>
+            <div class="zipped-docs-stat-card zipped-docs-stat-cats">
+                <span class="zipped-docs-stat-number"><?php echo esc_html( count( $categories ) ); ?></span>
+                <span class="zipped-docs-stat-label"><?php esc_html_e( 'Categories', 'zipped-docs' ); ?></span>
             </div>
         </div>
 
-        <div class="doc-vista-filter-bar">
+        <div class="zipped-docs-filter-bar">
             <form method="get" action="">
-                <input type="hidden" name="page" value="doc-vista" />
+                <input type="hidden" name="page" value="zipped-docs" />
 
-                <label for="doc-vista-filter-category" class="doc-vista-sr-admin">
-                    <?php esc_html_e( 'Filter by category', 'doc-vista' ); ?>
+                <label for="zipped-docs-filter-category" class="zipped-docs-sr-admin">
+                    <?php esc_html_e( 'Filter by category', 'zipped-docs' ); ?>
                 </label>
-                <select id="doc-vista-filter-category" name="doc_vista_category">
-                    <option value=""><?php esc_html_e( 'All Categories', 'doc-vista' ); ?></option>
+                <select id="zipped-docs-filter-category" name="zipped_docs_category">
+                    <option value=""><?php esc_html_e( 'All Categories', 'zipped-docs' ); ?></option>
                     <?php foreach ( $categories as $c ) : ?>
                         <option value="<?php echo esc_attr( $c->term_id ); ?>" <?php selected( $filter_category, $c->term_id ); ?>>
                             <?php echo esc_html( $c->name ); ?>
@@ -164,57 +164,57 @@ function doc_vista_admin_dashboard() {
                     <?php endforeach; ?>
                 </select>
 
-                <button type="submit" class="button"><?php esc_html_e( 'Filter', 'doc-vista' ); ?></button>
+                <button type="submit" class="button"><?php esc_html_e( 'Filter', 'zipped-docs' ); ?></button>
 
                 <?php if ( $filter_category ) : ?>
-                    <a href="<?php echo esc_url( admin_url( 'admin.php?page=doc-vista' ) ); ?>" class="button">
-                        <?php esc_html_e( 'Clear', 'doc-vista' ); ?>
+                    <a href="<?php echo esc_url( admin_url( 'admin.php?page=zipped-docs' ) ); ?>" class="button">
+                        <?php esc_html_e( 'Clear', 'zipped-docs' ); ?>
                     </a>
                 <?php endif; ?>
             </form>
         </div>
 
-        <div class="doc-vista-docs-list-wrap">
+        <div class="zipped-docs-docs-list-wrap">
             <?php if ( empty( $docs ) ) : ?>
-                <div class="doc-vista-empty-admin">
-                    <p><?php esc_html_e( 'No documentation articles found.', 'doc-vista' ); ?></p>
-                    <a href="<?php echo esc_url( admin_url( 'admin.php?page=doc-vista-new' ) ); ?>" class="button button-primary">
-                        <?php esc_html_e( 'Create your first doc', 'doc-vista' ); ?>
+                <div class="zipped-docs-empty-admin">
+                    <p><?php esc_html_e( 'No documentation articles found.', 'zipped-docs' ); ?></p>
+                    <a href="<?php echo esc_url( admin_url( 'admin.php?page=zipped-docs-new' ) ); ?>" class="button button-primary">
+                        <?php esc_html_e( 'Create your first doc', 'zipped-docs' ); ?>
                     </a>
                 </div>
             <?php else : ?>
-                <div class="docvista-table-wrapper">
-                <table class="wp-list-table widefat fixed striped doc-vista-docs-table">
+                <div class="zippeddocs-table-wrapper">
+                <table class="wp-list-table widefat fixed striped zipped-docs-docs-table">
                     <thead>
                         <tr>
                             <th scope="col" class="column-cb" style="width:32px;">
-                                <input type="checkbox" id="doc-vista-select-all" style="accent-color:#2563EB;">
+                                <input type="checkbox" id="zipped-docs-select-all" style="accent-color:#2563EB;">
                             </th>
-                            <th scope="col" class="column-title"><?php $s = $sort_url( 'title' ); ?><a href="<?php echo esc_url( $s['url'] ); ?>" class="<?php echo esc_attr( $s['class'] ); ?>"><?php esc_html_e( 'Title', 'doc-vista' ); ?><?php if ( $s['arrow'] ) : ?><span class="sorting-indicator"><?php echo esc_html( $s['arrow'] ); ?></span><?php endif; ?></a></th>
-                            <th scope="col"><?php esc_html_e( 'Category', 'doc-vista' ); ?></th>
-                            <th scope="col"><?php $s = $sort_url( 'author' ); ?><a href="<?php echo esc_url( $s['url'] ); ?>" class="<?php echo esc_attr( $s['class'] ); ?>"><?php esc_html_e( 'Author', 'doc-vista' ); ?><?php if ( $s['arrow'] ) : ?><span class="sorting-indicator"><?php echo esc_html( $s['arrow'] ); ?></span><?php endif; ?></a></th>
-                            <th scope="col"><?php $s = $sort_url( 'status' ); ?><a href="<?php echo esc_url( $s['url'] ); ?>" class="<?php echo esc_attr( $s['class'] ); ?>"><?php esc_html_e( 'Status', 'doc-vista' ); ?><?php if ( $s['arrow'] ) : ?><span class="sorting-indicator"><?php echo esc_html( $s['arrow'] ); ?></span><?php endif; ?></a></th>
-                            <th scope="col"><?php $s = $sort_url( 'order' ); ?><a href="<?php echo esc_url( $s['url'] ); ?>" class="<?php echo esc_attr( $s['class'] ); ?>"><?php esc_html_e( 'Order', 'doc-vista' ); ?><?php if ( $s['arrow'] ) : ?><span class="sorting-indicator"><?php echo esc_html( $s['arrow'] ); ?></span><?php endif; ?></a></th>
-                            <th scope="col"><?php $s = $sort_url( 'updated' ); ?><a href="<?php echo esc_url( $s['url'] ); ?>" class="<?php echo esc_attr( $s['class'] ); ?>"><?php esc_html_e( 'Updated', 'doc-vista' ); ?><?php if ( $s['arrow'] ) : ?><span class="sorting-indicator"><?php echo esc_html( $s['arrow'] ); ?></span><?php endif; ?></a></th>
-                            <th scope="col"><?php esc_html_e( 'Actions', 'doc-vista' ); ?></th>
+                            <th scope="col" class="column-title"><?php $s = $sort_url( 'title' ); ?><a href="<?php echo esc_url( $s['url'] ); ?>" class="<?php echo esc_attr( $s['class'] ); ?>"><?php esc_html_e( 'Title', 'zipped-docs' ); ?><?php if ( $s['arrow'] ) : ?><span class="sorting-indicator"><?php echo esc_html( $s['arrow'] ); ?></span><?php endif; ?></a></th>
+                            <th scope="col"><?php esc_html_e( 'Category', 'zipped-docs' ); ?></th>
+                            <th scope="col"><?php $s = $sort_url( 'author' ); ?><a href="<?php echo esc_url( $s['url'] ); ?>" class="<?php echo esc_attr( $s['class'] ); ?>"><?php esc_html_e( 'Author', 'zipped-docs' ); ?><?php if ( $s['arrow'] ) : ?><span class="sorting-indicator"><?php echo esc_html( $s['arrow'] ); ?></span><?php endif; ?></a></th>
+                            <th scope="col"><?php $s = $sort_url( 'status' ); ?><a href="<?php echo esc_url( $s['url'] ); ?>" class="<?php echo esc_attr( $s['class'] ); ?>"><?php esc_html_e( 'Status', 'zipped-docs' ); ?><?php if ( $s['arrow'] ) : ?><span class="sorting-indicator"><?php echo esc_html( $s['arrow'] ); ?></span><?php endif; ?></a></th>
+                            <th scope="col"><?php $s = $sort_url( 'order' ); ?><a href="<?php echo esc_url( $s['url'] ); ?>" class="<?php echo esc_attr( $s['class'] ); ?>"><?php esc_html_e( 'Order', 'zipped-docs' ); ?><?php if ( $s['arrow'] ) : ?><span class="sorting-indicator"><?php echo esc_html( $s['arrow'] ); ?></span><?php endif; ?></a></th>
+                            <th scope="col"><?php $s = $sort_url( 'updated' ); ?><a href="<?php echo esc_url( $s['url'] ); ?>" class="<?php echo esc_attr( $s['class'] ); ?>"><?php esc_html_e( 'Updated', 'zipped-docs' ); ?><?php if ( $s['arrow'] ) : ?><span class="sorting-indicator"><?php echo esc_html( $s['arrow'] ); ?></span><?php endif; ?></a></th>
+                            <th scope="col"><?php esc_html_e( 'Actions', 'zipped-docs' ); ?></th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php foreach ( $docs as $doc ) :
-                            $doc_cats     = wp_get_post_terms( $doc->ID, 'doc_vista_category', array( 'fields' => 'names' ) );
-                            $doc_order    = get_post_meta( $doc->ID, '_doc_vista_order', true );
-                            $status_label = 'publish' === $doc->post_status ? __( 'Published', 'doc-vista' ) : ucfirst( $doc->post_status );
-                            $status_class = 'publish' === $doc->post_status ? 'doc-vista-status-published' : 'doc-vista-status-draft';
+                            $doc_cats     = wp_get_post_terms( $doc->ID, 'zipped_docs_category', array( 'fields' => 'names' ) );
+                            $doc_order    = get_post_meta( $doc->ID, '_zipped_docs_order', true );
+                            $status_label = 'publish' === $doc->post_status ? __( 'Published', 'zipped-docs' ) : ucfirst( $doc->post_status );
+                            $status_class = 'publish' === $doc->post_status ? 'zipped-docs-status-published' : 'zipped-docs-status-draft';
                             $edit_link    = admin_url( 'post.php?post=' . $doc->ID . '&action=edit' );
                             $view_link    = get_permalink( $doc->ID );
                             $delete_link  = wp_nonce_url(
-                                admin_url( 'admin.php?page=doc-vista&action=delete&doc=' . $doc->ID ),
+                                admin_url( 'admin.php?page=zipped-docs&action=delete&doc=' . $doc->ID ),
                                 'delete_doc_' . $doc->ID
                             );
                         ?>
                         <tr>
                             <td>
-                                <input type="checkbox" class="doc-vista-export-checkbox" value="<?php echo esc_attr( $doc->ID ); ?>" style="accent-color:#2563EB;">
+                                <input type="checkbox" class="zipped-docs-export-checkbox" value="<?php echo esc_attr( $doc->ID ); ?>" style="accent-color:#2563EB;">
                             </td>
                             <td class="column-title">
                                 <strong><a href="<?php echo esc_url( $edit_link ); ?>"><?php echo esc_html( $doc->post_title ); ?></a></strong>
@@ -224,23 +224,23 @@ function doc_vista_admin_dashboard() {
                                 $author_id = $doc->post_author;
                                 $author    = $author_id ? get_userdata( $author_id ) : false;
                                 if ( $author ) :
-                                    echo get_avatar( $author->ID, 24, '', '', array( 'class' => 'doc-vista-author-avatar' ) );
-                                    echo '<span class="doc-vista-author-name">' . esc_html( $author->display_name ) . '</span>';
+                                    echo get_avatar( $author->ID, 24, '', '', array( 'class' => 'zipped-docs-author-avatar' ) );
+                                    echo '<span class="zipped-docs-author-name">' . esc_html( $author->display_name ) . '</span>';
                                 else :
-                                    echo '<span class="doc-vista-author-unknown">—</span>';
+                                    echo '<span class="zipped-docs-author-unknown">—</span>';
                                 endif;
                             ?></td>
-                            <td><span class="doc-vista-status-badge <?php echo esc_attr( $status_class ); ?>"><?php echo esc_html( $status_label ); ?></span></td>
+                            <td><span class="zipped-docs-status-badge <?php echo esc_attr( $status_class ); ?>"><?php echo esc_html( $status_label ); ?></span></td>
                             <td><?php echo esc_html( $doc_order ?: '—' ); ?></td>
                             <td><?php echo esc_html( get_the_modified_date( 'Y-m-d', $doc->ID ) ); ?></td>
-                            <td class="doc-vista-actions">
-                                <a href="<?php echo esc_url( $edit_link ); ?>" class="button button-small"><?php esc_html_e( 'Edit', 'doc-vista' ); ?></a>
-                                <a href="<?php echo esc_url( $view_link ); ?>" class="button button-small" target="_blank"><?php esc_html_e( 'View', 'doc-vista' ); ?></a>
-                                <?php if ( current_user_can( 'doc_vista_export' ) ) : ?>
-                                    <a href="#" class="button button-small doc-vista-export-single" data-doc-id="<?php echo esc_attr( $doc->ID ); ?>" style="border-color:#16A34A;color:#16A34A;"><?php esc_html_e( 'Export', 'doc-vista' ); ?></a>
+                            <td class="zipped-docs-actions">
+                                <a href="<?php echo esc_url( $edit_link ); ?>" class="button button-small"><?php esc_html_e( 'Edit', 'zipped-docs' ); ?></a>
+                                <a href="<?php echo esc_url( $view_link ); ?>" class="button button-small" target="_blank"><?php esc_html_e( 'View', 'zipped-docs' ); ?></a>
+                                <?php if ( current_user_can( 'zipped_docs_export' ) ) : ?>
+                                    <a href="#" class="button button-small zipped-docs-export-single" data-doc-id="<?php echo esc_attr( $doc->ID ); ?>" style="border-color:#16A34A;color:#16A34A;"><?php esc_html_e( 'Export', 'zipped-docs' ); ?></a>
                                 <?php endif; ?>
-                                <?php if ( current_user_can( 'doc_vista_delete' ) ) : ?>
-                                    <a href="<?php echo esc_url( $delete_link ); ?>" class="button button-small button-link-delete doc-vista-delete-doc" data-confirm="<?php esc_attr_e( 'Delete this doc permanently?', 'doc-vista' ); ?>"><?php esc_html_e( 'Delete', 'doc-vista' ); ?></a>
+                                <?php if ( current_user_can( 'zipped_docs_delete' ) ) : ?>
+                                    <a href="<?php echo esc_url( $delete_link ); ?>" class="button button-small button-link-delete zipped-docs-delete-doc" data-confirm="<?php esc_attr_e( 'Delete this doc permanently?', 'zipped-docs' ); ?>"><?php esc_html_e( 'Delete', 'zipped-docs' ); ?></a>
                                 <?php endif; ?>
                             </td>
                         </tr>
