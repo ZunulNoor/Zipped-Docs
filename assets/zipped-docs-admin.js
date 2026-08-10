@@ -350,4 +350,7 @@
     } else {
         boot();
     }
+
+    /* Expose shared modal for zipped-docs-import-export.js */
+    window.ZippedDocsPopup = ZippedDocsPopup;
 })();

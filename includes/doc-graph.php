@@ -113,7 +113,7 @@ function zipped_docs_build_graph() {
         foreach ( $docs as $doc ) {
             $order     = (int) get_post_meta( $doc->ID, '_zipped_docs_order', true );
             $headings  = zipped_docs_extract_headings( $doc->post_content );
-            $excerpt   = wp_trim_words( wp_strip_all_tags( $doc->post_content ), 30 );
+            $excerpt   = wp_trim_words( zipped_docs_strip_tags_preserve_space( $doc->post_content ), 30 );
 
             $entry = array(
                 'id'        => $doc->ID,
@@ -134,7 +134,7 @@ function zipped_docs_build_graph() {
             foreach ( $headings as $h ) {
                 $text .= ' ' . mb_strtolower( $h['text'] );
             }
-            $text .= ' ' . mb_strtolower( wp_strip_all_tags( $doc->post_content ) );
+            $text .= ' ' . mb_strtolower( zipped_docs_strip_tags_preserve_space( $doc->post_content ) );
             $tokens = zipped_docs_tokenize( $text );
 
             foreach ( $tokens as $token => $weight_mult ) {
@@ -193,6 +193,18 @@ function zipped_docs_on_trash_untrash_graph( $post_id ) {
 
 function zipped_docs_is_ascii( $str ) {
     return (bool) preg_match( '/^[\x00-\x7f]*$/', $str );
+}
+
+/**
+ * Strip HTML tags but preserve word boundaries by replacing each tag with a
+ * space. Unlike wp_strip_all_tags(), this keeps text from separate elements
+ * distinct so search tokens are not concatenated across tag boundaries.
+ */
+function zipped_docs_strip_tags_preserve_space( $content ) {
+    $content = preg_replace( '/<[^>]+>/', ' ', $content );
+    $content = html_entity_decode( $content, ENT_QUOTES, 'UTF-8' );
+    $content = preg_replace( '/\s+/u', ' ', $content );
+    return trim( $content );
 }
 
 function zipped_docs_tokenize( $text ) {

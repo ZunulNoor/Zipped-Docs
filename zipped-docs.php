@@ -145,7 +145,10 @@ function zipped_docs_seed_settings() {
 }
 
 function zipped_docs_purge_page_cache() {
-    if ( ! function_exists( 'wpo_cache_flush' ) ) {
+    // Only load WP-Optimize's cache helper when WP-Optimize is actually active.
+    // Its file calls WP_Optimize() at load time and would fatal if the plugin is
+    // installed but deactivated.
+    if ( ! function_exists( 'wpo_cache_flush' ) && function_exists( 'WP_Optimize' ) ) {
         $wpo_cache_funcs = WP_PLUGIN_DIR . '/wp-optimize/cache/file-based-page-cache-functions.php';
         if ( file_exists( $wpo_cache_funcs ) ) {
             require_once $wpo_cache_funcs;

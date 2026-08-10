@@ -29,6 +29,7 @@ class Zipped_Docs_Import_Export_Admin {
 
         wp_localize_script( 'zipped-docs-import-export', 'ZIPPED_DOCS_IE', array(
             'ajaxUrl'               => admin_url( 'admin-ajax.php' ),
+            'adminUrl'              => admin_url( 'admin.php?page=zipped-docs' ),
             'importNonce'           => wp_create_nonce( 'zipped_docs_import_nonce' ),
             'exportNonce'           => wp_create_nonce( 'zipped_docs_export_nonce' ),
             'maxUploadSize'         => $max_upload,

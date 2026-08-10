@@ -459,7 +459,7 @@
             '</div>' +
             '<div style="display:flex;justify-content:flex-end;gap:8px;padding:16px 28px;border-top:1px solid #f0f0f1;">' +
             '<button type="button" id="zipped-docs-import-another" class="button" style="min-height:36px;padding:6px 16px;border-radius:8px;">' + IE.i18n.importAnother + '</button>' +
-            '<a href="' + (window.adminUrl || 'admin.php?page=zipped-docs') + '" class="button button-primary" style="min-height:36px;padding:6px 20px;border-radius:8px;border:none;background:' + THEME + ';color:#fff;font-weight:500;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;">' + IE.i18n.viewDocs + '</a>' +
+            '<a href="' + (IE.adminUrl || 'admin.php?page=zipped-docs') + '" class="button button-primary" style="min-height:36px;padding:6px 20px;border-radius:8px;border:none;background:' + THEME + ';color:#fff;font-weight:500;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;">' + IE.i18n.viewDocs + '</a>' +
             '<button type="button" class="button zipped-docs-ie-close" style="min-height:36px;padding:6px 16px;border-radius:8px;">' + IE.i18n.close + '</button>' +
             '</div>';
 
