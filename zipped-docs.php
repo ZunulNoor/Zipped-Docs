@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name:  Zipped Docs
- * Plugin URI:   https://zunulnoor.vercel.app
+ * Plugin URI:   https://github.com/ZunulNoor/Zipped-Docs
  * Description:  Full documentation CMS with custom post types, categories, TOC,
  *               client-side search, and multi-product support.
  * Version:      3.0.0
