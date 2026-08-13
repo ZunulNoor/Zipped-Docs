@@ -1,6 +1,6 @@
 # Zipped Docs
 
-**Version:** 3.0.0  
+**Version:** 3.0.1  
 **Author:** Zun Ul Noor  
 **URI:** [https://zunulnoor.vercel.app](https://zunulnoor.vercel.app)  
 **License:** GPL-2.0+  
@@ -118,6 +118,12 @@ By default, all plugin data is removed on deletion. To preserve data, define `de
 ---
 
 ## Changelog
+
+### 3.0.1
+- **Security** — import decisions and document data re-validated server-side so tampered payloads cannot bypass validation; media import URLs restricted to http/https; document status whitelisted on create/update
+- **Fix** — replace/update now verify the referenced post exists and is a `zipped_docs_doc` before modifying it
+- **Security** — inline admin `<style>`/`<script>` blocks moved into enqueued assets (`admin.css`, `admin.js`, `wp_add_inline_style`); settings input unslashed before sanitization
+- **Version Bump** — 3.0.1
 
 ### 3.0.0
 - **Rebrand** — released as **Zipped Docs**: plugin slug `zipped-docs`, text domain `zipped-docs`, PHP prefix `zipped_docs_`, and `ZIPPED_DOCS_*` constants

@@ -5,7 +5,7 @@ Tags: documentation, docs, knowledge base, documentation management, docs engine
 Requires at least: 5.8
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 3.0.0
+Stable tag: 3.0.1
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -83,6 +83,15 @@ Yes. All frontend strings use WordPress i18n functions and the `zipped-docs` tex
 4. Meta box for per-doc product, category, and ordering
 
 == Changelog ==
+
+= 3.0.1 =
+* Security: Server-side re-validation of import decisions and document data — tampered decision payloads can no longer bypass validation or inject data
+* Security: Media import URLs restricted to http/https schemes
+* Security: Imported doc status whitelisted against valid statuses on create/update
+* Fix: Replace/update now verifies the referenced post exists and is a Zipped Docs doc before modifying it
+* Security: Inline admin `<style>`/`<script>` blocks moved into enqueued assets; settings input now unslashed before sanitization
+* Fix: Typo in plugin URI pointing to repository, delete action restricted to `zipped_docs_doc` posts
+* Dev: Version bumped to 3.0.1
 
 = 3.0.0 =
 * Major: Released as "Zipped Docs" — plugin slug `zipped-docs`, text domain `zipped-docs`, prefix `zipped_docs_`, and `ZIPPED_DOCS_*` constants

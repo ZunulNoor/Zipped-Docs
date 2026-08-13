@@ -4,7 +4,7 @@
  * Plugin URI:   https://github.com/ZunulNoor/Zipped-Docs
  * Description:  Full documentation CMS with custom post types, categories, TOC,
  *               client-side search, and multi-product support.
- * Version:      3.0.0
+ * Version:      3.0.1
  * Author:       Zun Ul Noor
  * Author URI:   https://zunulnoor.vercel.app
  * Text Domain:  zipped-docs
@@ -19,7 +19,7 @@ defined( 'ABSPATH' ) || exit;
 /* -----------------------------------------------------------------------
  * Constants
  * --------------------------------------------------------------------- */
-define( 'ZIPPED_DOCS_VERSION',     '3.0.0' );
+define( 'ZIPPED_DOCS_VERSION',     '3.0.1' );
 define( 'ZIPPED_DOCS_DIR',         plugin_dir_path( __FILE__ ) );
 define( 'ZIPPED_DOCS_URL',         plugin_dir_url( __FILE__ ) );
 define( 'ZIPPED_DOCS_ASSETS',      ZIPPED_DOCS_URL . 'assets/' );
