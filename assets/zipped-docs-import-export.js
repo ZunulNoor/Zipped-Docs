@@ -561,10 +561,6 @@
     }
 
     function boot() {
-        var style = document.createElement('style');
-        style.textContent = '@keyframes zipped-docs-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }';
-        document.head.appendChild(style);
-
         var importBtn = document.getElementById('zipped-docs-import-btn');
         if (importBtn) {
             importBtn.addEventListener('click', function (e) { e.preventDefault(); openImportModal(); });

@@ -13,8 +13,11 @@ function zipped_docs_admin_dashboard() {
         }
         $doc_id = (int) $_GET['doc'];
         if ( $doc_id && wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ?? '' ) ), 'delete_doc_' . $doc_id ) ) {
-            wp_delete_post( $doc_id, true );
-            echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__( 'Doc deleted.', 'zipped-docs' ) . '</p></div>';
+            $doc_obj = get_post( $doc_id );
+            if ( $doc_obj instanceof WP_Post && 'zipped_docs_doc' === $doc_obj->post_type ) {
+                wp_delete_post( $doc_id, true );
+                echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__( 'Doc deleted.', 'zipped-docs' ) . '</p></div>';
+            }
         }
     }
 

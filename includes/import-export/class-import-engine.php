@@ -15,10 +15,6 @@ class Zipped_Docs_Import_Engine {
     }
 
     public function process_upload() {
-        if ( ! function_exists( 'wp_handle_upload' ) ) {
-            require_once ABSPATH . 'wp-admin/includes/file.php';
-        }
-
         check_ajax_referer( 'zipped_docs_import_nonce', '_wpnonce' );
 
         if ( ! isset( $_FILES['zipped_docs_import_file'] ) ) {
@@ -69,7 +65,12 @@ class Zipped_Docs_Import_Engine {
         global $wp_filesystem;
 
         if ( empty( $wp_filesystem ) ) {
-            require_once ABSPATH . 'wp-admin/includes/file.php';
+            // WP_Filesystem() and request_filesystem_credentials() are defined
+            // in wp-admin/includes/file.php and may not be loaded yet, so load
+            // the file only when the helper is missing.
+            if ( ! function_exists( 'WP_Filesystem' ) ) {
+                require_once ABSPATH . 'wp-admin/includes/file.php';
+            }
             WP_Filesystem();
         }
 
@@ -112,10 +113,6 @@ class Zipped_Docs_Import_Engine {
     }
 
     public function preview_upload() {
-        if ( ! function_exists( 'wp_handle_upload' ) ) {
-            require_once ABSPATH . 'wp-admin/includes/file.php';
-        }
-
         check_ajax_referer( 'zipped_docs_import_nonce', '_wpnonce' );
 
         if ( ! isset( $_FILES['zipped_docs_import_file'] ) ) {
@@ -316,6 +313,8 @@ class Zipped_Docs_Import_Engine {
         $this->errors       = array();
         $this->warnings     = array();
 
+        $valid_decisions = array( 'skip', 'replace', 'update', 'create' );
+
         $results = array(
             'imported'  => array(),
             'skipped'   => array(),
@@ -332,23 +331,66 @@ class Zipped_Docs_Import_Engine {
         $chunks = array_chunk( $decisions['documents'], $this->chunk_size );
         foreach ( $chunks as $chunk ) {
             foreach ( $chunk as $item ) {
-                $doc      = isset( $item['doc'] ) ? $item['doc'] : array();
+                if ( ! is_array( $item ) ) {
+                    continue;
+                }
+
+                $raw_doc = isset( $item['doc'] ) && is_array( $item['doc'] ) ? $item['doc'] : array();
+
                 $decision = isset( $item['decision'] ) ? $item['decision'] : 'skip';
+                if ( ! in_array( $decision, $valid_decisions, true ) ) {
+                    $decision = 'skip';
+                }
+
                 $existing_id = isset( $item['existing_id'] ) ? (int) $item['existing_id'] : 0;
 
-                if ( 'skip' === $decision ) {
+                // Re-derive the normalized document server-side so a tampered
+                // decision payload cannot bypass validation or inject data.
+                $doc = $this->normalize_document( $raw_doc );
+
+                if ( 'skip' === $decision || empty( $doc['title'] ) ) {
                     $title = ! empty( $doc['title'] ) ? $doc['title'] : __( 'Untitled', 'zipped-docs' );
                     $results['skipped'][] = $title;
                     continue;
                 }
 
-                if ( 'replace' === $decision && $existing_id ) {
-                    $deleted = wp_delete_post( $existing_id, true );
+                $validation_errors = Zipped_Docs_Normalizer::validate( $doc );
+                if ( ! empty( $validation_errors ) ) {
+                    $results['errors'][] = sprintf(
+                        /* translators: 1: document title, 2: validation error message. */
+                        __( '%1$s: %2$s', 'zipped-docs' ),
+                        esc_html( $doc['title'] ),
+                        implode( ' ', $validation_errors )
+                    );
+                    continue;
+                }
+
+                // Verify the referenced existing post actually exists and is a
+                // Zipped Docs document before replacing or updating it.
+                $real_existing = 0;
+                if ( $existing_id ) {
+                    $existing_post = get_post( $existing_id );
+                    if ( $existing_post instanceof WP_Post && 'zipped_docs_doc' === $existing_post->post_type ) {
+                        $real_existing = (int) $existing_post->ID;
+                    }
+                }
+
+                if ( in_array( $decision, array( 'replace', 'update' ), true ) && ! $real_existing ) {
+                    $results['errors'][] = sprintf(
+                        /* translators: %d: ID of the referenced existing document. */
+                        __( 'Referenced existing document %d is invalid.', 'zipped-docs' ),
+                        $existing_id
+                    );
+                    continue;
+                }
+
+                if ( 'replace' === $decision && $real_existing ) {
+                    $deleted = wp_delete_post( $real_existing, true );
                     if ( ! $deleted ) {
                         $results['errors'][] = sprintf(
                             /* translators: %d: ID of the existing document. */
                             __( 'Could not delete existing document %d.', 'zipped-docs' ),
-                            $existing_id
+                            $real_existing
                         );
                         continue;
                     }
@@ -364,8 +406,8 @@ class Zipped_Docs_Import_Engine {
                         $results['replaced'][] = $result;
                         $this->imported_ids[]  = $result;
                     }
-                } elseif ( 'update' === $decision && $existing_id ) {
-                    $result = $this->update_document( $existing_id, $doc );
+                } elseif ( 'update' === $decision && $real_existing ) {
+                    $result = $this->update_document( $real_existing, $doc );
                     if ( is_wp_error( $result ) ) {
                         $results['errors'][] = sprintf(
                             /* translators: 1: document title, 2: error message. */
@@ -400,6 +442,15 @@ class Zipped_Docs_Import_Engine {
 
         $this->finalize();
         return $results;
+    }
+
+    private function normalize_document( $raw ) {
+        $detected = $this->detector->detect( $raw );
+        if ( $detected ) {
+            return $detected->normalize( $raw );
+        }
+        $zipped_docs_fallback = new Zipped_Docs_Native_Adapter();
+        return $zipped_docs_fallback->normalize( $raw );
     }
 
     private function normalize_input( $data ) {
@@ -562,13 +613,15 @@ class Zipped_Docs_Import_Engine {
     }
 
     private function create_document( $doc ) {
+        $status = in_array( $doc['status'], Zipped_Docs_Normalizer::VALID_STATUSES, true ) ? $doc['status'] : 'draft';
+
         $post_data = array(
             'post_title'   => $doc['title'],
             'post_content' => $doc['content'],
-            'post_status'  => $doc['status'] ?: 'draft',
+            'post_status'  => $status,
             'post_type'    => 'zipped_docs_doc',
             'post_excerpt' => $doc['excerpt'],
-            'post_author'  => $doc['author'] ?: get_current_user_id(),
+            'post_author'  => $doc['author'] ? (int) $doc['author'] : get_current_user_id(),
         );
 
         if ( ! empty( $doc['slug'] ) ) {
@@ -621,7 +674,7 @@ class Zipped_Docs_Import_Engine {
         );
 
         if ( ! empty( $doc['status'] ) ) {
-            $post_data['post_status'] = $doc['status'];
+            $post_data['post_status'] = in_array( $doc['status'], Zipped_Docs_Normalizer::VALID_STATUSES, true ) ? $doc['status'] : 'draft';
         }
 
         if ( ! empty( $doc['slug'] ) ) {
@@ -744,7 +797,7 @@ class Zipped_Docs_Import_Engine {
             return;
         }
 
-        if ( is_string( $image ) && filter_var( $image, FILTER_VALIDATE_URL ) ) {
+        if ( is_string( $image ) && $this->is_allowed_media_url( $image ) ) {
             $local_id = $this->get_attachment_by_url( $image );
             if ( $local_id ) {
                 set_post_thumbnail( $post_id, $local_id );
@@ -752,6 +805,17 @@ class Zipped_Docs_Import_Engine {
             }
             $this->import_media_url( $post_id, $image, true );
         }
+    }
+
+    private function is_allowed_media_url( $url ) {
+        if ( ! is_string( $url ) || '' === $url ) {
+            return false;
+        }
+        $parts = wp_parse_url( $url );
+        if ( empty( $parts['scheme'] ) || empty( $parts['host'] ) ) {
+            return false;
+        }
+        return in_array( strtolower( $parts['scheme'] ), array( 'http', 'https' ), true );
     }
 
     private function get_attachment_by_url( $url ) {
@@ -818,7 +882,7 @@ class Zipped_Docs_Import_Engine {
                     __( 'Attachment ID %d not found. Document imported without it.', 'zipped-docs' ),
                     (int) $attachment
                 );
-            } elseif ( is_string( $attachment ) && filter_var( $attachment, FILTER_VALIDATE_URL ) ) {
+            } elseif ( is_string( $attachment ) && $this->is_allowed_media_url( $attachment ) ) {
                 $local_id = $this->get_attachment_by_url( $attachment );
                 if ( $local_id ) {
                     continue;

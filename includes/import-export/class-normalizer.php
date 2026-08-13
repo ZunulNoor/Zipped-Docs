@@ -39,7 +39,11 @@ class Zipped_Docs_Normalizer {
             $errors[] = __( 'Document content must be a string.', 'zipped-docs' );
         }
         if ( ! empty( $doc['status'] ) && ! in_array( $doc['status'], self::VALID_STATUSES, true ) ) {
-            $doc['status'] = 'draft';
+            $errors[] = sprintf(
+                /* translators: %s: invalid document status. */
+                __( 'Invalid document status: %s', 'zipped-docs' ),
+                esc_html( $doc['status'] )
+            );
         }
         return $errors;
     }

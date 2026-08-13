@@ -27,24 +27,6 @@ function zipped_docs_render_meta_box( $post ) {
     $current_categories = wp_get_post_terms( $post->ID, 'zipped_docs_category', array( 'fields' => 'ids' ) );
     $current_order      = get_post_meta( $post->ID, '_zipped_docs_order', true );
     ?>
-    <style>
-        #zipped_docs_doc_settings .zipped-docs-mb-field {
-            margin-bottom: 14px;
-        }
-        #zipped_docs_doc_settings .zipped-docs-mb-field label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 4px;
-            font-size: 12px;
-            text-transform: uppercase;
-            color: #50575e;
-        }
-        #zipped_docs_doc_settings .zipped-docs-mb-field select,
-        #zipped_docs_doc_settings .zipped-docs-mb-field input[type="number"] {
-            width: 100%;
-        }
-    </style>
-
     <div class="zipped-docs-mb-field">
         <label for="zipped-docs-mb-category"><?php esc_html_e( 'Category', 'zipped-docs' ); ?></label>
         <select id="zipped-docs-mb-category" name="zipped_docs_category">

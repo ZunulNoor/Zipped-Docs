@@ -426,6 +426,14 @@ function zipped_docs_admin_enqueue( $hook ) {
         ZIPPED_DOCS_VERSION
     );
 
+    $theme_color = zipped_docs_get_settings()['zipped_docs_theme_color'] ?? '#2563EB';
+    if ( sanitize_hex_color( $theme_color ) ) {
+        wp_add_inline_style( 'zipped-docs-admin', sprintf(
+            '.zipped-docs-tab-nav a:hover{color:%1$s}.zipped-docs-tab-nav a.zipped-docs-tab-active{color:%1$s;border-bottom-color:%1$s}',
+            sanitize_hex_color( $theme_color )
+        ) );
+    }
+
     wp_enqueue_script(
         'zipped-docs-admin',
         ZIPPED_DOCS_ASSETS . 'zipped-docs-admin.js',
@@ -448,6 +456,23 @@ function zipped_docs_admin_enqueue( $hook ) {
             'deactivate'        => __( 'Deactivate Plugin', 'zipped-docs' ),
         ),
     ) );
+}
+
+add_action( 'admin_enqueue_scripts', 'zipped_docs_editor_enqueue' );
+function zipped_docs_editor_enqueue( $hook ) {
+    if ( ! in_array( $hook, array( 'post.php', 'post-new.php' ), true ) ) {
+        return;
+    }
+    $screen = get_current_screen();
+    if ( ! $screen || 'zipped_docs_doc' !== $screen->post_type ) {
+        return;
+    }
+    wp_enqueue_style(
+        'zipped-docs-admin',
+        ZIPPED_DOCS_ASSETS . 'zipped-docs-admin.css',
+        array(),
+        ZIPPED_DOCS_VERSION
+    );
 }
 
 add_action( 'admin_enqueue_scripts', 'zipped_docs_plugins_page_enqueue' );
@@ -614,9 +639,7 @@ function zipped_docs_register_search_route() {
     register_rest_route( 'zipped-docs/v1', '/search', array(
         'methods'             => WP_REST_Server::READABLE,
         'callback'            => 'zipped_docs_rest_search',
-        'permission_callback' => function () {
-            return current_user_can( 'read' );
-        },
+        'permission_callback' => '__return_true',
         'args'                => array(
             'q' => array(
                 'required'          => true,

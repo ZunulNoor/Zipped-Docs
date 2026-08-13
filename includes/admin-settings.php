@@ -22,7 +22,8 @@ function zipped_docs_admin_settings_page() {
 
     $settings_nonce = isset( $_POST['zipped_docs_settings_nonce'] ) ? sanitize_key( $_POST['zipped_docs_settings_nonce'] ) : '';
     if ( current_user_can( 'zipped_docs_manage_settings' ) && isset( $_POST['zipped_docs_settings_nonce'] ) && wp_verify_nonce( $settings_nonce, 'zipped_docs_save_settings' ) ) {
-        Zipped_Docs_Settings::get_instance()->save( array_intersect_key( $_POST, Zipped_Docs_Settings::get_defaults() ) );
+        $settings_input = array_intersect_key( wp_unslash( $_POST ), Zipped_Docs_Settings::get_defaults() );
+        Zipped_Docs_Settings::get_instance()->save( $settings_input );
         $saved_notice = '<div class="notice notice-success is-dismissible"><p>' . esc_html__( 'Settings saved.', 'zipped-docs' ) . '</p></div>';
     }
 
@@ -490,46 +491,5 @@ function zipped_docs_admin_settings_page() {
             </form>
         </div>
     </div>
-
-    <style>
-        .zipped-docs-tab-nav a:hover {
-            color: <?php echo esc_attr( $settings->get( 'zipped_docs_theme_color' ) ); ?>;
-        }
-        .zipped-docs-tab-nav a.zipped-docs-tab-active {
-            color: <?php echo esc_attr( $settings->get( 'zipped_docs_theme_color' ) ); ?>;
-            border-bottom-color: <?php echo esc_attr( $settings->get( 'zipped_docs_theme_color' ) ); ?>;
-        }
-    </style>
-
-    <script>
-    (function() {
-        var tabs = document.querySelectorAll('.zipped-docs-tab-nav a');
-        var panels = document.querySelectorAll('.zipped-docs-tab-panel');
-
-        tabs.forEach(function(tab) {
-            tab.addEventListener('click', function(e) {
-                e.preventDefault();
-                var target = this.getAttribute('href');
-
-                tabs.forEach(function(t) { t.classList.remove('zipped-docs-tab-active'); });
-                this.classList.add('zipped-docs-tab-active');
-
-                panels.forEach(function(p) { p.classList.remove('zipped-docs-tab-active'); });
-                document.querySelector(target).classList.add('zipped-docs-tab-active');
-
-                history.pushState(null, '', target);
-            });
-        });
-
-        if ( window.location.hash ) {
-            var hashTab = document.querySelector('.zipped-docs-tab-nav a[href="' + window.location.hash + '"]');
-            if ( hashTab ) hashTab.click();
-        }
-
-        if (typeof jQuery !== 'undefined' && jQuery.fn.wpColorPicker) {
-            jQuery('.zipped-docs-color-picker').wpColorPicker();
-        }
-    })();
-    </script>
     <?php
 }

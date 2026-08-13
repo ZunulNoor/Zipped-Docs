@@ -335,10 +335,59 @@
     }
 
     /* ===================================================================
+     * Settings page — tabbed navigation + color pickers
+     * =================================================================== */
+    function initSettingsTabs() {
+        var nav = document.querySelector('.zipped-docs-tab-nav');
+        if (!nav) return;
+
+        var activeClass = 'zipped-docs-tab-active';
+
+        nav.addEventListener('click', function (e) {
+            var tab = e.target.closest('a');
+            if (!tab) return;
+
+            e.preventDefault();
+            var target = tab.getAttribute('href');
+            if (!target) return;
+
+            var tabs = nav.querySelectorAll('a');
+            for (var i = 0; i < tabs.length; i++) {
+                tabs[i].classList.remove(activeClass);
+            }
+            tab.classList.add(activeClass);
+
+            var panels = document.querySelectorAll('.zipped-docs-tab-panel');
+            for (var j = 0; j < panels.length; j++) {
+                panels[j].classList.remove(activeClass);
+            }
+            var panel = document.querySelector(target);
+            if (panel) panel.classList.add(activeClass);
+
+            if (window.history && window.history.pushState) {
+                window.history.pushState(null, '', target);
+            }
+        });
+
+        if (window.location.hash) {
+            var hashTab = nav.querySelector('a[href="' + window.location.hash + '"]');
+            if (hashTab) hashTab.click();
+        }
+    }
+
+    function initColorPickers() {
+        if (typeof jQuery !== 'undefined' && jQuery.fn && jQuery.fn.wpColorPicker) {
+            jQuery('.zipped-docs-color-picker').wpColorPicker();
+        }
+    }
+
+    /* ===================================================================
      * Init
      * =================================================================== */
     function boot() {
         initDeleteConfirmations();
+        initSettingsTabs();
+        initColorPickers();
 
         if (document.body.classList.contains('plugins-php')) {
             initDeactivationFlow();
